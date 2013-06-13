@@ -1,0 +1,4 @@
+Cybercat
+========
+
+Test automation framework
