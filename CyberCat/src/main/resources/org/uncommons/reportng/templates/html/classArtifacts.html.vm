@@ -1,0 +1,64 @@
+<tr class="testGUID">
+    <td class="group">$uniqueClass.name</td>
+</tr>
+
+<tr>
+    <td>
+        <table style="width:99%">
+            <tr>
+                <td class="fullLog hidden">
+                    <a href="#" target="_blank">
+                        <img class="icon" src="full-log-icon.png">
+                        <br><span class="iconDescription">Full Log</span>
+                    </a>
+                </td>
+
+                <td class="shortLog hidden">
+                    <a href="#" target="_blank">
+                        <img class="icon" src="short-log-icon.png">
+                        <br><span class="iconDescription">Short Log</span>
+                    </a>
+                </td>
+
+                <td class="cookies hidden">
+                    <a href="#" target="_blank">
+                        <img class="icon" src="cookies-icon.png">
+                        <br><span class="iconDescription">Cookies</span>
+                    </a>
+                </td>
+
+                <td class="video hidden">
+                    <a href="#" target="_blank">
+                        <img class="icon" src="video-icon.png">
+                        <br><span class="iconDescription">Test Video</span>
+                    </a>
+                </td>
+
+                <td class="exceptionImageWrapper hidden">
+                    <img class="icon" src="exception-image-icon.png">
+                    <br><span class="iconDescription">ScreenShot</span>
+                </td>
+
+                <td class="imagesLabel hidden">
+                    <img class="icon" src="step-images-icon.png">
+                    <br><span class="iconDescription">Step Images</span>
+                </td>
+            </tr>
+        </table>
+    </td>
+
+</tr>
+
+<tr class="imagesWrapper hidden">
+    <td>
+        <div class ="images"></div>
+    </td>
+</tr>
+
+<tr class="exceptionImage hidden">
+    <td>
+        <a href="#" target="_blank">
+            <img src="#" class ="screenShot">
+        </a>
+    </td>
+</tr>

@@ -1,0 +1,11 @@
+
+### Test running steps ###
+
+Spet 1 - build Cybercat project 
+ mvn clean install
+
+Step 2 - build Cybercat sample test project  
+ mvn clean compile test-compile antrun:run -X -Dconfig.properties=test.properties  -DfailIfNoTests=false -Dconfig.basicArtifactsDir=C:\Temp\Cybercat\Green
+ 
+Step 3 - test run 
+ ant -f green.xml

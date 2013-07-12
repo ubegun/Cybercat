@@ -1,0 +1,105 @@
+<!--to fix-->
+<!--#if ($failedConfigurations.size() > 0)
+    #foreach ($testClass in $passedTests.keySet())
+        #parse("org/uncommons/reportng/templates/html/classArtifacts.html.vm")
+    #end
+
+#elseif ($failedTests.size() > 0)
+    #foreach ($testClass in $failedTests.keySet())
+            #parse("org/uncommons/reportng/templates/html/classArtifacts.html.vm")
+    #end
+
+
+#elseif ($passedTests.size() > 0)
+    #foreach ($testClass in $passedTests.keySet())
+        #parse("org/uncommons/reportng/templates/html/classArtifacts.html.vm")
+    #end
+
+#end-->
+
+#set($uniqueClasses = [])
+
+#foreach($testClass in $failedConfigurations.keySet())
+    #set($exists = false)
+    #foreach($uniqueClass in $uniqueClasses)
+        #if($uniqueClass == $testClass)
+            #set($exists = true)
+            #break
+        #end
+    #end
+
+    #if(!$exists)
+        #set($added = $uniqueClasses.add($testClass))
+    #end
+
+    #set($posts = $uniqueClasses)
+#end
+
+#foreach($testClass in $skippedConfigurations.keySet())
+    #set($exists = false)
+    #foreach($uniqueClass in $uniqueClasses)
+        #if($uniqueClass == $testClass)
+            #set($exists = true)
+            #break
+        #end
+    #end
+
+    #if(!$exists)
+       #set($added = $uniqueClasses.add($testClass))
+    #end
+
+    #set($posts = $uniqueClasses)
+#end
+
+#foreach($testClass in $failedTests.keySet())
+    #set($exists = false)
+    #foreach($uniqueClass in $uniqueClasses)
+        #if($uniqueClass == $testClass)
+            #set($exists = true)
+            #break
+        #end
+    #end
+
+    #if(!$exists)
+        #set($added = $uniqueClasses.add($testClass))
+    #end
+
+    #set($posts = $uniqueClasses)
+#end
+
+#foreach($testClass in $skippedTests.keySet())
+    #set($exists = false)
+    #foreach($uniqueClass in $uniqueClasses)
+        #if($uniqueClass == $testClass)
+            #set($exists = true)
+            #break
+        #end
+    #end
+
+    #if(!$exists)
+        #set($added = $uniqueClasses.add($testClass))
+    #end
+
+    #set($posts = $uniqueClasses)
+#end
+
+#foreach($testClass in $passedTests.keySet())
+    #set($exists = false)
+    #foreach($uniqueClass in $uniqueClasses)
+        #if($uniqueClass == $testClass)
+            #set($exists = true)
+            #break
+        #end
+    #end
+
+    #if(!$exists)
+        #set($added = $uniqueClasses.add($testClass))
+    #end
+
+    #set($posts = $uniqueClasses)
+#end
+
+
+#foreach($uniqueClass in $uniqueClasses)
+    #parse("org/uncommons/reportng/templates/html/classArtifacts.html.vm")
+#end

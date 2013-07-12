@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CyberCat-test" default="runTestsExternal">
+	<target name="runTestsExternal">
+		<loadproperties srcFile="./cybercat.atest.properties" />
+		<echo>-----------------------> Ant Task  ${config.basicArtifactsDir} </echo>
+		<!-- ${compile_classpath} ${runtime_classpath} ${test_classpath}  ${plugin_classpath} -->
+		<taskdef resource="testngtasks" classpath="${runtime_classpath}" />
+		<testng suiteThreadPoolSize="1" classpath="${test_classpath}" outputdir="${config.basicArtifactsDir}/Cybercat/HtmlReport" haltonfailure="true" useDefaultListeners="false" listeners="org.uncommons.reportng.HTMLReporter,org.uncommons.reportng.JUnitXMLReporter">
+			<jvmarg value="-Xmx1024m" />
+			<sysproperty key="config.properties" value="${config.properties}" />
+			<sysproperty key="config.basicArtifactsDir" value="${config.basicArtifactsDir}" />
+			<sysproperty key="org.uncommons.reportng.title" value="Micoach test report" />
+			<xmlfileset dir="${basedir}/testng-suites" includes="demo-suite.xml" />
+			<xmlfileset dir="${basedir}/testng-suites" includes="mock-suite.xml" />
+		</testng>
+	</target>
+</project>
