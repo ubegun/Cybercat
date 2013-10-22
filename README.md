@@ -14,4 +14,10 @@ What features are available in this project?
 - any feature may contains another feature
 - all functional object is autowiring on runtime 
 
+How to looks the project structure? 
+
+->core 
+--> page object & fragments
+---> feature steps
+----> test cases
 
