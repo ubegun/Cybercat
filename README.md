@@ -10,11 +10,11 @@ What features are available in this project?
 - exception screenshots
 - functional steps screenshots
 - short/detail execution logs
-- any page objects may contain any subpage objects (call page fragments)
-- any feature may contains another feature
-- all functional object is autowiring on runtime 
+- any page objects may contain any subpage objects (called page fragments)
+- any feature may contain another feature
+- all functional objects are autowired on runtime 
 
-How to looks the project structure? 
+How does the project structure look like? 
 
 ->core 
 --> page object & fragments
