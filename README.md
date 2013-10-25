@@ -21,3 +21,11 @@ How does the project structure look like?
 ---> feature steps
 ----> test cases
 
+
+++++++++++++++++++++++++++++++
+   Coming soon
+++++++++++++++++++++++++++++++
+
+- Feature version control
+- add project to Maven repository
+- exclude Ant step from build process 
