@@ -29,3 +29,7 @@ jira.soap.wsdl.url=
 jira.soap.endpoint=
 jira.login=
 jira.password=
+
+######## Version control
+app.version=
+version.control.root.package=

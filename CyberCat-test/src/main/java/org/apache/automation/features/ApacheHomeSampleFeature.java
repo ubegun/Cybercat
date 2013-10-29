@@ -25,13 +25,17 @@ import org.cybercat.automation.test.AbstractFeature;
  * @author Ubegun
  *
  */
-public class ApacheeHomeSampleFeature extends AbstractFeature {
+public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheHomeFeature {
 
     @CCPageObject
     private WelcomePage apacheWelcome;
     
+    /* (non-Javadoc)
+     * @see org.apache.automation.features.IApacheHomeFeature#sampleNavigate(java.lang.String)
+     */
+    @Override
     @CCTestStep("Navigation step")
-    public ApacheeHomeSampleFeature sampleNavigate(String toProject) throws PageObjectException{ 
+    public IApacheHomeFeature sampleNavigate(String toProject) throws PageObjectException{ 
         apacheWelcome.validateTopFragment();
         apacheWelcome.selectProject(toProject);
         return this;

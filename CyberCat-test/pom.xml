@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-sample-test</artifactId>
-  <version>6.1</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Webdriver Core for automation testing</name>
   <properties>
@@ -24,6 +24,16 @@
     <cxf.version>2.7.0</cxf.version>
     <axis.version>1.4</axis.version>
   </properties>
+<repositories>
+    <repository>
+        <id>Cybercat-mvn-repo</id>
+        <url>https://raw.github.com/ubegun/Cybercat/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>  
   <dependencies>
     <dependency>
       <groupId>log4j</groupId>
@@ -36,9 +46,9 @@
       <version>${commons-lang3.version}</version>
     </dependency>
     <dependency>
-      <groupId>${groupId}</groupId>
-      <artifactId>automation-core</artifactId>
-      <version>${version}</version>
+      <groupId>org.cybercat.autotest</groupId>
+      <artifactId>cybercat-automation-core</artifactId>
+      <version>0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>

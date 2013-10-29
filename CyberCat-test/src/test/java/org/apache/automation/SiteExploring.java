@@ -1,6 +1,6 @@
 package org.apache.automation;
 
-import org.apache.automation.features.ApacheeHomeSampleFeature;
+import org.apache.automation.features.IApacheHomeFeature;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.addons.common.ScreenshotManager;
 import org.cybercat.automation.addons.common.TestLoggerAddon;
@@ -15,7 +15,7 @@ public class SiteExploring extends TestNGTestCase {
 
     
     @CCFeature
-    private ApacheeHomeSampleFeature sampleFeature;
+    private IApacheHomeFeature sampleFeature;
     
     @Test
     public void navigateToTomcatProject() throws AutomationFrameworkException {

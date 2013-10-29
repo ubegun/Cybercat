@@ -26,7 +26,7 @@ import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
  * @author Ubegun
  * 
  */
-public abstract class AbstractFeature{
+public abstract class AbstractFeature implements IVersionControl, IFeature{
 
     private static Logger log = Logger.getLogger(AbstractFeature.class);
 
@@ -37,8 +37,17 @@ public abstract class AbstractFeature{
         super();
     }
     
+    /**
+     * Identifies version by default. can be redefined to change version feature.  
+     */
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+  
+    
     @SuppressWarnings("unchecked")
-    public static <T extends AbstractFeature> T createFeature(Class<T> eType) throws AutomationFrameworkException {
+    public final static <T extends IFeature> T createFeature(Class<T> eType) throws AutomationFrameworkException {
         try {
             Constructor<T> cons = eType.getDeclaredConstructor();
             T result = cons.newInstance();

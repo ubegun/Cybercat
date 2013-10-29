@@ -3,8 +3,8 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cybercat.autotest</groupId>
-  <artifactId>automation-core</artifactId>
-  <version>6.1</version>
+  <artifactId>cybercat-automation-core</artifactId>
+  <version>0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Webdriver Core for automation testing</name>
   <repositories>
@@ -13,6 +13,7 @@
       <name>SpringSource Repository</name>
       <url>http://repo.springsource.org/release</url>
     </repository>
+
   </repositories>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,7 +29,8 @@
     <args4j.version>2.0.12</args4j.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cxf.version>2.7.0</cxf.version>
-    <axis.version>1.4</axis.version>
+    <axis.version>1.4</axis.version> 
+    <github.global.server>github</github.global.server>	
   </properties>
   <dependencies>
     <dependency>
@@ -146,6 +148,18 @@
       <artifactId>testng</artifactId>
       <version>${testng.version}</version>
     </dependency>
+   <dependency>
+       <groupId>org.reflections</groupId>
+       <artifactId>reflections</artifactId>
+       <version>0.9.9-RC1</version>
+       <exclusions>
+         <exclusion>
+	         <groupId>xml-apis</groupId>
+	         <artifactId>xml-apis</artifactId>
+         </exclusion>
+       </exclusions>
+   </dependency>    
+                 
   </dependencies>
   <build>
     <resources>
@@ -183,6 +197,43 @@
           </archive>
         </configuration>
       </plugin>
+        <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>site-maven-plugin</artifactId>
+            <version>0.8</version>
+            <configuration>
+                <message>Maven artifacts for ${project.artifactId} ${project.version}</message>  
+                <!-- git commit message -->
+                <noJekyll>true</noJekyll>                                  
+                <!-- disable webpage processing -->
+                <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> 
+                <!-- matches distribution management repository url above -->
+                <branch>refs/heads/mvn-repo</branch>                      
+                <!-- remote branch name -->
+                <includes><include>**/*</include></includes>
+                <repositoryName>Cybercat</repositoryName>      
+                <!-- github repo name -->
+                <repositoryOwner>ubegun</repositoryOwner>    
+                <!-- github username  -->
+            </configuration>
+            <executions>
+              <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
+              <execution>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <phase>deploy</phase>
+              </execution>
+            </executions>
+        </plugin>      
     </plugins>
   </build>
+<distributionManagement>
+    <repository>
+        <id>internal.repo</id>
+        <name>Temporary Staging Repository</name>
+        <url>file://${project.build.directory}/mvn-repo</url>
+    </repository>
+</distributionManagement>
+  
 </project> 
