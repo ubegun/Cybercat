@@ -281,6 +281,13 @@ public class PageElement {
         getElement().sendKeys(keys);
     }
     
+    public void dragAndDrop(PageElement toElement, int xOffset, int yOffset) {
+        browser.getActions()
+                .moveToElement(getElement())
+                .clickAndHold(getElement())
+                .moveToElement(toElement.getElement(), xOffset, yOffset).release().perform();
+    }    
+    
     public void setBrowser(Browser browser) {
         this.browser = browser;
     }
