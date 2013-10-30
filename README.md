@@ -12,14 +12,17 @@ Test automation framework
 - any page objects may contain any subpage objects (called page fragments)
 - any feature may contain another feature
 - all functional objects are autowired on runtime 
+- Feature version control
+
 
 ##How does the project structure look like? 
 
-|core 
-|-> page object & fragments
-|--> feature steps
-|---> test cases
-
+`
+core 
+-> page object & fragments
+--> feature steps
+---> test cases
+`
 
 ##Cybercat maven repository configuration:
 
@@ -48,7 +51,6 @@ Test automation framework
 
 ##Coming soon
 
-- Feature version control
 - exclude Ant step from build process 
 
 ## License
