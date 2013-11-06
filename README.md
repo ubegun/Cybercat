@@ -52,6 +52,8 @@ core
 ##Coming soon
 
 - exclude Ant step from build process 
+- new framework entity @CCProperty fields & Integration Services for integration test engine
+- update the Browser object for new methods like getCurrent Browser (return browser instance for current thread ) or state control method - void open()
 
 ## License
 * [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
