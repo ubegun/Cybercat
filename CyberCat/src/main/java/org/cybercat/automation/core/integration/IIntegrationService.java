@@ -13,18 +13,17 @@
  * limitations under the License.
  */
 
-package org.cybercat.automation.test;
+package org.cybercat.automation.core.integration;
+
+import org.cybercat.automation.persistence.model.Identity;
+import org.cybercat.automation.test.IVersionControl;
 
 /**
- * Marker interface showing that component that implements it assumes using version control system.
- * 
  * @author Ubegun
+ *
  */
-public interface IVersionControl {
-    
-    /**
-     * Returns version number for version control engine 
-     */
-    public int getVersion();
+public interface IIntegrationService extends IVersionControl{
 
+    //TODO: More information is needed about different algorithms of authorization 
+    abstract Identity getIdentity();  
 }

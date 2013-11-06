@@ -14,7 +14,7 @@
  */
 package org.cybercat.automation.persistence.model;
 
-public class User implements Entity {
+public class Identity implements Entity {
 
 	private long id;
 	private String login;
@@ -54,13 +54,13 @@ public class User implements Entity {
 		return id;
 	}
 
-	public static User parseFromString(String arg) {
-		User user = new User();
+	public static Identity parseFromString(String arg) {
+		Identity identity = new Identity();
 		String[] s =  arg.split(";");
-		user.setLogin(s[0]);
-		user.setPassword(s[1]);
-		user.setEmail(s[2]);
-		return user;
+		identity.setLogin(s[0]);
+		identity.setPassword(s[1]);
+		identity.setEmail(s[2]);
+		return identity;
 	}
 
 }

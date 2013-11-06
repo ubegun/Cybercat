@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cybercat.automation.soap;
+package org.cybercat.automation.core.integration;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -25,9 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cybercat.automation.persistence.model.User;
+import org.cybercat.automation.persistence.model.Identity;
+import org.cybercat.automation.soap.ISessionManager;
 
-class SoapSessionImpl implements SoapSession {
+class SessionManager {
 
     static{
         CookieManager manager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
@@ -37,14 +38,8 @@ class SoapSessionImpl implements SoapSession {
     
     private final static CookieStore cookieStore;
     
-    User currentUser; 
     private Map<URI, List<HttpCookie>> uriIndexSnapshot = null;
-    
-    public SoapSessionImpl(User currentUser) {
-        this.currentUser = currentUser;
-    }
 
-    @Override
     public void makeCookieSnapshot(){
         uriIndexSnapshot = new HashMap<URI, List<HttpCookie>>();
         List<URI> uris = cookieStore.getURIs();
@@ -55,7 +50,6 @@ class SoapSessionImpl implements SoapSession {
         }
     }
 
-    @Override
     public void putCookieSnapshot(){
         cookieStore.removeAll();
         for(Map.Entry<URI, List<HttpCookie>> entry: uriIndexSnapshot.entrySet()){
@@ -65,9 +59,5 @@ class SoapSessionImpl implements SoapSession {
         }
     }
 
-    @Override
-    public User getCurrentUser() {
-        return currentUser;
-    }
     
 }

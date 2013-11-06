@@ -12,16 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cybercat.automation.soap;
 
-import org.cybercat.automation.persistence.model.User;
+package org.apache.automation.features;
 
-public interface SoapSession {
+import org.cybercat.automation.core.integration.IIntegrationService;
 
-    public User getCurrentUser();
-    
-    public void makeCookieSnapshot();
+/**
+ * @author Ubegun
+ * 
+ */
+public interface ISampleIntegrationService extends IIntegrationService {
 
-    public void putCookieSnapshot();
+    Object doSomething();
 
+    void doSomethingElse();
 }

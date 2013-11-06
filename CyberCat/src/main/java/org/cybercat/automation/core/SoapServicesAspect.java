@@ -20,8 +20,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.annotations.CCDataProvider;
+import org.cybercat.automation.soap.ISessionManager;
 import org.cybercat.automation.soap.SoapService;
-import org.cybercat.automation.soap.SoapSession;
 
 @Aspect
 public class SoapServicesAspect {
@@ -29,7 +29,7 @@ public class SoapServicesAspect {
     public Object invoke(ProceedingJoinPoint pjp) throws Throwable {
         if (pjp.getTarget() instanceof SoapService) {
             SoapService service = (SoapService) pjp.getTarget();
-            SoapSession session = service.getSoapSession();
+            ISessionManager session = service.getSoapSession();
             //set Session 
             session.putCookieSnapshot();
             Object result = pjp.proceed(this.before(this.getMethod(pjp), pjp.getArgs(), pjp.getTarget()));

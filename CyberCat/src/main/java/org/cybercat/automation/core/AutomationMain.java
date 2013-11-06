@@ -30,7 +30,7 @@ import org.cybercat.automation.browsers.Browser.Browsers;
 import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.persistence.SourceType;
 import org.cybercat.automation.persistence.model.PageModelException;
-import org.cybercat.automation.persistence.model.User;
+import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.rest.AbstractRestService;
 import org.cybercat.automation.rest.RestServiceException;
 import org.cybercat.automation.soap.SoapService;
@@ -254,13 +254,22 @@ public final class AutomationMain {
         return (DataWorker) context.getBean(dataSource.toString());
     }
 
-    public <T extends AbstractRestService> T createRestService(Class<T> clazz, User user) throws RestServiceException {
+    /**
+     * Use CCIntegrationService annotation  
+     */
+    @Deprecated
+    public <T extends AbstractRestService> T createRestService(Class<T> clazz, Identity user) throws RestServiceException {
         T service = context.getBean(clazz);
         service.createNewSession(user);
         return service;
     }
 
-    public <T extends SoapService> T getSoapService(Class<T> clazz, User user) throws SoapServiceException {
+        
+    /**
+     * Use CCIntegrationService annotation  
+     */
+    @Deprecated
+    public <T extends SoapService> T getSoapService(Class<T> clazz, Identity user) throws SoapServiceException {
         T service = context.getBean(clazz);
         service.createNewSession(user);
         return service;

@@ -13,18 +13,21 @@
  * limitations under the License.
  */
 
-package org.cybercat.automation.test;
+package org.cybercat.automation.annotations;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Marker interface showing that component that implements it assumes using version control system.
- * 
  * @author Ubegun
+ *
  */
-public interface IVersionControl {
-    
-    /**
-     * Returns version number for version control engine 
-     */
-    public int getVersion();
+@Retention( RetentionPolicy.RUNTIME )
+@Target( {ElementType.FIELD, ElementType.TYPE} )
+public @interface CCIntegrationService {
 
+    boolean hasSession() default false;  
+    
 }

@@ -19,9 +19,6 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-
-
-
 public class ResourceManager {
 
     public static ResourceBundle getLocators(Locale locale) {

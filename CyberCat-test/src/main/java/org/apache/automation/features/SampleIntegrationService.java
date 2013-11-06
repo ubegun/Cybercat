@@ -13,18 +13,38 @@
  * limitations under the License.
  */
 
-package org.cybercat.automation.test;
+package org.apache.automation.features;
+
+import org.cybercat.automation.persistence.model.Identity;
 
 /**
- * Marker interface showing that component that implements it assumes using version control system.
- * 
  * @author Ubegun
+ *
  */
-public interface IVersionControl {
-    
-    /**
-     * Returns version number for version control engine 
-     */
-    public int getVersion();
+public class SampleIntegrationService implements  ISampleIntegrationService {
 
+
+    @Override
+    public Identity getIdentity() {
+        return null;
+    }
+
+    @Override
+    public int getVersion() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    
+    @Override
+    public Object doSomething(){
+        System.out.println("doSomthing()");        
+        return new Object();
+    }
+    
+    @Override
+    public void doSomethingElse(){
+        System.out.println("doSomthingElse()");
+    }
+    
 }

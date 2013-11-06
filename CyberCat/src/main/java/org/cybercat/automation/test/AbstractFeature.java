@@ -45,22 +45,4 @@ public abstract class AbstractFeature implements IVersionControl, IFeature{
         return 0;
     }
   
-    
-    @SuppressWarnings("unchecked")
-    public final static <T extends IFeature> T createFeature(Class<T> eType) throws AutomationFrameworkException {
-        try {
-            Constructor<T> cons = eType.getDeclaredConstructor();
-            T result = cons.newInstance();
-            AnnotationBuilder.processCCFeature(result);
-            AnnotationBuilder.processCCPageObject(result);
-            AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
-            proxyFactory.addAspect(TestStepAspect.class);
-            result = (T) proxyFactory.getProxy();
-            log.info(eType.getSimpleName() + " feature created.");
-            return result;
-        } catch (Exception e) {
-            // handle test fail
-            throw new AutomationFrameworkException("Feature factoring exception. ", e);            
-        }
-    }
 }

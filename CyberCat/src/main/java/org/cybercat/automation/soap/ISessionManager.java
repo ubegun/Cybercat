@@ -12,19 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.cybercat.automation.soap;
 
-package org.cybercat.automation.test;
+import org.cybercat.automation.persistence.model.Identity;
 
-/**
- * Marker interface showing that component that implements it assumes using version control system.
- * 
- * @author Ubegun
- */
-public interface IVersionControl {
+public interface ISessionManager {
+
+    public Identity getCurrentUser();
     
-    /**
-     * Returns version number for version control engine 
-     */
-    public int getVersion();
+    public void makeCookieSnapshot();
+
+    public void putCookieSnapshot();
 
 }

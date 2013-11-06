@@ -17,20 +17,20 @@ package org.cybercat.automation.rest;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
-import org.cybercat.automation.persistence.model.User;
+import org.cybercat.automation.persistence.model.Identity;
 import org.json.JSONObject;
 
 public abstract class AbstractRestService {
 
     private static final Logger LOG = Logger.getLogger(AbstractRestService.class);
 
-    protected User sessionOwner; 
+    protected Identity sessionOwner; 
     
     public AbstractRestService() throws RestServiceException{
         super();
     }
 
-    public void createNewSession(User sessionOwner) throws RestServiceException {
+    public void createNewSession(Identity sessionOwner) throws RestServiceException {
         this.sessionOwner = sessionOwner;
         doAuthorize();
     }

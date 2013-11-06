@@ -14,12 +14,12 @@
  */
 package org.cybercat.automation.soap;
 
-import org.cybercat.automation.persistence.model.User;
+import org.cybercat.automation.persistence.model.Identity;
 
-public class MockSoapSession implements SoapSession {
+public class MockSoapSession implements ISessionManager {
 
     @Override
-    public User getCurrentUser() {
+    public Identity getCurrentUser() {
         return null;
     }
 

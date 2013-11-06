@@ -17,6 +17,7 @@ package org.apache.automation.features;
 
 import org.apache.automation.pages.WelcomePage;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.annotations.CCIntegrationService;
 import org.cybercat.automation.annotations.CCPageObject;
 import org.cybercat.automation.annotations.CCTestStep;
 import org.cybercat.automation.test.AbstractFeature;
@@ -30,6 +31,10 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     @CCPageObject
     private WelcomePage apacheWelcome;
     
+    
+    @CCIntegrationService
+    private ISampleIntegrationService integrationService; 
+    
     /* (non-Javadoc)
      * @see org.apache.automation.features.IApacheHomeFeature#sampleNavigate(java.lang.String)
      */
@@ -38,6 +43,7 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     public IApacheHomeFeature sampleNavigate(String toProject) throws PageObjectException{ 
         apacheWelcome.validateTopFragment();
         apacheWelcome.selectProject(toProject);
+        integrationService.doSomething();
         return this;
     }
     

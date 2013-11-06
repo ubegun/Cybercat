@@ -19,21 +19,28 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.core.AutomationMain;
+import org.cybercat.automation.core.TestStepAspect;
+import org.cybercat.automation.core.integration.IIntegrationService;
+import org.cybercat.automation.core.integration.IntegrationServiceAspect;
 import org.cybercat.automation.test.AbstractFeature;
 import org.cybercat.automation.test.AbstractTestCase;
 import org.cybercat.automation.test.IFeature;
 import org.cybercat.automation.test.IVersionControl;
 import org.reflections.Reflections;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 
 /**
  * @author Ubegun
  *
  */
 public class AnnotationBuilder {
+    
+    private static Logger log = Logger.getLogger(AnnotationBuilder.class);
     
     
     @SuppressWarnings("unchecked")
@@ -95,6 +102,8 @@ public class AnnotationBuilder {
             return providerzz;
         }        
         Set<Class<? extends T>> providers = refSearch.getSubTypesOf(providerzz);
+        if(providers == null || providers.size() == 0)
+            return  providerzz;
         T candidate, caught = null;
         for (Class<? extends T> classProvider : providers) {
             try {
@@ -139,18 +148,38 @@ public class AnnotationBuilder {
                             + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
                 }
                 try {
-                    fields[i].set(entity, AbstractFeature.createFeature(versionControlPreprocessor(clazz)));
+                    fields[i].set(entity, createFeature(versionControlPreprocessor(clazz)));
                 } catch (Exception e) {
                     throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
                             + " field name: " + fields[i].getName()
                             + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
                             ,e );
                 }                
+            }else if(fields[i].getAnnotation(CCIntegrationService.class) != null){
+                Class<IIntegrationService> clazz;
+                try{
+                    clazz = (Class<IIntegrationService>) fields[i].getType();                    
+                }catch(Exception e){
+                    throw new AutomationFrameworkException("Unexpected field type :" + fields[i].getType().getSimpleName()
+                            + " field name: " + fields[i].getName()
+                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                            + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
+                }
+                try {
+                    
+                    fields[i].set(entity, createIService(clazz, fields[i].getAnnotation(CCIntegrationService.class)));
+                } catch (Exception e) {
+                    throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
+                            + " field name: " + fields[i].getName()
+                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                            ,e );
+                }                                
             }
                 
         }    
     }
     
+        
     @SuppressWarnings("unchecked")
     public static final <T extends AbstractPageObject> void processCCPageFragment(T entity) throws AutomationFrameworkException{
         AutomationMain mainFactory = AutomationMain.getMainFactory();
@@ -182,5 +211,42 @@ public class AnnotationBuilder {
             }
         }
     }    
+
+    
+    @SuppressWarnings("unchecked")
+    private final static <T extends IFeature> T createFeature(Class<T> eType) throws AutomationFrameworkException {
+        try {
+            Constructor<T> cons = eType.getDeclaredConstructor();
+            T result = cons.newInstance();
+            AnnotationBuilder.processCCFeature(result);
+            AnnotationBuilder.processCCPageObject(result);
+            AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
+            proxyFactory.addAspect(TestStepAspect.class);
+            result = (T) proxyFactory.getProxy();
+            log.info(eType.getSimpleName() + " feature has been created.");
+            return result;
+        } catch (Exception e) {
+            // handle test fail
+            throw new AutomationFrameworkException("Feature factoring exception. ", e);            
+        }
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+    private static final <T extends IIntegrationService> T createIService(Class<T> clazz, CCIntegrationService aService) throws AutomationFrameworkException{
+        Class<T> cService =  versionControlPreprocessor(clazz);
+        Constructor<T> cons;
+        try {
+            cons = cService.getConstructor();
+            T result = cons.newInstance();
+            AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
+            proxyFactory.addAspect(new IntegrationServiceAspect(aService.hasSession()));
+            result = (T) proxyFactory.getProxy();
+            log.info(cService.getSimpleName() + " integration Service has been created.");
+            return result;            
+        } catch (Exception e) {
+            throw new AutomationFrameworkException("Integration service creation problem.", e);
+        }
+    }
 
 }

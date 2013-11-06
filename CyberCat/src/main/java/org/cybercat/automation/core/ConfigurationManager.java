@@ -42,7 +42,7 @@ import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
-import org.cybercat.automation.persistence.model.User;
+import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.utils.WorkFolder;
 import org.springframework.context.ApplicationContext;
 
@@ -106,13 +106,13 @@ public class ConfigurationManager implements AddonContainer {
     public void initXmlRepository() throws PageModelException {
         PersistenceManager persistence = context.getBean(PersistenceManager.class);
         ResourceBundle resource = ResourceManager.getTestMetaData();
-        List<User> users = persistence.load(User.class);
+        List<Identity> users = persistence.load(Identity.class);
         Enumeration<String> keys = resource.getKeys();
         String key;
         while (keys.hasMoreElements()) {
             key = keys.nextElement();
-            if (key.contains("registred.users") && (!users.contains(User.parseFromString(resource.getString(key))))) {
-                persistence.save(User.parseFromString(resource.getString(key)));
+            if (key.contains("registred.users") && (!users.contains(Identity.parseFromString(resource.getString(key))))) {
+                persistence.save(Identity.parseFromString(resource.getString(key)));
             }
         }
     }

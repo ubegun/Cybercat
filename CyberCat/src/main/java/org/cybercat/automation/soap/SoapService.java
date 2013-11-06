@@ -21,13 +21,13 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.cybercat.automation.persistence.model.User;
+import org.cybercat.automation.persistence.model.Identity;
 
 public abstract class SoapService {
 
     private static Logger LOG = Logger.getLogger(SoapService.class);
 
-    private SoapSession soapSession;
+    private ISessionManager soapSession;
     private boolean isAuthorized = false;
 
     
@@ -35,17 +35,17 @@ public abstract class SoapService {
         super();
     }
 
-    public void createNewSession(User user) throws SoapServiceException {
+    public void createNewSession(Identity user) throws SoapServiceException {
         if (user == null) {
             soapSession = new MockSoapSession();
             LOG.warn(this.toString() + ": This SOAP service works without server authentication.");
             return;
         }
-        soapSession = new SoapSessionImpl(user);
+        soapSession = new SessionManager(user);
         doAuthorize();
     }
 
-    public User getSessionOwner() {
+    public Identity getSessionOwner() {
         return soapSession == null ? null : soapSession.getCurrentUser();
     }
 
@@ -54,7 +54,7 @@ public abstract class SoapService {
         soapSession.makeCookieSnapshot();
     }
 
-    public SoapSession getSoapSession() {
+    public ISessionManager getSoapSession() {
         return soapSession;
     }
     

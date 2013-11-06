@@ -152,7 +152,7 @@
   <bean id="jaxbContext" class="javax.xml.bind.JAXBContext" factory-method="newInstance">
     <constructor-arg index="0">
         <array>
-            <value type="java.lang.Class">org.cybercat.automation.persistence.model.User</value>
+            <value type="java.lang.Class">org.cybercat.automation.persistence.model.Identity</value>
         </array>
     </constructor-arg>    
     <constructor-arg index="1" type="java.util.Map" >
