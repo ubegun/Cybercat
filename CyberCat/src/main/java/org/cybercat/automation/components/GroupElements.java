@@ -19,12 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageElementRuntimeException;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
 import org.cybercat.automation.components.processor.AbstractProcessor.AbstractCriteria;
+import org.cybercat.automation.core.Browser;
 import org.cybercat.automation.utils.CommonUtils;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -67,7 +68,6 @@ public class GroupElements<T extends PageElement> extends PageElement{
     @Override
     public void initWebElement(Browser browser) throws PageObjectException {
         if (getState().equals(ElementState.CREATED)) {
-            setBrowser(browser);
                 processor.initWebElementByCriteria(browser, new AbstractCriteria<List<WebElement>>(getPath()) {
 
                     @Override
@@ -111,7 +111,6 @@ public class GroupElements<T extends PageElement> extends PageElement{
             T result = cons.newInstance(this.getName() + "#" + index, this.getProcessorType(), path);
             result.setElement(wElement);
             result.setState(ElementState.INITIALIZED);
-            result.setBrowser(browser);
             return result; 
         } catch (Exception e) {
             log.error(e);
@@ -166,16 +165,15 @@ public class GroupElements<T extends PageElement> extends PageElement{
         return visibleElements.toArray(new String[visibleElements.size()]);
     }
 
-    public void dragByOffset(PageElement to, int xOffset, int yOffset) {
-        browser.getActions()
+    public void dragByOffset(PageElement to, int xOffset, int yOffset) throws AutomationFrameworkException {
+        Browser.getCurrentBrowser().getActions()
                 .moveToElement(getElement())
                 .clickAndHold(getElement())
                 .moveToElement(to.getElement(), xOffset, yOffset).perform();
     }
 
-    public void releaseDragged(PageElement draggedElement) {
-        browser.getActions()
-                /*.clickAndHold(draggedElement.getElement())*/
+    public void releaseDragged(PageElement draggedElement) throws AutomationFrameworkException {
+        Browser.getCurrentBrowser().getActions()
                 .release().perform();
     }
     

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-automation-core</artifactId>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.5-SNAPSHOT</version>
   <url>https://github.com/ubegun/Cybercat</url>
   <packaging>jar</packaging>
   <name>Webdriver Core for automation testing</name>

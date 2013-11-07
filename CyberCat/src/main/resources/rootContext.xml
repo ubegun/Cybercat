@@ -91,24 +91,24 @@
   </bean>
 
 
-  <bean id="firefox" class="org.cybercat.automation.browsers.Browser" lazy-init="true" scope="prototype">
+  <bean id="firefox" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
     <constructor-arg ref="firefoxDriver"/>
-    <constructor-arg><util:constant static-field="org.cybercat.automation.browsers.Browser.Browsers.firefox"/></constructor-arg>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.firefox"/></constructor-arg>
   </bean>
   
-  <bean id="chrome" class="org.cybercat.automation.browsers.Browser" lazy-init="true" scope="prototype">
+  <bean id="chrome" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
     <constructor-arg ref="chromeDriver"/>
-    <constructor-arg><util:constant static-field="org.cybercat.automation.browsers.Browser.Browsers.chrome"/></constructor-arg>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.chrome"/></constructor-arg>
   </bean>
 
-  <bean id="safari" class="org.cybercat.automation.browsers.Browser" lazy-init="true" scope="prototype">
+  <bean id="safari" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
     <constructor-arg ref="safariDriver"/>
-    <constructor-arg><util:constant static-field="org.cybercat.automation.browsers.Browser.Browsers.safari"/></constructor-arg>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.safari"/></constructor-arg>
   </bean>
 
-  <bean id="internetExplorer" class="org.cybercat.automation.browsers.Browser" lazy-init="true" scope="prototype">
+  <bean id="internetExplorer" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
     <constructor-arg ref="internetExplorerDriver"/>
-    <constructor-arg><util:constant static-field="org.cybercat.automation.browsers.Browser.Browsers.internetExplorer"/></constructor-arg>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.internetExplorer"/></constructor-arg>
   </bean>
 
 

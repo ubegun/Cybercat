@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
@@ -130,7 +131,7 @@ public class PerformanceReportManager implements AddonContainer {
             return validateElement("runTest_button", StatefulElement.PresentStatus.VISIBLE);
         }
 
-        public void run() throws PageObjectException {
+        public void run() throws AutomationFrameworkException {
             getButton("runTest_button").click();
         }
     }

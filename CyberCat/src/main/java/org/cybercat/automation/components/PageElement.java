@@ -18,11 +18,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
 import org.cybercat.automation.components.processor.AbstractProcessor.AbstractCriteria;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -44,7 +45,6 @@ public class PageElement {
     private PathType processorType;
     protected WebDriverWait wait;
     private ElementState state = ElementState.CREATED;
-    protected Browser browser; 
 
     private static Logger log = Logger.getLogger(PageElement.class);
 
@@ -129,7 +129,6 @@ public class PageElement {
      */
     public void initWebElement(final Browser browser) throws PageObjectException {
         if (state.equals(ElementState.CREATED)) {
-            this.browser = browser;
             try {
                 browser.callImplicitlyWait(processor.implicitTimeout);
                 processor.initWebElementByCriteria(browser, new AbstractCriteria<List<WebElement>>(path) {
@@ -174,7 +173,6 @@ public class PageElement {
      */
     public void initWebElement(final Browser browser, final String text) throws PageObjectException {
         if (state.equals(ElementState.CREATED)) {
-            this.browser = browser;
             try {                
                 processor.initWebElementByCriteria(browser, new AbstractCriteria<List<WebElement>>(path) {
 
@@ -281,22 +279,16 @@ public class PageElement {
         getElement().sendKeys(keys);
     }
     
-    public void dragAndDrop(PageElement toElement, int xOffset, int yOffset) {
-        browser.getActions()
+    public void dragAndDrop(PageElement toElement, int xOffset, int yOffset) throws AutomationFrameworkException {
+        Browser.getCurrentBrowser()
+                .getActions()
                 .moveToElement(getElement())
                 .clickAndHold(getElement())
                 .moveToElement(toElement.getElement(), xOffset, yOffset).release().perform();
     }    
     
-    public void setBrowser(Browser browser) {
-        this.browser = browser;
-    }
-
-    public boolean highlightElement(){
-       if(browser == null)
-           return false;
-       browser.highlightElement(getElement());
-       return true;
+    public void highlightElement() throws AutomationFrameworkException{
+       Browser.getCurrentBrowser().highlightElement(getElement());
     }
     
 }

@@ -16,10 +16,10 @@ package org.cybercat.automation;
 
 import java.util.Set;
 
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Cookie;
 
 

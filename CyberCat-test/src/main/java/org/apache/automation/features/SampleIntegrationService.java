@@ -15,6 +15,7 @@
 
 package org.apache.automation.features;
 
+import org.cybercat.automation.annotations.CCProperty;
 import org.cybercat.automation.persistence.model.Identity;
 
 /**
@@ -23,6 +24,9 @@ import org.cybercat.automation.persistence.model.Identity;
  */
 public class SampleIntegrationService implements  ISampleIntegrationService {
 
+    
+    @CCProperty("sample.soap.endpoint")
+    private String endPoint; 
 
     @Override
     public Identity getIdentity() {
@@ -38,13 +42,19 @@ public class SampleIntegrationService implements  ISampleIntegrationService {
     
     @Override
     public Object doSomething(){
-        System.out.println("doSomthing()");        
+        System.out.println(endPoint + " doSomthing()");        
         return new Object();
     }
     
     @Override
     public void doSomethingElse(){
-        System.out.println("doSomthingElse()");
+        System.out.println(endPoint + "doSomthingElse()");
+    }
+
+    @Override
+    public void setup() {
+        // TODO Auto-generated method stub
+        
     }
     
 }

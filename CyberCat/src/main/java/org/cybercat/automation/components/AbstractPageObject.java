@@ -33,8 +33,8 @@ import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.ResourceManager;
 import org.cybercat.automation.annotations.AnnotationBuilder;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.StatefulElement.PresentStatus;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Alert;
 
 /**
@@ -464,10 +464,6 @@ public abstract class AbstractPageObject implements PageObject {
 
     protected void switchToFrame(String name) {
         browser.switchToFrame(name);
-    }
-
-    protected Browser switchToWindow(String name) throws PageObjectException {
-        return browser.switchToWindow(name);
     }
 
     protected String getWindowHandle() {

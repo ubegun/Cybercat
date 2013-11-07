@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cybercat.automation.browsers;
+package org.cybercat.automation.core;
 
 import java.io.BufferedWriter;
 import java.nio.charset.Charset;
@@ -31,8 +31,6 @@ import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.addons.common.ScreenshotProvider;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent.EffectType;
-import org.cybercat.automation.core.AddonContainer;
-import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventStopTest;
@@ -85,6 +83,10 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         this.isRemote = isRemote;
     }
 
+    public static Browser getCurrentBrowser() throws AutomationFrameworkException{
+        return AutomationMain.getMainFactory().getConfigurationManager().getBrowser();
+    }
+    
     public Browsers getBrowserType() {
         return browserType;
     }
@@ -128,8 +130,16 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         driver.switchTo().frame(name);
     }
 
-    public Browser switchToWindow(String name) throws PageObjectException {
+    public Browser getAnotherWindow(String name) throws PageObjectException {
         return new Browser((RemoteWebDriver) driver.switchTo().window(name), this.browserType, this.isRemote);
+    }
+    
+    /**
+     * @param name
+     * @throws PageObjectException
+     */
+    public void switchToWindow(String name) throws PageObjectException {
+        driver = (RemoteWebDriver) driver.switchTo().window(name);
     }
 
     public String getWindowHandle() {

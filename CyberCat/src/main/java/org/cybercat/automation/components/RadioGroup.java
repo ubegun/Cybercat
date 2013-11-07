@@ -16,10 +16,11 @@ package org.cybercat.automation.components;
 
 
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
+import org.cybercat.automation.core.Browser;
 
 
 public class RadioGroup extends PageElement {
@@ -47,9 +48,9 @@ public class RadioGroup extends PageElement {
         //this.entries = entries;
     }
     
-    public void click(int index) throws PageObjectException {
+    public void click(int index) throws AutomationFrameworkException {
         entries[index].setProcessor(processor);
-        entries[index].initWebElement(browser);
+        entries[index].initWebElement(Browser.getCurrentBrowser());
         entries[index].click();
         log.info("Selected: " + entries[index].getName());
     }
@@ -57,7 +58,7 @@ public class RadioGroup extends PageElement {
     // when declaring radio button its name must contain label specified on UI
     // in other case this method will not work
     // FIXME works incorrect in case "Male", "Female" strings
-    public void clickByName(String name) throws PageObjectException {
+    public void clickByName(String name) throws AutomationFrameworkException {
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getName().toLowerCase().contains(name.toLowerCase())) {
                 click(i);
@@ -67,7 +68,7 @@ public class RadioGroup extends PageElement {
         throw new PageObjectException("can not click on Radio by name " + name);
     }
 
-    public void jsClickByName(String name) throws PageObjectException {
+    public void jsClickByName(String name) throws AutomationFrameworkException {
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getName().toLowerCase().contains(name.toLowerCase())) {
                 entries[i].focusFireClick();
@@ -79,7 +80,6 @@ public class RadioGroup extends PageElement {
 
     @Override
     public void initWebElement(Browser browser) throws PageObjectException {
-        setBrowser(browser);
         for (int i = 0; i < entries.length; i++) {
             entries[i].initWebElement(browser);
         }
@@ -102,9 +102,9 @@ public class RadioGroup extends PageElement {
     
     /**
      * Selects first unchecked (i.e. its value is not 'checked' ) radio button in radio group 
-     * @throws PageObjectException
+     * @throws AutomationFrameworkException 
      */
-    public void clickFirstUnchecked() throws PageObjectException {
+    public void clickFirstUnchecked() throws AutomationFrameworkException {
         for (int i = 0; i < entries.length; i++)
             if (!"true".equals(entries[i].getAtributeByName("checked"))) {
                 entries[i].click();

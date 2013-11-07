@@ -14,9 +14,10 @@
  */
 package org.cybercat.automation.components;
 
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 
@@ -32,7 +33,6 @@ public class SvgChart extends PageElement{
     @Override
     public void initWebElement(Browser browser) throws PageObjectException {
         super.initWebElement(browser);
-        setBrowser(browser);
         setSize();
     }
     
@@ -48,14 +48,14 @@ public class SvgChart extends PageElement{
     	return size.getWidth();
     }
     
-    public void dragAndDrop(Point from, Point to){
+    public void dragAndDrop(Point from, Point to) throws AutomationFrameworkException{
 
         // since dragAndDrop in selenium works like piece of ... we should split drag and drop
-        browser.getActions()
+        Browser.getCurrentBrowser().getActions()
     			.moveToElement(getElement(), from.getX(), from.getY())
     			.clickAndHold()
     			.moveByOffset(to.getX(), to.getY()).perform();
-        browser.getActions()
+        Browser.getCurrentBrowser().getActions()
     			.release()
     			.perform();
     }

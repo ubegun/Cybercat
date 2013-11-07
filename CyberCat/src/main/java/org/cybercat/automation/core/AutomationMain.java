@@ -25,12 +25,10 @@ import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.PersistenceManager;
 import org.cybercat.automation.ResourceManager;
-import org.cybercat.automation.browsers.Browser;
-import org.cybercat.automation.browsers.Browser.Browsers;
 import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.persistence.SourceType;
-import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.Identity;
+import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.rest.AbstractRestService;
 import org.cybercat.automation.rest.RestServiceException;
 import org.cybercat.automation.soap.SoapService;
@@ -71,7 +69,7 @@ public final class AutomationMain {
         }
     }
 
-    private ConfigurationManager getConfigurationManager() {
+    protected ConfigurationManager getConfigurationManager() {
         ConfigurationManager config = context.getBean(ConfigurationManager.class);
         config.setup(context);
         return config;
@@ -81,7 +79,7 @@ public final class AutomationMain {
      * Returns factory for pages
      * @throws PageObjectException 
      */
-    public PageFactory getPageFactory() throws PageObjectException {
+    public PageFactory getPageFactory() throws AutomationFrameworkException {
         PageFactoryImpl result = (PageFactoryImpl) context.getBean("pageFactory");
         result.setup(this, context);
         return result;
@@ -221,25 +219,6 @@ public final class AutomationMain {
     public String[] getTestMetaDataArray(String key) throws AutomationFrameworkException {
         return getTestMetaData(key).split("\\s*,\\s*");
     }
-
-    private final static String REMOTE_SERVER = "remote.server";
-
-    /**
-     * Returns browser instance by name Additional info in selenium documentation for Webdriver
-     * 
-     * @param browser
-     *            - browser name
-     * @return - Webdriver
-     * @throws PageObjectException
-     */
-    protected Browser createBrowser(Browsers browserType) throws PageObjectException {
-        ConfigurationManager config = getConfigurationManager();
-        if (getPropertyBoolean(REMOTE_SERVER)) {
-            return config.getRemoteBrowser(browserType);
-        }
-        return config.getBrowser(browserType);
-    }
-
 
     /**
      * Returns class which manages loading and saving of test model like

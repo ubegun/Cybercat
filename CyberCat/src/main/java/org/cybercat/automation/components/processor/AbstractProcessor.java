@@ -22,7 +22,7 @@ import java.util.concurrent.RecursiveAction;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;

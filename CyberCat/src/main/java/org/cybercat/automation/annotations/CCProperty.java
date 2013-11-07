@@ -13,23 +13,23 @@
  * limitations under the License.
  */
 
-package org.cybercat.automation.core.integration;
+package org.cybercat.automation.annotations;
 
-import org.cybercat.automation.persistence.model.Identity;
-import org.cybercat.automation.test.IVersionControl;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Ubegun
- * 
+ *
  */
-public interface IIntegrationService extends IVersionControl {
-
-    // TODO: More information is needed about different algorithms of authorization
-    abstract Identity getIdentity();
-
+@Retention( RetentionPolicy.RUNTIME )
+@Target( {ElementType.FIELD, ElementType.TYPE} )
+public @interface CCProperty {
     /**
-     * This method should contain initialization block which is executed after creating an object and after
-     * initialization of all annotated fields of this object
+     * This is name of parameter from property file  
      */
-    void setup();
+    String value();
+    
 }

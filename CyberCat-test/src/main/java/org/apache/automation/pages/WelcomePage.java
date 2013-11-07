@@ -2,6 +2,7 @@ package org.apache.automation.pages;
 
 import java.util.HashMap;
 
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.annotations.CCPageFragment;
 import org.cybercat.automation.components.AbstractPageObject;
@@ -41,7 +42,7 @@ public class WelcomePage extends AbstractPageObject {
         topFragment.validateNavigationBar();
     }
 
-    public void selectProject(String projectName) throws PageObjectException{
+    public void selectProject(String projectName) throws AutomationFrameworkException{
         tableOfContentsFragment.navigateToProject(projectName);
     }
 }

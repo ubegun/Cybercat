@@ -19,9 +19,9 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor.AbstractCriteria;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -42,7 +42,6 @@ public class VisibleTextField extends TextField {
     @Override
     public void initWebElement(final Browser browser) throws PageObjectException {
         if (getState().equals(ElementState.CREATED)) {
-            setBrowser(browser);
             try {
                 processor.initWebElementByCriteria(browser, new AbstractCriteria<List<WebElement>>(path) {
                     
@@ -84,7 +83,6 @@ public class VisibleTextField extends TextField {
     public void initWebElement(final Browser browser, final String text)
             throws PageObjectException {
         if (getState().equals(ElementState.CREATED)) {
-            setBrowser(browser);
             try {
                 processor.initWebElementByCriteria(browser, new AbstractCriteria<List<WebElement>>(path) {
 

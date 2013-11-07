@@ -18,8 +18,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.processor.AbstractProcessor.AbstractCriteria;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -134,7 +134,6 @@ public class StatefulElement<T extends PageElement> extends PageElement {
     @Override
     public void initWebElement(Browser browser) {
     	log.info(processor.getImplicitTimeout()+" sec. wait for element: "+super.name);
-        setBrowser(browser);
         browser.callImplicitlyWait(processor.implicitTimeout);
         switch (expectedStatus) {
         case VISIBLE:

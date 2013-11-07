@@ -1,6 +1,7 @@
 package org.apache.automation.pages;
 
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
@@ -37,7 +38,7 @@ public class TableOfContentsFragment  extends AbstractPageObject {
     }
 
     @SuppressWarnings("unchecked")
-    public void navigateToProject(String projectName) throws PageObjectException{
+    public void navigateToProject(String projectName) throws AutomationFrameworkException{
         GroupElements<Button> links = (GroupElements<Button>) getGroupElements("project links");
         links.getElementByText("Tomcat").click();
     }

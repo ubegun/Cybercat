@@ -32,9 +32,8 @@ import org.cybercat.automation.addons.common.TestLoggerAddon;
 import org.cybercat.automation.addons.jira.JiraReportManager;
 import org.cybercat.automation.addons.media.MediaController;
 import org.cybercat.automation.addons.yslow.PerformanceReportManager;
-import org.cybercat.automation.browsers.Browser;
-import org.cybercat.automation.browsers.Browser.Browsers;
 import org.cybercat.automation.browsers.RemoteServerProvider;
+import org.cybercat.automation.core.Browser.Browsers;
 import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
@@ -166,7 +165,29 @@ public class ConfigurationManager implements AddonContainer {
         return listeners;
     }
 
-    public Browser getBrowser(Browsers browserType) throws PageObjectException {
+    private final static String REMOTE_SERVER = "remote.server";
+    
+    /**
+     * Returns browser instance by name Additional info in selenium documentation for Webdriver
+     * 
+     * @param browser
+     *            - browser name
+     * @return - Webdriver
+     * @throws PageObjectException
+     */
+    protected Browser getBrowser() throws AutomationFrameworkException {
+        if(browser != null)
+            return browser;
+        AutomationMain mainFactory = AutomationMain.getMainFactory();
+        Browsers browserType = Browsers.valueOf(mainFactory.getProperty("browser.name"));
+        if (mainFactory.getPropertyBoolean(REMOTE_SERVER)) {
+            browser = getRemoteBrowser(browserType);
+        }
+        browser = getLocalBrowser(browserType);
+        return browser;
+    }    
+    
+    private Browser getLocalBrowser(Browsers browserType) throws PageObjectException {
         try {
             browser = (Browser) context.getBean(browserType.name());
         } catch (Exception e) {
@@ -178,7 +199,7 @@ public class ConfigurationManager implements AddonContainer {
         return browser;
     }
     
-    public Browser getRemoteBrowser(Browsers browserType) throws PageObjectException {
+    private Browser getRemoteBrowser(Browsers browserType) throws PageObjectException {
         try {
             RemoteServerProvider rsp = context.getBean(RemoteServerProvider.class);
             browser = rsp.createRemoteWebDriver(browserType);

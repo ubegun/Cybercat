@@ -19,8 +19,8 @@ package org.cybercat.automation.components;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
+import org.cybercat.automation.core.Browser;
 
 
 public class TextContainer extends PageElement {

@@ -15,9 +15,10 @@
 package org.cybercat.automation.components;
 
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
+import org.cybercat.automation.core.Browser;
 import org.cybercat.automation.utils.CommonUtils;
 import org.openqa.selenium.Keys;
 
@@ -85,11 +86,11 @@ public class TextField extends Button {
      * Types text into frames that represent WYSIWIG editors text area
      * 
      * @param text
-     * @throws PageObjectException
+     * @throws AutomationFrameworkException 
      */
-    public void typeTextIntoFrame(String text) throws PageObjectException {
+    public void typeTextIntoFrame(String text) throws AutomationFrameworkException {
         if (super.getElement() != null) {
-            browser.executeScript("arguments[0].innerHTML = '<br>'", super.getElement());
+            Browser.getCurrentBrowser().executeScript("arguments[0].innerHTML = '<br>'", super.getElement());
             super.getElement().sendKeys(text);
             log.info(getName() + " text field was filled with the following text: " + text);
         } else {
@@ -106,7 +107,7 @@ public class TextField extends Button {
         }
     }   
 
-    public void selectRandomItem(int range) throws PageObjectException {
+    public void selectRandomItem(int range) throws AutomationFrameworkException {
         int index = CommonUtils.generateNumber(range);
         if (index == 1)
             index++;
@@ -117,7 +118,7 @@ public class TextField extends Button {
         }
     }
 
-    public void selectItem(int itemNumber) throws PageObjectException {
+    public void selectItem(int itemNumber) throws AutomationFrameworkException {
         this.click();
         for (int i = 0; i < itemNumber; i++) {
             this.sendKey("ARROW_DOWN");

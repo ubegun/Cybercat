@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageFactory;
+import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.core.TestStepAspect;
@@ -42,37 +43,18 @@ public class AnnotationBuilder {
     
     private static Logger log = Logger.getLogger(AnnotationBuilder.class);
     
-    
-    @SuppressWarnings("unchecked")
     public static final <T extends IFeature> void processCCPageObject(T entity) throws AutomationFrameworkException{
-        AutomationMain mainFactory = AutomationMain.getMainFactory();
-        PageFactory pageFactory =  mainFactory.getPageFactory();
         Field[] fields = entity.getClass().getDeclaredFields();
         for(int i= 0; i< fields.length; i++){
             fields[i].setAccessible(true);
             if(fields[i].getAnnotation(CCPageObject.class) != null){
-                Class<AbstractPageObject> clazz;
-                try{
-                    clazz = (Class<AbstractPageObject>) fields[i].getType();
-                }catch(Exception e){
-                    throw new AutomationFrameworkException("Unexpected field type :" + fields[i].getType().getSimpleName()
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
-                }
-                try {
-                    AbstractPageObject po = pageFactory.createPage(clazz);
-                    po.setPageFactory(pageFactory);
-                    fields[i].set(entity, po);
-                } catch (Exception e) {
-                    throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            ,e );
-                }
+                createPageObjectField(entity, fields[i]);
+            }else if (fields[i].getAnnotation(CCProperty.class) != null) {
+                processPropertyField(entity, fields[i]);
             }
         }    
     }
+        
     
     private static Reflections reflections;
     
@@ -122,96 +104,104 @@ public class AnnotationBuilder {
         return (Class<T>) caught.getClass();
     }
     
-    public static final <E extends AbstractTestCase> void processCCFeature(E entity) throws AutomationFrameworkException{
+    public static final <T extends AbstractTestCase> void processCCFeature(T entity) throws AutomationFrameworkException{
         processCCFeatureForObject(entity);
     }
     
     
-    public static final <E extends IFeature> void processCCFeature(E entity) throws AutomationFrameworkException{
+    public static final <T extends IFeature> void processCCFeature(T entity) throws AutomationFrameworkException{
         processCCFeatureForObject(entity);
     }
 
     
-    @SuppressWarnings("unchecked")
-    private static final <T extends Object> void processCCFeatureForObject(T entity) throws AutomationFrameworkException{
+    private static <T extends Object> void processCCFeatureForObject(T entity) throws AutomationFrameworkException {
         Field[] fields = entity.getClass().getDeclaredFields();
-        for(int i= 0; i< fields.length; i++){
+        for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
-            if(fields[i].getAnnotation(CCFeature.class) != null){
-                Class<AbstractFeature> clazz;
-                try{
-                    clazz = (Class<AbstractFeature>) fields[i].getType();
-                }catch(Exception e){
-                    throw new AutomationFrameworkException("Unexpected field type :" + fields[i].getType().getSimpleName()
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
-                }
-                try {
-                    fields[i].set(entity, createFeature(versionControlPreprocessor(clazz)));
-                } catch (Exception e) {
-                    throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            ,e );
-                }                
-            }else if(fields[i].getAnnotation(CCIntegrationService.class) != null){
-                Class<IIntegrationService> clazz;
-                try{
-                    clazz = (Class<IIntegrationService>) fields[i].getType();                    
-                }catch(Exception e){
-                    throw new AutomationFrameworkException("Unexpected field type :" + fields[i].getType().getSimpleName()
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
-                }
-                try {
-                    
-                    fields[i].set(entity, createIService(clazz, fields[i].getAnnotation(CCIntegrationService.class)));
-                } catch (Exception e) {
-                    throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            ,e );
-                }                                
+            if (fields[i].getAnnotation(CCFeature.class) != null) {
+                processCCFeatureField(entity, fields[i]);
+            } else if (fields[i].getAnnotation(CCIntegrationService.class) != null) {
+                createIntegrationService(fields[i], entity);
+            } else if (fields[i].getAnnotation(CCProperty.class) != null) {
+                processPropertyField(entity, fields[i]);
             }
-                
-        }    
+
+        }
     }
     
-        
-    @SuppressWarnings("unchecked")
     public static final <T extends AbstractPageObject> void processCCPageFragment(T entity) throws AutomationFrameworkException{
-        AutomationMain mainFactory = AutomationMain.getMainFactory();
-        PageFactory pageFactory =  mainFactory.getPageFactory();
         Field[] fields = entity.getClass().getDeclaredFields();
         for(int i= 0; i< fields.length; i++){
             fields[i].setAccessible(true);
             if(fields[i].getAnnotation(CCPageFragment.class) != null){
-                Class<AbstractPageObject> clazz;
-                try{
-                    clazz = (Class<AbstractPageObject>) fields[i].getType();
-                }catch(Exception e){
-                    throw new AutomationFrameworkException("Unexpected field type :" + fields[i].getType().getSimpleName()
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
-                }
-                try {
-                    AbstractPageObject fragment = pageFactory.createPage(clazz);
-                    fragment.setPageFactory(pageFactory);
-                    fields[i].set(entity, fragment);
-                    entity.addPageFragment(fragment);
-                } catch (Exception e) {
-                    throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
-                            + " field name: " + fields[i].getName()
-                            + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                            ,e );
-                }
+                entity.addPageFragment(createPageObjectField(entity, fields[i]));
             }
+        }
+    }
+
+    /**
+     * @param targetObject
+     * @param fields
+     * @return
+     * @throws AutomationFrameworkException
+     * @throws PageObjectException
+     */
+    @SuppressWarnings("unchecked")
+    private static <T extends AbstractPageObject> T createPageObjectField(Object targetObject, Field field) throws AutomationFrameworkException, PageObjectException {
+        AutomationMain mainFactory = AutomationMain.getMainFactory();
+        PageFactory pageFactory =  mainFactory.getPageFactory();
+        Class<AbstractPageObject> clazz;
+        try{
+            clazz = (Class<AbstractPageObject>) field.getType();
+        }catch(Exception e){
+            throw new AutomationFrameworkException("Unexpected field type :" + field.getType().getSimpleName()
+                    + " field name: " + field.getName()
+                    + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
+        }
+        try {
+            T po = (T) pageFactory.createPage(clazz);
+            po.setPageFactory(pageFactory);
+            field.set(targetObject, po);
+            return po;
+        } catch (Exception e) {
+            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
+                    + " field name: " + field.getName()
+                    + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                    ,e );
         }
     }    
 
+    
+    /**
+     * @param entity
+     * @param fields
+     * @param i
+     * @return
+     * @throws AutomationFrameworkException
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Class<AbstractFeature> processCCFeatureField(T entity, Field field)
+            throws AutomationFrameworkException {
+        Class<AbstractFeature> clazz;
+        try{
+            clazz = (Class<AbstractFeature>) field.getType();
+        }catch(Exception e){
+            throw new AutomationFrameworkException("Unexpected field type :" + field.getType().getSimpleName()
+                    + " field name: " + field.getName()
+                    + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
+        }
+        try {
+            field.set(entity, createFeature(versionControlPreprocessor(clazz)));
+        } catch (Exception e) {
+            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
+                    + " field name: " + field.getName()
+                    + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                    ,e );
+        }
+        return clazz;
+    }    
     
     @SuppressWarnings("unchecked")
     private final static <T extends IFeature> T createFeature(Class<T> eType) throws AutomationFrameworkException {
@@ -231,14 +221,68 @@ public class AnnotationBuilder {
         }
     }
     
+    @SuppressWarnings("unchecked")
+    private static final void createIntegrationService(Field field, Object targetObject) throws AutomationFrameworkException{  
+        Class<IIntegrationService> clazz;
+        try{
+            clazz = (Class<IIntegrationService>) field.getType();                    
+        }catch(Exception e){
+            throw new AutomationFrameworkException("Unexpected field type :" + field.getType().getSimpleName()
+                    + " field name: " + field.getName()
+                    + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
+        }
+        try {
+            
+            field.set(targetObject, createIntegrationService(clazz, field.getAnnotation(CCIntegrationService.class)));
+        } catch (Exception e) {
+            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
+                    + " field name: " + field.getName()
+                    + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
+                    ,e );
+        }                                
+
+    }
+    
+    private static void processIntegrationService(Object targetObject) throws AutomationFrameworkException{
+        Field[] fields = targetObject.getClass().getDeclaredFields();
+        for(int i= 0; i< fields.length; i++){
+            fields[i].setAccessible(true);
+            if(fields[i].getAnnotation(CCProperty.class) != null){
+                processPropertyField(targetObject, fields[i]);                                
+            }
+        }
+    }
+
+    /**
+     * @param targetObject
+     * @param fields
+     * @param i
+     * @throws AutomationFrameworkException
+     */
+    private static void processPropertyField(Object targetObject, Field field) throws AutomationFrameworkException {
+        AutomationMain mainFactory = AutomationMain.getMainFactory();
+        try {
+            CCProperty prop = field.getAnnotation(CCProperty.class);
+            field.set(targetObject, mainFactory.getProperty(prop.value()));
+        } catch (Exception e) {
+            throw new AutomationFrameworkException(
+                    "Set filed exception. Please, save this log and contact the Cybercat project support."
+                            + " field name: " + field.getName() + " class: " + targetObject.getClass().getSimpleName()
+                            + " Thread ID:" + Thread.currentThread().getId(), e);
+        }
+    }
+    
     
     @SuppressWarnings("unchecked")
-    private static final <T extends IIntegrationService> T createIService(Class<T> clazz, CCIntegrationService aService) throws AutomationFrameworkException{
+    private static final <T extends IIntegrationService> T createIntegrationService(Class<T> clazz, CCIntegrationService aService) throws AutomationFrameworkException{
         Class<T> cService =  versionControlPreprocessor(clazz);
         Constructor<T> cons;
         try {
             cons = cService.getConstructor();
             T result = cons.newInstance();
+            processIntegrationService(result);
+            result.setup();
             AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
             proxyFactory.addAspect(new IntegrationServiceAspect(aService.hasSession()));
             result = (T) proxyFactory.getProxy();

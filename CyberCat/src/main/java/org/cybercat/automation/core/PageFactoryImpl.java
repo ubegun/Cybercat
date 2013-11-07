@@ -23,11 +23,10 @@ import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
-import org.cybercat.automation.browsers.Browser.Browsers;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
+import org.cybercat.automation.core.Browser.Browsers;
 import org.openqa.selenium.Cookie;
 import org.springframework.context.ApplicationContext;
 
@@ -58,11 +57,10 @@ public class PageFactoryImpl implements PageFactory {
         this.baseUrl = baseUrl;
     }
 
-    protected void setup(AutomationMain mainFactory, ApplicationContext context) throws PageObjectException {
+    protected void setup(AutomationMain mainFactory, ApplicationContext context) throws AutomationFrameworkException {
         if (this.context == null || this.browser == null || this.browser.isClosed()) {
             this.context = context;
-            Browsers eBrowser = Browsers.valueOf(mainFactory.getProperty("browser.name"));
-            this.browser = mainFactory.createBrowser(eBrowser);
+            this.browser = Browser.getCurrentBrowser();
             if (this.baseUrl != null) {
                 this.browser.get(baseUrl);
             }

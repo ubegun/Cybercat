@@ -20,7 +20,8 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser.Browsers;
+import org.cybercat.automation.core.Browser;
+import org.cybercat.automation.core.Browser.Browsers;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;

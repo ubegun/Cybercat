@@ -15,9 +15,10 @@
 package org.cybercat.automation.components;
 
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.browsers.Browser;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
+import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
@@ -44,12 +45,12 @@ public class Button extends TextContainer {
         super.initWebElement(browser, text);
     }
 
-    public void click() throws PageObjectException {
+    public void click() throws AutomationFrameworkException {
         if (getElement() != null) {
             try {
                 super.highlightElement();
                 LOG.info("click on: " + super.getName());
-                browser.executeScript("arguments[0].focus();", getElement());
+                Browser.getCurrentBrowser().executeScript("arguments[0].focus();", getElement());
                 scrollElementToScreenCenter(getElement());
                 getElement().click();
             } catch (Exception e) {
@@ -78,15 +79,14 @@ public class Button extends TextContainer {
         }
     }
     
-    public void fireClick(){
+    public void fireClick() throws AutomationFrameworkException{
         super.highlightElement();
-        browser.executeScript("arguments[0].click();", getElement());
-
+        Browser.getCurrentBrowser().executeScript("arguments[0].click();", getElement());
     }
 
-    public void focusFireClick(){
+    public void focusFireClick() throws AutomationFrameworkException{
         super.highlightElement();
-        browser.executeScript("var dispatchMouseEvent = function(target, var_args) {" +
+        Browser.getCurrentBrowser().executeScript("var dispatchMouseEvent = function(target, var_args) {" +
                 "  var e = document.createEvent('MouseEvents');" +
                 "  e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));" +
                 "  target.dispatchEvent(e);" +
@@ -118,7 +118,7 @@ public class Button extends TextContainer {
                     ".scrollLeft(elOffset.left + (elWidth/2) - (viewportWidth/2));";
 
         
-            browser.executeScript(scrollFunction, element);
+            Browser.getCurrentBrowser().executeScript(scrollFunction, element);
             LOG.info("Elemet is scrolled to the center of the screen, using jQuery");
         }
         // assuming WebDriverException here in case of there is no on jQuery on page
@@ -127,25 +127,25 @@ public class Button extends TextContainer {
         }
     }
     
-    public void clickOffset(Point cord) {
+    public void clickOffset(Point cord) throws AutomationFrameworkException {
         LOG.info("Offset click to element: " + getElement().getTagName() + ", by coordinates: " + cord);
-        browser.getActions().moveToElement(getElement(), cord.getX(), cord.getY()).click().perform();
+        Browser.getCurrentBrowser().getActions().moveToElement(getElement(), cord.getX(), cord.getY()).click().perform();
     }
 
-    public void dragOffset(int x,int y) {
+    public void dragOffset(int x,int y) throws AutomationFrameworkException {
         LOG.info("Offset drag of element: " + getElement().getTagName() + ", by coordinates: " + " x ="+x+" y="+y);
-        browser.getActions().moveToElement(getElement()).clickAndHold().moveByOffset(x,y).release().perform();
+        Browser.getCurrentBrowser().getActions().moveToElement(getElement()).clickAndHold().moveByOffset(x,y).release().perform();
     }
     
     public String getValue() {
         return getAtributeByName("value");
     }
 
-    public void hower(){
-        browser.getActions().moveToElement(getElement()).perform();
+    public void hower() throws AutomationFrameworkException{
+        Browser.getCurrentBrowser().getActions().moveToElement(getElement()).perform();
     }
 
-    public void doubleClick(){
-        browser.getActions().doubleClick(getElement()).perform();
+    public void doubleClick() throws AutomationFrameworkException{
+        Browser.getCurrentBrowser().getActions().doubleClick(getElement()).perform();
     }
 }
