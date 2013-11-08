@@ -44,7 +44,7 @@ core
 <dependency>
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-automation-core</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.5-SNAPSHOT</version>
 </dependency>
 ...
 ```
