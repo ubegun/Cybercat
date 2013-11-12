@@ -87,6 +87,9 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         return AutomationMain.getMainFactory().getConfigurationManager().getBrowser();
     }
     
+    /**
+     * Returns
+     */
     public Browsers getBrowserType() {
         return browserType;
     }

@@ -115,7 +115,13 @@ public class AnnotationBuilder {
 
     
     private static <T extends Object> void processCCFeatureForObject(T entity) throws AutomationFrameworkException {
-        Field[] fields = entity.getClass().getDeclaredFields();
+        processCCFeatureForObject(entity, entity.getClass());
+    }
+    
+    private static <T extends Object> void processCCFeatureForObject(T entity, Class<? extends Object> clazz) throws AutomationFrameworkException {
+        if (clazz == null)
+            return;
+        Field[] fields = clazz.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
             if (fields[i].getAnnotation(CCFeature.class) != null) {
@@ -125,20 +131,30 @@ public class AnnotationBuilder {
             } else if (fields[i].getAnnotation(CCProperty.class) != null) {
                 processPropertyField(entity, fields[i]);
             }
-
         }
+        processCCFeatureForObject(entity, (Class<? extends Object>) clazz.getSuperclass());
     }
+
     
-    public static final <T extends AbstractPageObject> void processCCPageFragment(T entity) throws AutomationFrameworkException{
-        Field[] fields = entity.getClass().getDeclaredFields();
-        for(int i= 0; i< fields.length; i++){
+    public static final <T extends AbstractPageObject> void processCCPageFragment(T entity) throws AutomationFrameworkException {
+        processCCPageFragment(entity, entity.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static final <T extends AbstractPageObject> void processCCPageFragment(T entity, Class<? extends AbstractPageObject> clazz) throws AutomationFrameworkException {
+        if (clazz == null)
+            return;
+        Field[] fields = clazz.getDeclaredFields();
+
+        for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
-            if(fields[i].getAnnotation(CCPageFragment.class) != null){
+            if (fields[i].getAnnotation(CCPageFragment.class) != null) {
                 entity.addPageFragment(createPageObjectField(entity, fields[i]));
             }
         }
+        processCCPageFragment(entity, (Class<? extends AbstractPageObject>) clazz.getSuperclass());
     }
-
+    
     /**
      * @param targetObject
      * @param fields
@@ -244,14 +260,17 @@ public class AnnotationBuilder {
 
     }
     
-    private static void processIntegrationService(Object targetObject) throws AutomationFrameworkException{
-        Field[] fields = targetObject.getClass().getDeclaredFields();
+    private static void processIntegrationService(Object targetObject, Class<? extends Object> clazz) throws AutomationFrameworkException{
+        if (clazz == null)
+            return;
+        Field[] fields = clazz.getDeclaredFields();
         for(int i= 0; i< fields.length; i++){
             fields[i].setAccessible(true);
             if(fields[i].getAnnotation(CCProperty.class) != null){
                 processPropertyField(targetObject, fields[i]);                                
             }
         }
+        processIntegrationService(targetObject, clazz.getSuperclass());
     }
 
     /**
@@ -281,7 +300,7 @@ public class AnnotationBuilder {
         try {
             cons = cService.getConstructor();
             T result = cons.newInstance();
-            processIntegrationService(result);
+            processIntegrationService(result, result.getClass() );
             result.setup();
             AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
             proxyFactory.addAspect(new IntegrationServiceAspect(aService.hasSession()));
