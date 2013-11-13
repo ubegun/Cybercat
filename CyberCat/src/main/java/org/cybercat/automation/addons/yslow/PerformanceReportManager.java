@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.PageFactory;
-import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.addons.common.StartPerformanceMeasureEvent;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
@@ -105,9 +104,6 @@ public class PerformanceReportManager implements AddonContainer {
 
     public static class YSlow extends AbstractPageObject {
 
-        public YSlow(String pageUrl) {
-            super(pageUrl);
-        }
 
         @Override
         protected void initPageElement() {
@@ -116,18 +112,18 @@ public class PerformanceReportManager implements AddonContainer {
         }
 
         @Override
-        protected PageElement getUniqueElement() throws PageObjectException {
+        protected PageElement getUniqueElement() throws AutomationFrameworkException {
             return getElementByName("runTest_button");
         }
 
-        public String getReportSource() {
+        public String getReportSource() throws AutomationFrameworkException {
             validateElement("progbar_text", StatefulElement.PresentStatus.PRESENT_NOT_VISIBLE, 60);
 
             return getPageSource();
 
         }
 
-        public boolean exist() {
+        public boolean exist() throws AutomationFrameworkException {
             return validateElement("runTest_button", StatefulElement.PresentStatus.VISIBLE);
         }
 

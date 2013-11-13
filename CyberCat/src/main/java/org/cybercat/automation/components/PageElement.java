@@ -261,8 +261,9 @@ public class PageElement {
      *            The attribute to modify
      * @param value
      *            The value to set
+     * @throws AutomationFrameworkException 
      */
-    protected void setAttribute(AbstractPageObject thisPage, String attributeName, String value) {
+    protected void setAttribute(AbstractPageObject thisPage, String attributeName, String value) throws AutomationFrameworkException {
         thisPage.execJS("arguments[0].setAttribute(arguments[1], arguments[2])", element, attributeName, value);
     }
 

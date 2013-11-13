@@ -14,8 +14,12 @@
  */
 package org.cybercat.automation.core;
 
-import org.aspectj.lang.ProceedingJoinPoint;
+import java.lang.reflect.Field;
+
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.cybercat.automation.annotations.CCPageURL;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PageState;
 
@@ -28,16 +32,25 @@ public class PageObjectStateControlAcpect {
         this.pFactory = pFactory;    
     }
 
-    public Object invoke(ProceedingJoinPoint pjp) throws Throwable {
-        if (pjp.getTarget() instanceof AbstractPageObject) {
-            AbstractPageObject pageObject = (AbstractPageObject) pjp.getTarget();
+    @Before("target(bean) && !@annotation(java.beans.Transient)")
+    public void beforeNotTransientMethod(JoinPoint jp, Object bean) throws Throwable {
+        if (bean instanceof AbstractPageObject) {
+            AbstractPageObject pageObject = (AbstractPageObject) bean;
             if(pageObject.getState() == PageState.CREATED)
+                processPageURLAnnotation(pageObject);
                 pFactory.initPage(pageObject);
-            Object result = pjp.proceed();            
-            return result;
         }
-        return pjp.proceed();
     }
     
+    private void processPageURLAnnotation(AbstractPageObject pageObject) throws Throwable{        
+        Field[] fields = pageObject.getClass().getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            if (fields[i].getAnnotation(CCPageURL.class) != null) {
+                String pageUrl = fields[i].get(pageObject).toString();
+                pageObject.setPageUrl(pageUrl);
+            }
+        }
+    }
     
 }

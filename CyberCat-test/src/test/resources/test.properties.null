@@ -22,7 +22,6 @@ implicit.timeout=60
 explicit.timeout=60
 
 ######### URL's
-home.page.baseUrl=
 
 ######### Jira Adddon
 jira.soap.wsdl.url=

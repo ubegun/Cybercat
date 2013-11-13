@@ -14,6 +14,7 @@
  */
 package org.cybercat.automation.core;
 
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
@@ -26,8 +27,8 @@ import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
-import org.cybercat.automation.core.Browser.Browsers;
 import org.openqa.selenium.Cookie;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -75,31 +76,26 @@ public class PageFactoryImpl implements PageFactory {
      * @throws PageObjectException
      */
     protected <T extends AbstractPageObject> T initPage(T page) throws PageObjectException {
-        String finalUrl = baseUrl;
         // get locators
         Locale locale;
         try {
-            locale = new Locale(AutomationMain.getMainFactory().getProperty("language"));
+            locale = new Locale(AutomationMain.getProperty("language"));
         } catch (AutomationFrameworkException e) {
             throw new PageObjectException("Main factory initialization exception.", e);
         }
 
-        if (page.getBaseUrl() != null) {
-            finalUrl = page.getBaseUrl();
-        }
-        finalUrl = StringUtils.isBlank(page.getPageUrl()) ? finalUrl + page.getPageUrl() : page.getPageUrl();
-
         try {
-            LOG.info("Current URL: " + browser.getCurrentUrl());
-            if (page.isRedirectByUrl() && !browser.getCurrentUrl().contains(finalUrl)) {
-                LOG.info("Navigate to URL: " + finalUrl);
-                browser.get(finalUrl);
+            LOG.info("Current URL: " + getCurrentUrl());
+            if (StringUtils.isNotBlank(page.getPageUrl()) 
+                    && !browser.getCurrentUrl().contains(page.getPageUrl())) {
+                LOG.error("Navigate to URL: " + page.getPageUrl());
+                throw new PageObjectException("Page validation exception. Expected page URL is " + page.getPageUrl() + "  URL in fact " + getCurrentUrl());
             }
             page.setPageFactory(this);
             page.init(browser, locale);
             LOG.info(page.getClass().getName() + " page created.");
         } catch (Exception e) {
-            throw new PageObjectException("Unable initialize " + page.getClass().getName() + " page by URL: " + finalUrl, e);
+            throw new PageObjectException("Unable initialize " + page.getClass().getName() + " page by URL: " + page.getPageUrl(), e);
         }
         return page;
     }
@@ -163,15 +159,20 @@ public class PageFactoryImpl implements PageFactory {
         return browser;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
     public <T extends AbstractPageObject> T createPage(Class<T> page) throws PageObjectException {
-        return context.getBean(page);
+        Constructor<T> cons;
+        try {
+         cons = page.getConstructor();
+         T result = cons.newInstance();
+         AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
+         proxyFactory.addAspect(new PageObjectStateControlAcpect(this));
+         result = (T) proxyFactory.getProxy();
+        return result;            
+    } catch (Exception e) {
+        throw new PageObjectException("Page object creation problem.", e);
+    }
     }
 
-    @Override
-    public <T extends AbstractPageObject> T createPage(Class<T> page, boolean isRedirectToUrl) throws PageObjectException {
-        T pageObject = context.getBean(page);
-        pageObject.setRedirectByUrl(isRedirectToUrl);
-        return null;
-    }
+
 }

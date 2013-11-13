@@ -14,7 +14,6 @@
  */
 package org.cybercat.automation.core;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -91,9 +90,10 @@ public final class AutomationMain {
      * @param name
      *            - property name
      * @return
+     * @throws AutomationFrameworkException 
      */
-    public String getProperty(String name) {
-        return StringUtils.trim(configProperties.getProperty(name));
+    public static String getProperty(String name) throws AutomationFrameworkException {
+        return StringUtils.trim(getMainFactory().configProperties.getProperty(name));
     }
 
     /**
@@ -103,11 +103,11 @@ public final class AutomationMain {
      *            - property name
      * @return
      */
-    public URL getPropertyUrl(String name) throws PageObjectException {
+    public static URL getPropertyUrl(String name) throws PageObjectException {
         URL result;
         try {
-            result = new URL(configProperties.getProperty(name));
-        } catch (MalformedURLException e) {
+            result = new URL(getMainFactory().configProperties.getProperty(name));
+        } catch (Exception e) {
             throw new PageObjectException(e);
         }
         return result;
@@ -119,13 +119,15 @@ public final class AutomationMain {
      * @param name
      *            - property name
      * @return
+     * @throws AutomationFrameworkException 
+     * @throws  
      */
-    public long getPropertyLong(String name) {
-        return Long.parseLong(configProperties.getProperty(name));
+    public static long getPropertyLong(String name) throws AutomationFrameworkException {
+        return Long.parseLong(getMainFactory().configProperties.getProperty(name));
     }
 
-    public boolean getPropertyBoolean(String name) {
-        return Boolean.parseBoolean(configProperties.getProperty(name, "false"));
+    public static boolean getPropertyBoolean(String name) throws AutomationFrameworkException {
+        return Boolean.parseBoolean(getMainFactory().configProperties.getProperty(name, "false"));
     }
 
     /**

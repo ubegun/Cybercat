@@ -19,6 +19,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.cybercat.automation.AutomationFrameworkException;
+import org.cybercat.automation.annotations.CCRedirectionStep;
 import org.cybercat.automation.annotations.CCTestStep;
 import org.cybercat.automation.events.EventStartTestStep;
 
@@ -36,6 +37,13 @@ public class TestStepAspect {
     @Before("target(bean) && @annotation(testStep)")
     public void stepNotification(JoinPoint jp, Object bean,  CCTestStep testStep) throws AutomationFrameworkException{
         AutomationMain.getEventManager().notify(new EventStartTestStep(bean.getClass(),testStep.value(), jp.getSignature().getName())); 
+    }
+
+
+    @Before("target(bean) && @annotation(redirectionStep)")
+    public void redirectionstep(JoinPoint jp, Object bean,  CCRedirectionStep redirectionStep) throws AutomationFrameworkException{
+        Browser.getCurrentBrowser().get(redirectionStep.url());
+        AutomationMain.getEventManager().notify(new EventStartTestStep(bean.getClass(),redirectionStep.desctiption(), jp.getSignature().getName())); 
     }
 
 }

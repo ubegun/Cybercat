@@ -47,7 +47,7 @@ import org.openqa.selenium.Alert;
  *  process failed, PageObjectException is thrown.
  * 
  */
-public abstract class AbstractPageObject implements PageObject {
+public abstract class AbstractPageObject {
 
     public static enum PathType {
         byXPath, byCssSelector, byId, byName, byClassName, byLinkText
@@ -74,32 +74,15 @@ public abstract class AbstractPageObject implements PageObject {
 
     private PageFactory pageFactory;
 
-    private String baseUrl;
-
-    private boolean isRedirectByUrl;
-
-    public AbstractPageObject() {
-        this("/");
-    }
-
-    protected AbstractPageObject(String pageUrl) {
-        this(null, pageUrl);
-    }
-
-    protected AbstractPageObject(String baseUrl, String pageUrl) {
-        this.pageUrl = pageUrl;
-        this.baseUrl = baseUrl;
-    }
-
-    @Transient    
-    public String getBaseUrl() {
-        return baseUrl;
+    @Transient
+    public String getPageUrl() {
+        return pageUrl;
     }
 
     @Transient
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
+    public void setPageUrl(String pageUrl) {
+        this.pageUrl = pageUrl;
+    }    
 
     @Transient
     public void init(Browser browser, Locale locale) throws AutomationFrameworkException {
@@ -128,6 +111,7 @@ public abstract class AbstractPageObject implements PageObject {
     public void detach(){
         this.cleanupElements();
         state = PageState.CREATED;
+        browser = null;
     }
     
     
@@ -137,16 +121,27 @@ public abstract class AbstractPageObject implements PageObject {
     @Transient
     protected abstract void initPageElement();
 
-    public String getPageName() {
-        return browser.getTitle();
+    public String getPageName() throws AutomationFrameworkException {
+        return getBrowser().getTitle();
+    }
+
+    /**
+     * @return
+     * @throws AutomationFrameworkException 
+     */
+    private Browser getBrowser() throws AutomationFrameworkException {
+        if(browser == null)
+            browser = Browser.getCurrentBrowser();        
+        return browser;
     }
 
     /**
      * Returns the page element allowing to identify if the page has loaded yet
      * 
      * @throws PageObjectException
+     * @throws AutomationFrameworkException 
      */
-    protected abstract PageElement getUniqueElement() throws PageObjectException;
+    protected abstract PageElement getUniqueElement() throws AutomationFrameworkException;
 
     public Locale getCurrentLocale() {
         return currentLocation;
@@ -163,16 +158,13 @@ public abstract class AbstractPageObject implements PageObject {
         this.elements.put(element.getName(), element);
     }
 
-    public NavigationLink getLink(String name) throws PageObjectException {
-        return (NavigationLink) getElementByName(name);
-    }
-
     /**
      * Returns status of element by name. Time to wait for status is specified in property file
      * 
      * @param elementName - the name of the element that was set in init mode
+     * @throws AutomationFrameworkException 
      */
-    protected PresentStatus getElementStatus(String elementName, Object... arg) {
+    protected PresentStatus getElementStatus(String elementName, Object... arg) throws AutomationFrameworkException {
         if (!this.elements.containsKey(elementName))
             throw new PageElementRuntimeException(elementName + " element is not defined.");
         PageElement element = this.elements.get(elementName);
@@ -180,12 +172,12 @@ public abstract class AbstractPageObject implements PageObject {
         element.updatePath(arg);
         StatefulElement<PageElement> result = new StatefulElement<PageElement>(element);
         result.setPath(replaceKey(result.getPath()));
-        result.initWebElement(browser);
+        result.initWebElement(getBrowser());
         return result.getPresentStatus();
     }
 
 
-    protected boolean isElementPresent(String elementName, int timeoutSec) {
+    protected boolean isElementPresent(String elementName, int timeoutSec) throws AutomationFrameworkException {
         return validateElementWithTimeOut(elementName, PresentStatus.VISIBLE, timeoutSec);
     }
 
@@ -195,15 +187,16 @@ public abstract class AbstractPageObject implements PageObject {
      * @param elementName - the name of the element that was set in init mode
      * @param expectedStatus - expected status from {@link PresentStatus} enumeration
      * @return
+     * @throws AutomationFrameworkException 
      */
-    protected boolean validateElement(String elementName, PresentStatus extectedStatus, Object... arg) {
+    protected boolean validateElement(String elementName, PresentStatus extectedStatus, Object... arg) throws AutomationFrameworkException {
         if (!this.elements.containsKey(elementName))
             throw new PageElementRuntimeException(elementName + " element is not defined.");
         PageElement element = this.elements.get(elementName);
         element.setPath(replaceKey(element.getPath()));
         element.updatePath(arg);
         StatefulElement<PageElement> result = new StatefulElement<PageElement>(element, extectedStatus, 0);
-        result.initWebElement(browser);
+        result.initWebElement(getBrowser());
         return result.isValid();
     }
 
@@ -216,31 +209,32 @@ public abstract class AbstractPageObject implements PageObject {
      * @param arg - arguments that modify xPath. 
      * @see  String#format(String, Object...) 
      * @return boolean 
+     * @throws AutomationFrameworkException 
      */
-    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, int timeout, Object... arg) {
+    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, int timeout, Object... arg) throws AutomationFrameworkException {
         if (!this.elements.containsKey(elementName))
             throw new PageElementRuntimeException(elementName + " element is not defined.");
         PageElement element = this.elements.get(elementName);
         element.setPath(replaceKey(element.getPath()));
         element.updatePath(arg);
         StatefulElement<PageElement> result = new StatefulElement<PageElement>(element, expectedStatus, timeout);
-        result.initWebElement(browser);
+        result.initWebElement(getBrowser());
         return result.isValid();
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends PageElement> T getElementByName(String name, Object... arg) throws PageObjectException {
+    protected <T extends PageElement> T getElementByName(String name, Object... arg) throws AutomationFrameworkException {
         if (!this.elements.containsKey(name)) {
             LOG.error(name + " elemen element is not defined.");
             return null;
         }
         LOG.debug("Thread info: Page Object->" + this.getClass().getSimpleName() + "\tElement->" + name
-                + "\tBrowser ID->" + browser.getSessionId());
+                + "\tBrowser ID->" + getBrowser().getSessionId());
         T element = (T) elements.get(name);
         element.detach();
         element.updatePath(arg);
         element.setPath(replaceKey(element.getPath()));
-        element.initWebElement(browser);
+        element.initWebElement(getBrowser());
         return element;
     }
 
@@ -267,7 +261,7 @@ public abstract class AbstractPageObject implements PageObject {
         return paths;
     }
 
-    protected Button getDynamicButton(String name, String text) throws PageObjectException {
+    protected Button getDynamicButton(String name, String text) throws AutomationFrameworkException {
         if (this.elements.containsKey(name)) {
             Button result = (Button) this.elements.get(name);
             result.setPath(replaceKey(result.getPath()));
@@ -275,7 +269,7 @@ public abstract class AbstractPageObject implements PageObject {
             // should reinit element
             result.setState(PageElement.ElementState.CREATED);
 
-            result.initWebElement(browser, text);
+            result.initWebElement(getBrowser(), text);
             return result;
         }
         LOG.error(name + " elemen element is not defined.");
@@ -287,11 +281,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected Button getButton(String name, Object... arg) throws PageObjectException {
+    protected Button getButton(String name, Object... arg) throws AutomationFrameworkException {
         return (Button) getElementByName(name, arg);
     }
 
@@ -300,11 +293,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected SvgChart getSvgChart(String name, Object... arg) throws PageObjectException {
+    protected SvgChart getSvgChart(String name, Object... arg) throws AutomationFrameworkException {
         return (SvgChart) getElementByName(name, arg);
     }
 
@@ -313,11 +305,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected SelectorBox getSelectorBox(String name, Object... arg) throws PageObjectException {
+    protected SelectorBox getSelectorBox(String name, Object... arg) throws AutomationFrameworkException {
         return (SelectorBox) getElementByName(name, arg);
     }
 
@@ -326,11 +317,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected TextContainer getTextContainer(String name, Object... arg) throws PageObjectException {
+    protected TextContainer getTextContainer(String name, Object... arg) throws AutomationFrameworkException {
         return (TextContainer) getElementByName(name, arg);
     }
 
@@ -339,11 +329,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected TextField getTextField(String name, Object... arg) throws PageObjectException {
+    protected TextField getTextField(String name, Object... arg) throws AutomationFrameworkException {
         return (TextField) getElementByName(name, arg);
     }
 
@@ -352,11 +341,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected RadioGroup getRadioGroup(String name, Object... arg) throws PageObjectException {
+    protected RadioGroup getRadioGroup(String name, Object... arg) throws AutomationFrameworkException {
         return (RadioGroup) getElementByName(name, arg);
     }
 
@@ -365,11 +353,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected GroupElements<?> getGroupElements(String name, Object... arg) throws PageObjectException {
+    protected GroupElements<?> getGroupElements(String name, Object... arg) throws AutomationFrameworkException {
         return (GroupElements<?>) getElementByName(name, arg);
     }
 
@@ -378,11 +365,10 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected NavigationLink getNavigationLink(String name, Object... arg) throws PageObjectException {
+    protected NavigationLink getNavigationLink(String name, Object... arg) throws AutomationFrameworkException {
         return (NavigationLink) getElementByName(name, arg);
     }
 
@@ -391,15 +377,14 @@ public abstract class AbstractPageObject implements PageObject {
      *  
      * @param name - name of element
      * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
      * @see  String#format(String, Object...) 
-     *  
-     * @throws PageObjectException
      */
-    protected CheckBox getCheckBox(String name, Object... arg) throws PageObjectException {
+    protected CheckBox getCheckBox(String name, Object... arg) throws AutomationFrameworkException {
         return (CheckBox) getElementByName(name, arg);
     }
 
-    protected void isLoaded() throws PageObjectException {
+    protected void isLoaded() throws AutomationFrameworkException {
         // Define a list of WebElements that match the unique element locator
         // for the page
         PageElement uniqueElement = getUniqueElement();
@@ -412,14 +397,6 @@ public abstract class AbstractPageObject implements PageObject {
         }
     }
 
-    public String getPageUrl() {
-        return pageUrl;
-    }
-
-    protected void setPageUrl(String pageUrl) {
-        this.pageUrl = pageUrl;
-    }
-
     @Transient
     public void addPageFragment(AbstractPageObject pageFragment) {
         this.pageFragments.add(pageFragment);
@@ -428,14 +405,6 @@ public abstract class AbstractPageObject implements PageObject {
     @Transient
     public void setPageFactory(PageFactory pageFactory) {
         this.pageFactory = pageFactory;
-    }
-
-    protected <T extends AbstractPageObject> T createPage(Class<T> page) throws PageObjectException {
-        return pageFactory.createPage(page);
-    }
-
-    protected <T extends AbstractPageObject> T createPage(Class<T> page, boolean isRedirect) throws PageObjectException {
-        return pageFactory.createPage(page, isRedirect);
     }
 
     @Transient
@@ -462,28 +431,28 @@ public abstract class AbstractPageObject implements PageObject {
         pageFragments = new ArrayList<AbstractPageObject>();
     }
 
-    protected void switchToFrame(String name) {
-        browser.switchToFrame(name);
+    protected void switchToFrame(String name) throws AutomationFrameworkException {
+        getBrowser().switchToFrame(name);
     }
 
-    protected String getWindowHandle() {
-        return browser.getWindowHandle();
+    protected String getWindowHandle() throws AutomationFrameworkException {
+        return getBrowser().getWindowHandle();
     }
 
-    protected Alert switchToAlert() {
-        return browser.switchToAlert();
+    protected Alert switchToAlert() throws AutomationFrameworkException {
+        return getBrowser().switchToAlert();
     }
 
-    protected Set<String> getWindowNames() {
-        return browser.getWindowHandles();
+    protected Set<String> getWindowNames() throws AutomationFrameworkException {
+        return getBrowser().getWindowHandles();
     }
 
-    protected void switchToDefaultContent() {
-        browser.switchToDefaultContent();
+    protected void switchToDefaultContent() throws AutomationFrameworkException {
+        getBrowser().switchToDefaultContent();
     }
 
-    protected Object execJS(String script, Object... args) {
-        return browser.executeScript(script, args);
+    protected Object execJS(String script, Object... args) throws AutomationFrameworkException {
+        return getBrowser().executeScript(script, args);
     }
 
     protected void pause(long millis) {
@@ -495,7 +464,7 @@ public abstract class AbstractPageObject implements PageObject {
         }
     }
 
-    protected boolean areAllElementsPresent(String... names) {
+    protected boolean areAllElementsPresent(String... names) throws AutomationFrameworkException {
         for (String name : names) {
             if (getElementStatus(name) != PresentStatus.VISIBLE) {
                 return false;
@@ -504,7 +473,7 @@ public abstract class AbstractPageObject implements PageObject {
         return true;
     }
 
-    protected List<PageElement> getMissingElements() throws PageObjectException {
+    protected List<PageElement> getMissingElements() throws AutomationFrameworkException {
         Collection<PageElement> elements = this.elements.values();
         List<PageElement> missElements = new ArrayList<>();
         for (PageElement element : elements) {
@@ -519,21 +488,21 @@ public abstract class AbstractPageObject implements PageObject {
         return missElements;
     }
 
-    protected String getCurrentUrl() {
-        String url = browser.getCurrentUrl();
+    protected String getCurrentUrl() throws AutomationFrameworkException {
+        String url = getBrowser().getCurrentUrl();
         LOG.info("Current URL is " + url);
         return url;
     }
 
-    protected void refreshPage() throws PageObjectException {
-        browser.refresh();
+    protected void refreshPage() throws AutomationFrameworkException {
+        getBrowser().refresh();
         cleanupElements();
         LOG.info("Page \"" + getPageName() + "\" with url: " + getCurrentUrl() + " refreshed");
     }
 
-    protected void navigateBack() {
+    protected void navigateBack() throws AutomationFrameworkException {
         LOG.info("Navigating back from \"" + getPageName() + "\" ");
-        browser.navigateBack();
+        getBrowser().navigateBack();
     }
 
     /**
@@ -547,15 +516,15 @@ public abstract class AbstractPageObject implements PageObject {
         try {
             // can throw WebDriver exceptions in case of window.jQuery is undefined on page
             LOG.info("wait For Ajax Requests finished");
-            browser.waitForAjaxRequestsEnding(timeToWaitInSeconds);
+            getBrowser().waitForAjaxRequestsEnding(timeToWaitInSeconds);
         } catch (Exception e) {
             LOG.info("Cannot wait for ajax requests  finish, perhaps jQuery is not injected in this page");
         }
 
     }
 
-    protected boolean isBrowserRemote() {
-        return browser.isRemote();
+    protected boolean isBrowserRemote() throws AutomationFrameworkException {
+        return getBrowser().isRemote();
     }
 
     protected String getLocalizedValue(String key) {
@@ -582,16 +551,8 @@ public abstract class AbstractPageObject implements PageObject {
         }
     }
 
-    @Transient
-    public boolean isRedirectByUrl() {
-        return isRedirectByUrl;
+    protected String getPageSource() throws AutomationFrameworkException {
+        return getBrowser().getPageSource();
     }
 
-    protected String getPageSource() {
-        return browser.getPageSource();
-    }
-
-    public void setRedirectByUrl(boolean isRedirectByUrl) {
-        this.isRedirectByUrl = isRedirectByUrl;
-    }
 }

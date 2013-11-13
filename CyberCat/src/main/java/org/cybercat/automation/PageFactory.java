@@ -31,8 +31,6 @@ public interface PageFactory {
         
     
     <T extends AbstractPageObject> T createPage(Class<T> page) throws PageObjectException;
-
-    <T extends AbstractPageObject> T createPage(Class<T> page, boolean isRedirectToUrl) throws PageObjectException;
     
     /**
      * Returns base url

@@ -20,6 +20,7 @@ import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.annotations.CCIntegrationService;
 import org.cybercat.automation.annotations.CCPageObject;
+import org.cybercat.automation.annotations.CCRedirectionStep;
 import org.cybercat.automation.annotations.CCTestStep;
 import org.cybercat.automation.test.AbstractFeature;
 
@@ -42,9 +43,18 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     @Override
     @CCTestStep("Navigation step")
     public IApacheHomeFeature sampleNavigate(String toProject) throws AutomationFrameworkException{ 
-        apacheWelcome.validateTopFragment();
         apacheWelcome.selectProject(toProject);
         integrationService.doSomething();
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.automation.features.IApacheHomeFeature#gotoApache()
+     */
+    @Override
+    @CCRedirectionStep(desctiption = "Navigation to stat page", url = "http://apache.org/")
+    public IApacheHomeFeature gotoApache() throws AutomationFrameworkException {
+        apacheWelcome.validateTopFragment();
         return this;
     }
     

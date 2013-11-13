@@ -75,7 +75,11 @@ public class TextField extends Button {
     public void setValue(AbstractPageObject thisPage, String text) throws PageObjectException {
         if (super.getElement() != null) {
             super.getElement().clear();
-            setAttribute(thisPage, "value", text);
+            try {
+                setAttribute(thisPage, "value", text);
+            } catch (AutomationFrameworkException e) {
+                throw new PageObjectException(e);
+            }
             log.info(getName() + " text field was filled with the following text: " + text);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");

@@ -14,18 +14,6 @@ public class TableOfContentsFragment  extends AbstractPageObject {
     private static Logger log = Logger.getLogger(TableOfContentsFragment.class); 
     
 
-    public TableOfContentsFragment() {
-        super();
-    }
-
-    public TableOfContentsFragment(String baseUrl, String pageUrl) {
-        super(baseUrl, pageUrl);
-    }
-
-    public TableOfContentsFragment(String pageUrl) {
-        super(pageUrl);
-    }
-
     @Override
     protected void initPageElement() {
         addElement(new TextContainer("project paragraph", PathType.byXPath ,".//*[@id='footer']/div[1]/div[1]/h4"));
@@ -33,7 +21,7 @@ public class TableOfContentsFragment  extends AbstractPageObject {
     }
 
     @Override
-    protected PageElement getUniqueElement() throws PageObjectException {
+    protected PageElement getUniqueElement() throws AutomationFrameworkException {
         return getTextContainer("project paragraph");
     }
 

@@ -1,6 +1,7 @@
 package org.apache.automation.pages;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
@@ -9,18 +10,6 @@ import org.cybercat.automation.components.PageElement;
 public class TopFragment extends AbstractPageObject{
 
     
-    public TopFragment() {
-        super();
-    }
-
-    public TopFragment(String baseUrl, String pageUrl) {
-        super(baseUrl, pageUrl);
-    }
-
-    public TopFragment(String pageUrl) {
-        super(pageUrl);
-    }
-
     @Override
     protected void initPageElement() {
         addElement(new Button("Foundation", PathType.byXPath, ".//*[@href='/foundation/']"));
@@ -32,12 +21,12 @@ public class TopFragment extends AbstractPageObject{
     }
 
     @Override
-    protected PageElement getUniqueElement() throws PageObjectException {
+    protected PageElement getUniqueElement() throws AutomationFrameworkException {
         return getButton("Foundation");
     }
 
     
-    public void validateNavigationBar() throws PageObjectException{
+    public void validateNavigationBar() throws AutomationFrameworkException{
         validateText("Foundation" , getButton("Foundation"));
         validateText("Projects" , getButton("Projects"));
         validateText("People" , getButton("People"));

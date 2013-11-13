@@ -22,8 +22,6 @@
       </property>
   </bean>
 
-  <import resource="pageObjectContext.xml" />
-    
   <!-- Configuration constants -->
 
   <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
@@ -182,16 +180,6 @@
     <constructor-arg ref="eventManager"/>
   </bean>  
 
-  <bean id="pageObjectStateControlAcpect" class="org.cybercat.automation.core.PageObjectStateControlAcpect" lazy-init="true">
-     <constructor-arg ref="pageFactory"/>
-  </bean>
-
-  <aop:config proxy-target-class="true">
-    <aop:aspect ref="pageObjectStateControlAcpect">
-      <aop:pointcut id="anyPageObjectPublicMethods"  expression="this(org.cybercat.automation.components.PageObject) and !@annotation(java.beans.Transient)"/>
-      <aop:around method="invoke" pointcut-ref="anyPageObjectPublicMethods" />
-    </aop:aspect>
-  </aop:config>
 
 
 </beans>
