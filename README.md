@@ -24,12 +24,15 @@ https://twitter.com/CyberCatAF - project timeline
 
 ##How does the project structure look like? 
 
-`
+```
 core 
--> page object & fragments
---> feature steps
----> test cases
-`
+ | 
+ `-> page objects , page fragments , integration services
+      |     
+      `-> feature steps
+            |
+            `-> test cases
+```
 
 ##Cybercat maven repository configuration:
 
