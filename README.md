@@ -2,6 +2,10 @@
 
 Test automation framework
 
+#Helpful links 
+https://www.facebook.com/af.cybercat - last news 
+https://twitter.com/CyberCatAF - project timeline 
+
 ##What features are available in this project?
 
 - functional feature boxing
