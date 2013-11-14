@@ -2,21 +2,24 @@
 
 Test automation framework
 
-#Helpful links 
-https://www.facebook.com/af.cybercat - last news 
+##Helpful links 
+https://www.facebook.com/af.cybercat - You can read last news & short notes about current project release
+
 https://twitter.com/CyberCatAF - project timeline 
 
 ##What features are available in this project?
 
-- functional feature boxing
+- functional feature boxing (BDD process)
 - step-by-step video on tests execution 
 - exception screenshots
 - functional steps screenshots
+- summary report on run tests
 - short/detail execution logs
 - any page objects may contain any subpage objects (called page fragments)
 - any feature may contain another feature
 - all functional objects are autowired on runtime 
 - Feature version control
+- compatible for running integration tests
 
 
 ##How does the project structure look like? 
@@ -52,12 +55,6 @@ core
 </dependency>
 ...
 ```
-
-##Coming soon
-
-- exclude Ant step from build process 
-- new framework entity @CCProperty fields & Integration Services for integration test engine
-- update the Browser object for new methods like getCurrent Browser (return browser instance for current thread ) or state control method - void open()
 
 ## License
 * [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
