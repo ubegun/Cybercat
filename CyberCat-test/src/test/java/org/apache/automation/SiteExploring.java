@@ -19,7 +19,11 @@ public class SiteExploring extends TestNGTestCase {
     
     @Test
     public void navigateToTomcatProject() throws AutomationFrameworkException {
-        sampleFeature.gotoApache().sampleNavigate("Tomcat");
+        sampleFeature
+            .runIntegrationTest()
+            .gotoAdvertise()
+            .gotoApache()
+            .sampleNavigate("Tomcat");
     }
 
     /* (non-Javadoc)

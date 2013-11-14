@@ -31,12 +31,10 @@ public class GetPerformanceReportEvent extends Event {
 
     private String fileName;
     private Path path;
-    private PageFactory pageFactory;
 
-    public GetPerformanceReportEvent(Path path,String fileName,PageFactory pageFactory) {
+    public GetPerformanceReportEvent(Path path,String fileName) {
         this.fileName = fileName;
         this.path = path;
-        this.pageFactory = pageFactory;
     }
 
     @Override
@@ -60,11 +58,4 @@ public class GetPerformanceReportEvent extends Event {
         this.path = path;
     }
 
-    public PageFactory getPageFactory() {
-        return pageFactory;
-    }
-
-    public void setPageFactory(PageFactory pageFactory) {
-        this.pageFactory = pageFactory;
-    }
 }

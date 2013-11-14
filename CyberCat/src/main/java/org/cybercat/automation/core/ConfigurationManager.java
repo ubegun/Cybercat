@@ -178,9 +178,8 @@ public class ConfigurationManager implements AddonContainer {
     protected Browser getBrowser() throws AutomationFrameworkException {
         if(browser != null && !browser.isClosed())
             return browser;
-        AutomationMain mainFactory = AutomationMain.getMainFactory();
-        Browsers browserType = Browsers.valueOf(mainFactory.getProperty("browser.name"));
-        if (mainFactory.getPropertyBoolean(REMOTE_SERVER)) {
+        Browsers browserType = Browsers.valueOf(AutomationMain.getProperty("browser.name"));
+        if (AutomationMain.getPropertyBoolean(REMOTE_SERVER)) {
             browser = getRemoteBrowser(browserType);
         }
         browser = getLocalBrowser(browserType);

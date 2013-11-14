@@ -3,6 +3,7 @@ package org.apache.automation.pages;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.annotations.CCPageFragment;
 import org.cybercat.automation.annotations.CCPageURL;
+import org.cybercat.automation.annotations.CCProperty;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
 import org.cybercat.automation.components.PageElement;
@@ -11,7 +12,8 @@ public class WelcomePage extends AbstractPageObject {
 
     
     @CCPageURL
-    private String welcomePageURL = "http://apache.org/";
+    @CCProperty("apache.welcome.url")
+    private String welcomePageURL;
     
     @CCPageFragment
     private TopFragment topFragment;

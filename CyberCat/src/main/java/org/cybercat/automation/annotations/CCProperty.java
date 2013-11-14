@@ -30,6 +30,6 @@ public @interface CCProperty {
     /**
      * This is name of parameter from property file  
      */
-    String value();
+    String[] value();
     
 }

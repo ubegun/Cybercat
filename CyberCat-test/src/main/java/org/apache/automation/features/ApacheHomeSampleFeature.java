@@ -17,7 +17,6 @@ package org.apache.automation.features;
 
 import org.apache.automation.pages.WelcomePage;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.annotations.CCIntegrationService;
 import org.cybercat.automation.annotations.CCPageObject;
 import org.cybercat.automation.annotations.CCRedirectionStep;
@@ -37,6 +36,14 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     @CCIntegrationService
     private ISampleIntegrationService integrationService; 
     
+    
+    @Override
+    @CCTestStep("Run integration test")
+    public IApacheHomeFeature runIntegrationTest() throws AutomationFrameworkException{
+        integrationService.doSomething();
+        return this;
+    }
+    
     /* (non-Javadoc)
      * @see org.apache.automation.features.IApacheHomeFeature#sampleNavigate(java.lang.String)
      */
@@ -44,8 +51,7 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     @CCTestStep("Navigation step")
     public IApacheHomeFeature sampleNavigate(String toProject) throws AutomationFrameworkException{ 
         apacheWelcome.selectProject(toProject);
-        integrationService.doSomething();
-        return this;
+        return this;        
     }
 
     /* (non-Javadoc)
@@ -55,6 +61,15 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     @CCRedirectionStep(desctiption = "Navigation to stat page", url = "http://apache.org/")
     public IApacheHomeFeature gotoApache() throws AutomationFrameworkException {
         apacheWelcome.validateTopFragment();
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.automation.features.IApacheHomeFeature#gotoAdvertise()
+     */
+    @Override
+    @CCRedirectionStep(desctiption = "Navigation to ad. page", url = "https://www.facebook.com/af.cybercat/")
+    public IApacheHomeFeature gotoAdvertise() throws AutomationFrameworkException {
         return this;
     }
     

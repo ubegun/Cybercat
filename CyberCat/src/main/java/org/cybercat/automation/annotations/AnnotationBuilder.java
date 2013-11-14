@@ -44,13 +44,12 @@ public class AnnotationBuilder {
     private static Logger log = Logger.getLogger(AnnotationBuilder.class);
     
     public static final <T extends IFeature> void processCCPageObject(T entity) throws AutomationFrameworkException{
-        Field[] fields = entity.getClass().getDeclaredFields();
-        for(int i= 0; i< fields.length; i++){
-            fields[i].setAccessible(true);
-            if(fields[i].getAnnotation(CCPageObject.class) != null){
-                createPageObjectField(entity, fields[i]);
-            }else if (fields[i].getAnnotation(CCProperty.class) != null) {
-                processPropertyField(entity, fields[i]);
+        for(Field field: entity.getClass().getDeclaredFields()){
+            field.setAccessible(true);
+            if(field.getAnnotation(CCPageObject.class) != null){
+                createPageObjectField(entity, field);
+            }else if (field.getAnnotation(CCProperty.class) != null) {
+                processPropertyField(entity, field);
             }
         }    
     }
@@ -61,8 +60,7 @@ public class AnnotationBuilder {
     private static Reflections getReflections() throws AutomationFrameworkException{
         if(reflections != null)
             return reflections;
-        AutomationMain mainFactory = AutomationMain.getMainFactory();
-        String rootPackage = mainFactory.getProperty("version.control.root.package");        
+        String rootPackage = AutomationMain.getProperty("version.control.root.package");        
         if(rootPackage == null )
             return null;
         reflections = new Reflections(rootPackage);
@@ -72,12 +70,11 @@ public class AnnotationBuilder {
     
     @SuppressWarnings("unchecked")
     private final static <T extends IVersionControl> Class<T> versionControlPreprocessor(Class<T> providerzz) throws AutomationFrameworkException {
-        AutomationMain mainFactory = AutomationMain.getMainFactory();
         Reflections refSearch;
         int version = 0;
         try{
             refSearch = getReflections();
-            version = (int) mainFactory.getPropertyLong("app.version");
+            version = (int) AutomationMain.getPropertyLong("app.version");
             if(refSearch == null || version < 0)
                 return providerzz;
         }catch(Exception e ){    
@@ -121,15 +118,14 @@ public class AnnotationBuilder {
     private static <T extends Object> void processCCFeatureForObject(T entity, Class<? extends Object> clazz) throws AutomationFrameworkException {
         if (clazz == null)
             return;
-        Field[] fields = clazz.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            fields[i].setAccessible(true);
-            if (fields[i].getAnnotation(CCFeature.class) != null) {
-                processCCFeatureField(entity, fields[i]);
-            } else if (fields[i].getAnnotation(CCIntegrationService.class) != null) {
-                createIntegrationService(fields[i], entity);
-            } else if (fields[i].getAnnotation(CCProperty.class) != null) {
-                processPropertyField(entity, fields[i]);
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.getAnnotation(CCFeature.class) != null) {
+                processCCFeatureField(entity, field);
+            } else if (field.getAnnotation(CCIntegrationService.class) != null) {
+                createIntegrationService(field, entity);
+            } else if (field.getAnnotation(CCProperty.class) != null) {
+                processPropertyField(entity, field);
             }
         }
         processCCFeatureForObject(entity, (Class<? extends Object>) clazz.getSuperclass());
@@ -263,11 +259,10 @@ public class AnnotationBuilder {
     private static void processIntegrationService(Object targetObject, Class<? extends Object> clazz) throws AutomationFrameworkException{
         if (clazz == null)
             return;
-        Field[] fields = clazz.getDeclaredFields();
-        for(int i= 0; i< fields.length; i++){
-            fields[i].setAccessible(true);
-            if(fields[i].getAnnotation(CCProperty.class) != null){
-                processPropertyField(targetObject, fields[i]);                                
+        for(Field field : clazz.getDeclaredFields()){
+            field.setAccessible(true);
+            if(field.getAnnotation(CCProperty.class) != null){
+                processPropertyField(targetObject, field);                                
             }
         }
         processIntegrationService(targetObject, clazz.getSuperclass());
@@ -279,11 +274,14 @@ public class AnnotationBuilder {
      * @param i
      * @throws AutomationFrameworkException
      */
-    private static void processPropertyField(Object targetObject, Field field) throws AutomationFrameworkException {
-        AutomationMain mainFactory = AutomationMain.getMainFactory();
+    public static void processPropertyField(Object targetObject, Field field) throws AutomationFrameworkException {
         try {
-            CCProperty prop = field.getAnnotation(CCProperty.class);
-            field.set(targetObject, mainFactory.getProperty(prop.value()));
+            CCProperty properties = field.getAnnotation(CCProperty.class);
+            StringBuffer value = new StringBuffer("");
+            for(String prop :properties.value()){ 
+                value.append(AutomationMain.getProperty(prop));
+            }
+            field.set(targetObject, value.toString());
         } catch (Exception e) {
             throw new AutomationFrameworkException(
                     "Set filed exception. Please, save this log and contact the Cybercat project support."

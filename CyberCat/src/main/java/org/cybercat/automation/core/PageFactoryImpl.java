@@ -15,6 +15,7 @@
 package org.cybercat.automation.core;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
@@ -24,9 +25,12 @@ import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.annotations.AnnotationBuilder;
+import org.cybercat.automation.annotations.CCProperty;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
+import org.junit.internal.builders.AnnotatedBuilder;
 import org.openqa.selenium.Cookie;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.context.ApplicationContext;
@@ -51,7 +55,6 @@ public class PageFactoryImpl implements PageFactory {
     /**
      * Instance of current browser
      */
-    private Browser browser;
     
     public PageFactoryImpl(String baseUrl) throws AutomationFrameworkException {
         super();
@@ -59,11 +62,10 @@ public class PageFactoryImpl implements PageFactory {
     }
 
     protected void setup(AutomationMain mainFactory, ApplicationContext context) throws AutomationFrameworkException {
-        if (this.context == null || this.browser == null || this.browser.isClosed()) {
+        if (this.context == null) {
             this.context = context;
-            this.browser = Browser.getCurrentBrowser();
-            if (this.baseUrl != null) {
-                this.browser.get(baseUrl);
+            if (StringUtils.isNotBlank(this.baseUrl)) {
+                Browser.getCurrentBrowser().get(baseUrl);
             }
         }
     }
@@ -85,6 +87,7 @@ public class PageFactoryImpl implements PageFactory {
         }
 
         try {
+            Browser browser = Browser.getCurrentBrowser();
             LOG.info("Current URL: " + getCurrentUrl());
             if (StringUtils.isNotBlank(page.getPageUrl()) 
                     && !browser.getCurrentUrl().contains(page.getPageUrl())) {
@@ -95,7 +98,7 @@ public class PageFactoryImpl implements PageFactory {
             page.init(browser, locale);
             LOG.info(page.getClass().getName() + " page created.");
         } catch (Exception e) {
-            throw new PageObjectException("Unable initialize " + page.getClass().getName() + " page by URL: " + page.getPageUrl(), e);
+            throw new PageObjectException("Unable initialize " + page.getClass().getName() + " page by URL: " + page.getPageUrl() + "\n" + e.getMessage(), e);
         }
         return page;
     }
@@ -109,11 +112,10 @@ public class PageFactoryImpl implements PageFactory {
 
     /**
      * Returns current URL
+     * @throws AutomationFrameworkException 
      */
-    public String getCurrentUrl() {
-        if (browser == null)
-            return null;
-        return browser.getCurrentUrl();
+    public String getCurrentUrl() throws AutomationFrameworkException {
+        return Browser.getCurrentBrowser().getCurrentUrl();
     }
 
     /**
@@ -121,8 +123,6 @@ public class PageFactoryImpl implements PageFactory {
      */
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-        if (this.browser != null)
-            this.browser.get(baseUrl);
     }
 
     /**
@@ -137,27 +137,6 @@ public class PageFactoryImpl implements PageFactory {
         return result;
     }
 
-    /**
-     * Closes all browsers
-     */
-    public void closeBrowser() {
-        if (browser != null) {
-            LOG.warn(">>> Close browser");
-            browser.quit();
-        }
-    }
-
-    @Override
-    public Set<Cookie> getCookies() {
-        if (browser == null)
-            return Collections.emptySet();
-        return browser.getCookies();
-    }
-
-    @Override
-    public Browser getBrowser() {
-        return browser;
-    }
 
     @SuppressWarnings("unchecked")
     public <T extends AbstractPageObject> T createPage(Class<T> page) throws PageObjectException {
@@ -165,6 +144,12 @@ public class PageFactoryImpl implements PageFactory {
         try {
          cons = page.getConstructor();
          T result = cons.newInstance();
+         for(Field field: page.getDeclaredFields()){
+             field.setAccessible(true);
+             if(field.getAnnotation(CCProperty.class)!= null){
+                 AnnotationBuilder.processPropertyField(result, field);
+             }
+         }
          AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
          proxyFactory.addAspect(new PageObjectStateControlAcpect(this));
          result = (T) proxyFactory.getProxy();

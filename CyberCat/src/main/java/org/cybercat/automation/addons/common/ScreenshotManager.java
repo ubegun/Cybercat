@@ -74,10 +74,6 @@ public class ScreenshotManager implements AddonContainer {
     }
 
     private Path saveScreen(Path path, String fileName, ImageFormat format, String subtitles) throws Exception {
-        if (provider == null) {
-            log.error("You were trying to make a screenshot before having the browser initialized.");
-            throw new ScreenshotException("You were trying to make a screenshot before having the browser initialized.");
-        }
         if (StringUtils.isBlank(fileName)) {
             log.error("File name is not be null");
             throw new ScreenshotException("File name is not be null");
@@ -138,6 +134,10 @@ public class ScreenshotManager implements AddonContainer {
 
                 @Override
                 public void doActon(EventStartTestStep event) throws Exception {
+                    if (provider == null) {
+                        log.warn("You were trying to make a screenshot before having the browser initialized.");
+                        return;
+                    }
                     Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName(), event.getStartStepTime());
                     Path screen = saveScreen(path, event.getStartStepTime() + "_" + event.getMethodName(), event.getFormat(), event.getSubtitles());
                     TestCase test = new TestCase(event.getTestClass().getName());
@@ -152,7 +152,7 @@ public class ScreenshotManager implements AddonContainer {
                 @Override
                 public void doActon(EventTestFail event) throws Exception {
                     if (provider == null) {
-                        log.error("You were trying to make a screenshot before having the browser initialized.");
+                        log.warn("You were trying to make a screenshot before having the browser initialized.");
                         return;
                     }
                     String fileName = CommonUtils.getCurrentDate() + event.getMethodName();

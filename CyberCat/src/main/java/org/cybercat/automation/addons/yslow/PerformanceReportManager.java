@@ -32,6 +32,7 @@ import org.cybercat.automation.components.PageElement;
 import org.cybercat.automation.components.StatefulElement;
 import org.cybercat.automation.components.TextContainer;
 import org.cybercat.automation.core.AddonContainer;
+import org.cybercat.automation.core.Browser;
 import org.cybercat.automation.events.EventListener;
 
 /**
@@ -55,16 +56,12 @@ public class PerformanceReportManager implements AddonContainer {
 
             @Override
             public void doActon(GetPerformanceReportEvent event) throws Exception {
-
-                PageFactory pageFactory = event.getPageFactory();
-
                 log.debug("Performance measuring finished");
-                pageFactory.getBrowser().switchToFrame("YSLOW-bookmarklet");
+                Browser.getCurrentBrowser().switchToFrame("YSLOW-bookmarklet");
                 BufferedWriter writer = Files.newBufferedWriter(
                         Paths.get(event.getPath().toString(), event.getFileName()), Charset.defaultCharset());
                 writer.write(ySlow.getReportSource());
-                pageFactory.getBrowser().switchToDefaultContent();
-
+                Browser.getCurrentBrowser().switchToDefaultContent();
             }
         });
 
@@ -77,10 +74,10 @@ public class PerformanceReportManager implements AddonContainer {
 
                 log.debug("Performance measuring started");
                 init(event.getPageFactory());
-                pageFactory.getBrowser().switchToFrame("YSLOW-bookmarklet");
+                Browser.getCurrentBrowser().switchToFrame("YSLOW-bookmarklet");
                 ySlow = pageFactory.createPage(YSlow.class);
                 ySlow.run();
-                pageFactory.getBrowser().switchToDefaultContent();
+                Browser.getCurrentBrowser().switchToDefaultContent();
 
             }
         });
@@ -88,10 +85,9 @@ public class PerformanceReportManager implements AddonContainer {
         return listeners;
     }
 
-    private void init(PageFactory pageFactory) {
-        pageFactory
-                .getBrowser()
-                .executeScript(
+    private void init(PageFactory pageFactory) throws AutomationFrameworkException {
+        Browser.getCurrentBrowser()
+          .executeScript(
                         "javascript:(function(y,p,o){p=y.body.appendChild(y.createElement('iframe'));"
                                 + "p.id='YSLOW-bookmarklet';"
                                 + "p.style.cssText='display:none';"

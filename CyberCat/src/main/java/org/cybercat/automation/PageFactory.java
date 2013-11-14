@@ -14,15 +14,9 @@
  */
 package org.cybercat.automation;
 
-import java.util.Set;
-
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
-import org.cybercat.automation.core.Browser;
-import org.openqa.selenium.Cookie;
-
-
 
 /**
  * Creates and initializes page classes that extend AbstractPageObject 
@@ -39,15 +33,15 @@ public interface PageFactory {
     
     /**
      * Returns current URL
+     * @throws AutomationFrameworkException 
      */
-    String getCurrentUrl();
+    String getCurrentUrl() throws AutomationFrameworkException;
 
     /**
      * Defines base url
      */
     void setBaseUrl(String baseUrl);
     
-    Browser getBrowser();
 
     /**
      * Returns processor creating WebElements according to predefined type
@@ -55,17 +49,5 @@ public interface PageFactory {
      * (xpath, css name, id, name) 
      */
     <T extends AbstractProcessor> T createElementProcessor(PathType type);
-
-    /**
-     * Gets cookies from browser
-     * @return Set of Selenium cookies
-     */
-    Set<Cookie> getCookies();
-    
-    /**
-     * Closes browser
-     */
-    void closeBrowser();
-    
 
 }
