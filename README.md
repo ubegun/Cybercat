@@ -8,6 +8,19 @@ Test automation framework
 - Maven  3.1.x (http://maven.apache.org/)
 - Apache Ant 1.9.x (http://ant.apache.org/)
 
+
+##Quick start
+
+- Install required software 
+- Install Firefox
+- Install Eclipse with maven & TestNG plugin 
+- run from commant line: git clone https://github.com/ubegun/Cybercat-sample.git
+- rename project folder
+- remove .git from project folder
+- open Eclipse & imdort your existing maven project 
+- run SiteExploring.java as TestNG test 
+
+
 ##Helpful links 
 https://www.facebook.com/af.cybercat - You can read last news & short notes about current project release
 
