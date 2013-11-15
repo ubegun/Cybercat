@@ -2,6 +2,11 @@
 
 Test automation framework
 
+##System Requirements
+- Java SE 7 (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- Maven  3.1.x (http://maven.apache.org/)
+- Apache Ant 1.9.x (http://ant.apache.org/)
+
 ##Helpful links 
 https://www.facebook.com/af.cybercat - You can read last news & short notes about current project release
 
