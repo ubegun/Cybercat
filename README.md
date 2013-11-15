@@ -3,6 +3,7 @@
 Test automation framework
 
 ##System Requirements
+- Git (http://git-scm.com/downloads)
 - Java SE 7 (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 - Maven  3.1.x (http://maven.apache.org/)
 - Apache Ant 1.9.x (http://ant.apache.org/)
