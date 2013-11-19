@@ -11,14 +11,24 @@ Test automation framework
 
 ##Quick start
 
+### Eclipse
 - Install required software 
 - Install Firefox
 - Install Eclipse with maven & TestNG plugin 
-- run from commant line: git clone https://github.com/ubegun/Cybercat-sample.git
-- rename project folder
-- remove .git from project folder
-- open Eclipse & imdort your existing maven project 
-- run SiteExploring.java as TestNG test 
+- Run from commant line: git clone https://github.com/ubegun/Cybercat-sample.git
+- Rename project folder
+- edit pom.xml
+- Remove .git from project folder
+- Open Eclipse & import your existing maven project 
+- Run SiteExploring.java as TestNG test 
+
+### Command Line
+- Run from commant line: git clone https://github.com/ubegun/Cybercat-sample.git
+- Rename project folder
+- edit pom.xml
+- Remove .git from project folder
+- execute: mvn clean compile test-compile antrun:run -X -Dconfig.properties=test.properties  -DfailIfNoTests=false -Dconfig.basicArtifactsDir=C:\Temp\Cybercat\Green
+- execute: ant -f green.xml
 
 
 ##Helpful links 
