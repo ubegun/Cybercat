@@ -147,22 +147,8 @@
     <constructor-arg value="${explicit.timeout}"/>
   </bean>
 
-  <bean id="jaxbContext" class="javax.xml.bind.JAXBContext" factory-method="newInstance">
-    <constructor-arg index="0">
-        <array>
-            <value type="java.lang.Class">org.cybercat.automation.persistence.model.Identity</value>
-        </array>
-    </constructor-arg>    
-    <constructor-arg index="1" type="java.util.Map" >
-        <util:constant static-field="java.util.Collections.EMPTY_MAP"/>
-    </constructor-arg>
-  </bean>
-
-  <bean id="persistenceManager" class="org.cybercat.automation.PersistenceManager" scope="singleton" lazy-init="false">
-    <constructor-arg><bean id="marshller" class="javax.xml.bind.Marshaller" factory-bean="jaxbContext" factory-method="createMarshaller"/></constructor-arg>
-    <constructor-arg><bean id="unmarshller" class="javax.xml.bind.Unmarshaller" factory-bean="jaxbContext" factory-method="createUnmarshaller"/></constructor-arg>
-  </bean>  
-  
+  <bean id="persistenceManager" class="org.cybercat.automation.PersistenceManager" scope="singleton" lazy-init="false"/>
+    
   <bean id="configurationManager" class="org.cybercat.automation.core.ConfigurationManager" lazy-init="false" scope="thread"/>
 
   <bean id="eventManager" class="org.cybercat.automation.core.EventManagerImpl" scope="singleton" lazy-init="false"/>

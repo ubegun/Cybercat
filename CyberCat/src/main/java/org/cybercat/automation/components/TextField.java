@@ -94,13 +94,13 @@ public class TextField extends Button {
      */
     public void typeTextIntoFrame(String text) throws AutomationFrameworkException {
         if (super.getElement() != null) {
-            Browser.getCurrentBrowser().executeScript("arguments[0].innerHTML = '<br>'", super.getElement());
-            super.getElement().sendKeys(text);
-            log.info(getName() + " text field was filled with the following text: " + text);
+         String query = String.format("arguments[0].innerHTML = '%s'", text);
+         Browser.getCurrentBrowser().executeScript(query, super.getElement());
+         log.info(getName() + " text field was filled with the following text: " + text);
         } else {
-            throw new PageObjectException(getName() + " text field doesn't exist");
+         throw new PageObjectException(getName() + " text field doesn't exist");
         }
-    }   
+       }  
     
     public void addTextIntoFrame(String text) throws PageObjectException {
         if (super.getElement() != null) {            

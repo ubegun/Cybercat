@@ -12,16 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cybercat.automation.persistence.model;
 
+package org.apache.automation;
 
-public interface Entity {
+import org.cybercat.automation.persistence.model.Entity;
+import org.cybercat.automation.utils.CommonUtils;
+
+/**
+ * @author Ubegun
+ *
+ */
+public class Model2 implements Entity{
+
+    private long id = CommonUtils.genGuid();
     
-    /**
-     * @param id = CommonUtils.genGuid();
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    /* (non-Javadoc)
+     * @see org.cybercat.automation.persistence.model.Entity#getId()
      */
-    public void setId(long id);
+    @Override
+    public long getId() {
+        return id ;
+    }
 
-    public long getId();
-    
 }

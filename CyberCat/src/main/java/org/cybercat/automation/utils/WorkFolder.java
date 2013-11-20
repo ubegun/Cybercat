@@ -28,7 +28,7 @@ public class WorkFolder {
     public static final WorkFolder Home = new WorkFolder(Paths.get("Cybercat"));
     public static final WorkFolder Log = new WorkFolder(Paths.get("Cybercat", "LOG"));
     public static final WorkFolder Har = new WorkFolder(Paths.get("Cybercat", "LOG", "Har"));
-    public static final WorkFolder User = new WorkFolder(Paths.get("Cybercat", "User"));
+    public static final WorkFolder Model = new WorkFolder(Paths.get("Cybercat", "Model"));
     public static final WorkFolder Screenshots = new WorkFolder(Paths.get("Cybercat", "WebDriverScreenshots"));
     public static final WorkFolder DownloadedFiles = new WorkFolder(Paths.get("Cybercat", "DownloadedFiles"));
     public static final WorkFolder MediaFolder = new WorkFolder(Paths.get("Cybercat", "Video"));

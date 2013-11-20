@@ -21,6 +21,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -36,20 +38,24 @@ import org.cybercat.automation.utils.WorkFolder;
  */
 public class PersistenceManager {
 
-    Marshaller marshller;
-    Unmarshaller unmarshller;
-
-    /**
-     * Manages process of saving and accessing project data model
-     * 
-     * @param marshller
-     * @param unmarshller
-     */
-    public PersistenceManager(Marshaller marshller, Unmarshaller unmarshller) {
-        this.marshller = marshller;
-        this.unmarshller = unmarshller;
+    
+    
+    
+    private Marshaller createMarshaller(Class<?> clazz) throws AutomationFrameworkException{
+        try {
+            return JAXBContext.newInstance(clazz).createMarshaller();
+        } catch (JAXBException e) {
+            throw new AutomationFrameworkException(e);
+        }
     }
 
+    private Unmarshaller createUnmarshaller(Class<?> clazz) throws AutomationFrameworkException{
+        try {
+            return JAXBContext.newInstance(clazz).createUnmarshaller();
+        } catch (JAXBException e) {
+            throw new AutomationFrameworkException(e);
+        }
+    }    
     /**
      * Saves entity in work directory as xml file
      * 
@@ -57,8 +63,9 @@ public class PersistenceManager {
      */
     public <T extends Entity> void save(T entity) throws PageModelException {
         try {
-        	marshller.setProperty("jaxb.formatted.output", new Boolean(true));
-            marshller.marshal(entity, createOutputFile(entity));
+            Marshaller marshaller = createMarshaller(entity.getClass());
+            marshaller.setProperty("jaxb.formatted.output", new Boolean(true));
+            marshaller.marshal(entity, createOutputFile(entity));
         } catch (Exception e) {
             throw new PageModelException(e);
         }
@@ -78,7 +85,7 @@ public class PersistenceManager {
             List<T> entries = new ArrayList<T>();
             for (int i = 0; i < files.length; i++) {
             	if (StringUtils.containsIgnoreCase(files[i].getAbsolutePath(), ".xml")){
-            		entries.add((T) unmarshller.unmarshal(files[i]));
+            		entries.add((T) createUnmarshaller(clazz).unmarshal(files[i]));
             	}
             }
             return entries;
@@ -92,7 +99,7 @@ public class PersistenceManager {
         try {
             File[] files = createinputSource(clazz).toFile().listFiles();
             if(files.length >0){
-                return (T) unmarshller.unmarshal(files[0]);
+                return (T) createUnmarshaller(clazz).unmarshal(files[0]);
             }
             return null;
         } catch (Exception e) {
@@ -106,7 +113,7 @@ public class PersistenceManager {
             File[] files = createinputSource(clazz).toFile().listFiles();
             T entry;
             for (int i = 0; i < files.length; i++) {
-                entry = (T) unmarshller.unmarshal(files[i]);
+                entry = (T) createUnmarshaller(clazz).unmarshal(files[i]);
                 if (criterion.processRestriction(entry)) {
                     return entry;
                 }
@@ -124,7 +131,7 @@ public class PersistenceManager {
             T entry;
             List<T> entries = new ArrayList<T>();
             for (int i = 0; i < files.length; i++) {
-                entry = (T) unmarshller.unmarshal(files[i]);
+                entry = (T) createUnmarshaller(clazz).unmarshal(files[i]);
                 if (criterion.processRestriction(entry)) {
                     entries.add(entry);
                 }
@@ -136,11 +143,17 @@ public class PersistenceManager {
     }
     
     private static <T extends Entity> Path createinputSource(Class<T> clazz) throws IOException {
-        return WorkFolder.valueOf(clazz.getSimpleName()).getPath();
+        WorkFolder wf = WorkFolder.valueOf(clazz.getSimpleName());
+        if(wf== null)
+            wf =  WorkFolder.Model;
+        return wf.getPath();        
     }
 
     private static <T extends Entity> File createOutputFile(T entry) throws IOException {
-        Path outFile = Paths.get(WorkFolder.valueOf(entry.getClass().getSimpleName()).getPath().toString(), entry.getClass()
+        WorkFolder wf = WorkFolder.valueOf(entry.getClass().getSimpleName());
+        if(wf== null)
+           wf =  WorkFolder.Model;
+        Path outFile = Paths.get(wf.getPath().toString(), entry.getClass()
                 .getSimpleName() + entry.getId() + ".xml");
         return outFile.toFile();
     }
