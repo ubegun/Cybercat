@@ -15,11 +15,13 @@
 package org.cybercat.automation;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -38,8 +40,6 @@ import org.cybercat.automation.utils.WorkFolder;
  */
 public class PersistenceManager {
 
-    
-    
     
     private Marshaller createMarshaller(Class<?> clazz) throws AutomationFrameworkException{
         try {
@@ -81,7 +81,7 @@ public class PersistenceManager {
     @SuppressWarnings("unchecked")
     public <T extends Entity> List<T> load(Class<T> clazz) throws PageModelException {
         try {
-            File[] files = createinputSource(clazz).toFile().listFiles();
+            File[] files = createFileList(clazz);
             List<T> entries = new ArrayList<T>();
             for (int i = 0; i < files.length; i++) {
             	if (StringUtils.containsIgnoreCase(files[i].getAbsolutePath(), ".xml")){
@@ -97,7 +97,7 @@ public class PersistenceManager {
     @SuppressWarnings("unchecked")
     public <T extends Entity> T loadFirst(Class<T> clazz) throws PageModelException {
         try {
-            File[] files = createinputSource(clazz).toFile().listFiles();
+            File[] files = createFileList(clazz);
             if(files.length >0){
                 return (T) createUnmarshaller(clazz).unmarshal(files[0]);
             }
@@ -110,7 +110,7 @@ public class PersistenceManager {
     @SuppressWarnings("unchecked")
     public <T extends Entity> T findFirst(Class<T> clazz, Criterion<T> criterion) throws PageModelException {
         try {
-            File[] files = createinputSource(clazz).toFile().listFiles();
+            File[] files = createFileList(clazz);
             T entry;
             for (int i = 0; i < files.length; i++) {
                 entry = (T) createUnmarshaller(clazz).unmarshal(files[i]);
@@ -127,7 +127,7 @@ public class PersistenceManager {
     @SuppressWarnings("unchecked")
     public <T extends Entity> List<T> findAll(Class<T> clazz, Criterion<T> criterion) throws PageModelException {
         try {
-            File[] files = createinputSource(clazz).toFile().listFiles();
+            File[] files = createFileList(clazz);
             T entry;
             List<T> entries = new ArrayList<T>();
             for (int i = 0; i < files.length; i++) {
@@ -142,11 +142,20 @@ public class PersistenceManager {
         }
     }
     
-    private static <T extends Entity> Path createinputSource(Class<T> clazz) throws IOException {
+    private static <T extends Entity> File[] createFileList(final Class<T> clazz) throws IOException {
         WorkFolder wf = WorkFolder.valueOf(clazz.getSimpleName());
-        if(wf== null)
+        if(wf!= null){
+            return wf.getPath().toFile().listFiles();            
+        }else{
             wf =  WorkFolder.Model;
-        return wf.getPath();        
+            return wf.getPath().toFile().listFiles(new FilenameFilter() {
+                
+                @Override
+                public boolean accept(File dir, String name) {
+                    return Pattern.matches(clazz.getSimpleName() + "\\d*\\.xml", name);
+                }
+            });   
+        }        
     }
 
     private static <T extends Entity> File createOutputFile(T entry) throws IOException {
