@@ -30,6 +30,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.sun.media.Log;
+
 
 public class PageElement {
 
@@ -266,6 +268,21 @@ public class PageElement {
     protected void setAttribute(AbstractPageObject thisPage, String attributeName, String value) throws AutomationFrameworkException {
         thisPage.execJS("arguments[0].setAttribute(arguments[1], arguments[2])", element, attributeName, value);
     }
+    
+    protected void executeScript(String script, Object... args) throws AutomationFrameworkException{
+        try{ 
+            Browser.getCurrentBrowser().executeScript(script, args);
+        }catch(Exception e){  
+            Log.error("Exception on javascript execution for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.actualPath + " xpath, " +
+                    " \n\t "+ "Script: " +  script);
+            throw new AutomationFrameworkException("Exception on javascript execution for " + getName() + " element ." + 
+            " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+            " \n\t "+ this.actualPath + " xpath, " +
+            " \n\t "+ "Script: " +  script, e);
+        }
+    }
 
     public ElementState getState() {
         return state;
@@ -289,7 +306,13 @@ public class PageElement {
     }    
     
     public void highlightElement() throws AutomationFrameworkException{
-       Browser.getCurrentBrowser().highlightElement(getElement());
+       try{  
+           Browser.getCurrentBrowser().highlightElement(getElement());
+       }catch(Exception e ){      
+           Log.error("Exception on higlight element with name:  " + getName() + "." + 
+                   " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                   " \n\t "+ this.actualPath + " xpath, ");
+       }
     }
     
 }

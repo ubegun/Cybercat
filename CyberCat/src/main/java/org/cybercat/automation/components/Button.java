@@ -22,6 +22,8 @@ import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
+import com.sun.media.Log;
+
 
 public class Button extends TextContainer {
 
@@ -81,12 +83,12 @@ public class Button extends TextContainer {
     
     public void fireClick() throws AutomationFrameworkException{
         super.highlightElement();
-        Browser.getCurrentBrowser().executeScript("arguments[0].click();", getElement());
+        executeScript("arguments[0].click();", getElement());
     }
 
     public void focusFireClick() throws AutomationFrameworkException{
         super.highlightElement();
-        Browser.getCurrentBrowser().executeScript("var dispatchMouseEvent = function(target, var_args) {" +
+        executeScript("var dispatchMouseEvent = function(target, var_args) {" +
                 "  var e = document.createEvent('MouseEvents');" +
                 "  e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));" +
                 "  target.dispatchEvent(e);" +
@@ -116,25 +118,43 @@ public class Button extends TextContainer {
                     "jQuery(window)"+
                     ".scrollTop(elOffset.top + (elHeight/2) - (viewportHeight/2))"+
                     ".scrollLeft(elOffset.left + (elWidth/2) - (viewportWidth/2));";
-
-        
             Browser.getCurrentBrowser().executeScript(scrollFunction, element);
             LOG.info("Elemet is scrolled to the center of the screen, using jQuery");
         }
         // assuming WebDriverException here in case of there is no on jQuery on page
         catch(Exception e){
-            LOG.info("Unable to scroll element to the screen center, jQuery is not defined on page");
+            Log.error("Unable to scroll element to the screen center, jQuery is not defined on page for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ");
         }
     }
     
     public void clickOffset(Point cord) throws AutomationFrameworkException {
         LOG.info("Offset click to element: " + getElement().getTagName() + ", by coordinates: " + cord);
-        Browser.getCurrentBrowser().getActions().moveToElement(getElement(), cord.getX(), cord.getY()).click().perform();
+        try{  
+            Browser.getCurrentBrowser().getActions().moveToElement(getElement(), cord.getX(), cord.getY()).click().perform();
+        }catch(Exception e){  
+            Log.error("Exception on clickOffset execution for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ");
+            throw new AutomationFrameworkException("Exception on clickOffset execution for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ", e);
+        }
     }
 
     public void dragOffset(int x,int y) throws AutomationFrameworkException {
         LOG.info("Offset drag of element: " + getElement().getTagName() + ", by coordinates: " + " x ="+x+" y="+y);
-        Browser.getCurrentBrowser().getActions().moveToElement(getElement()).clickAndHold().moveByOffset(x,y).release().perform();
+        try{ 
+            Browser.getCurrentBrowser().getActions().moveToElement(getElement()).clickAndHold().moveByOffset(x,y).release().perform();
+        }catch(Exception e){  
+            Log.error("Exception on dragOffset action for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ");
+            throw new AutomationFrameworkException("Exception on dragOffset action for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ", e);
+        }     
     }
     
     public String getValue() {
@@ -142,10 +162,30 @@ public class Button extends TextContainer {
     }
 
     public void hower() throws AutomationFrameworkException{
-        Browser.getCurrentBrowser().getActions().moveToElement(getElement()).perform();
+        try{ 
+            Browser.getCurrentBrowser().getActions().moveToElement(getElement()).perform();
+        }catch(Exception e){  
+            Log.error("Exception on hower action for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ");
+            throw new AutomationFrameworkException("Exception on hower action for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ", e);
+        }     
+            
     }
 
     public void doubleClick() throws AutomationFrameworkException{
+        try{ 
         Browser.getCurrentBrowser().getActions().doubleClick(getElement()).perform();
+        }catch(Exception e){  
+            Log.error("Exception on doubleClick action for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ");
+            throw new AutomationFrameworkException("Exception on doubleClick action for " + getName() + " element ." + 
+                    " \n\t "+ this.getClass().getSimpleName() + " class name, " +
+                    " \n\t "+ this.getActualPath() + " xpath, ", e);
+        }     
+
     }
 }

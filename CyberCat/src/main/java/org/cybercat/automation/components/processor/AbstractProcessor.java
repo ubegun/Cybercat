@@ -134,7 +134,7 @@ public abstract class AbstractProcessor {
          * @throws PageObjectException
          */
         public void onException( String path) {
-            LOG.warn("The element not found by path =>" + path);
+            LOG.warn("\nThe element not found by path =>" + path);
         }
         
         /**

@@ -37,6 +37,8 @@ import org.cybercat.automation.components.StatefulElement.PresentStatus;
 import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Alert;
 
+import com.sun.media.Log;
+
 /**
  * Abstract page element providing methods for managing html elements at user page.
  * <br>
@@ -234,7 +236,12 @@ public abstract class AbstractPageObject {
         element.detach();
         element.updatePath(arg);
         element.setPath(replaceKey(element.getPath()));
-        element.initWebElement(getBrowser());
+        try{
+            element.initWebElement(getBrowser());
+        }catch(AutomationFrameworkException e){ 
+            LOG.warn("The element not found: \n " + this.getClass().getSimpleName() + "\n\t `-> " + element.getName());
+            throw new AutomationFrameworkException(e);
+        }    
         return element;
     }
 
@@ -452,7 +459,12 @@ public abstract class AbstractPageObject {
     }
 
     protected Object execJS(String script, Object... args) throws AutomationFrameworkException {
-        return getBrowser().executeScript(script, args);
+        try{ 
+            return getBrowser().executeScript(script, args);
+        }catch(Exception e){  
+            Log.error("Execution Java script for " + this.getClass().getSimpleName() + " page object. Script: " +  script);
+            throw new AutomationFrameworkException("Execution Java script for " + this.getClass().getSimpleName() + " page object. Script: " +  script, e);
+        }
     }
 
     protected void pause(long millis) {
