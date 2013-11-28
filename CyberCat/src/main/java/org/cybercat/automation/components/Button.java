@@ -52,12 +52,12 @@ public class Button extends TextContainer {
             try {
                 super.highlightElement();
                 LOG.info("click on: " + super.getName());
-                Browser.getCurrentBrowser().executeScript("arguments[0].focus();", getElement());
+                executeScript("arguments[0].focus();", getElement());
                 scrollElementToScreenCenter(getElement());
                 getElement().click();
             } catch (Exception e) {
             	e.printStackTrace();
-                LOG.error("Failed to click. Second try by JS Click()");
+                LOG.error("Failed to click  on " + this.getName() + "element: " + this.getPath());
                 fireClick();
             }
         } else {

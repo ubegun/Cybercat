@@ -232,7 +232,14 @@ public abstract class AbstractPageObject {
         }
         LOG.debug("Thread info: Page Object->" + this.getClass().getSimpleName() + "\tElement->" + name
                 + "\tBrowser ID->" + getBrowser().getSessionId());
-        T element = (T) elements.get(name);
+        T element;
+        try {
+            element = (T) elements.get(name);
+        } catch (ClassCastException e) {
+            throw new AutomationFrameworkException(
+                    "Wrong type of page element. Please verify code on getting type of element.\n "
+                            + this.getClass().getSimpleName() + "\n\t `-> " + name);
+        }
         element.detach();
         element.updatePath(arg);
         element.setPath(replaceKey(element.getPath()));
