@@ -68,15 +68,6 @@ public class RadioGroup extends PageElement {
         throw new PageObjectException("can not click on Radio by name " + name);
     }
 
-    public void jsClickByName(String name) throws AutomationFrameworkException {
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getName().toLowerCase().contains(name.toLowerCase())) {
-                entries[i].focusFireClick();
-                return;
-            }
-        }
-        throw new PageObjectException("can not click on Radio by name " + name);
-    }
 
     @Override
     public void initWebElement(Browser browser) throws PageObjectException {
