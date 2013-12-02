@@ -290,6 +290,19 @@ public abstract class AbstractPageObject {
         return null;
     }
 
+        
+    /**
+     * Returns a valid element of {@link JQButton} type
+     *  
+     * @param name - name of element
+     * @param arg - arguments that modify xPath. 
+     * @throws AutomationFrameworkException 
+     * @see  String#format(String, Object...) 
+     */
+    protected JQButton getJQButton(String name, Object... arg) throws AutomationFrameworkException {
+        return (JQButton) getElementByName(name, arg);
+    }
+    
     /**
      * Returns a valid element of {@link Button} type
      *  
