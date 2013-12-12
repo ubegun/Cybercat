@@ -27,6 +27,7 @@ import org.cybercat.automation.Configuration;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.PersistenceManager;
 import org.cybercat.automation.ResourceManager;
+import org.cybercat.automation.addons.AddonProvider;
 import org.cybercat.automation.addons.common.ScreenshotManager;
 import org.cybercat.automation.addons.common.TestLoggerAddon;
 import org.cybercat.automation.addons.jira.JiraReportManager;
@@ -39,9 +40,9 @@ import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.persistence.TestArtifactManager;
+import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
-import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.utils.WorkFolder;
 import org.springframework.context.ApplicationContext;
 
@@ -81,7 +82,7 @@ public class ConfigurationManager implements AddonContainer {
         try {
             screenshotManager = new ScreenshotManager();
         } catch (AutomationFrameworkException e) {
-            e.printStackTrace();
+            log.error("Screenshot manager initialisation exception.", e);
         }
         jiraReportManager = new JiraReportManager();
         performanceReportManager = new PerformanceReportManager();
@@ -94,7 +95,12 @@ public class ConfigurationManager implements AddonContainer {
         holders.add(jiraReportManager);
         holders.add(performanceReportManager);
         holders.add(eventManager);
-        
+        try{
+            AddonProvider provider = new AddonProvider();
+            holders.addAll(provider.getAddons());
+        }catch(Exception e){
+            log.error("External addon initialization exception.", e);
+        }
     }
 
     /**

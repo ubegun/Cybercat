@@ -32,3 +32,4 @@ jira.password=
 ######## Version control
 app.version=
 version.control.root.package=
+external.addon.package=

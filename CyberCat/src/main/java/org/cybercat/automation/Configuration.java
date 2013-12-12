@@ -30,12 +30,9 @@ public class Configuration {
     public Configuration(CCTestCase testAnnotation) {
         super();
         if(testAnnotation != null) 
-            setConfigAnnotation(testAnnotation);
+            this.features = testAnnotation.features();
     }
 
-    public void setConfigAnnotation(CCTestCase testAnnotation) {
-        this.features = testAnnotation.features();
-    }
 
     public String[] getFeatures() {
         return features;

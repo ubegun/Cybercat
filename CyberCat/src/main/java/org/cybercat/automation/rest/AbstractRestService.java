@@ -35,7 +35,7 @@ public abstract class AbstractRestService {
         doAuthorize();
     }
     
-    abstract void doAuthorize() throws RestServiceException;
+    public abstract void doAuthorize() throws RestServiceException;
 
     @Deprecated
     protected static JSONObject transform(Response responce) throws RestServiceException {

@@ -16,14 +16,17 @@ package org.cybercat.automation.events;
 
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.events.EventManager.EventTypes;
+import org.cybercat.automation.test.AbstractTestCase;
 
 
 public class EventChangeTestConfig extends Event {
 
     private Configuration configuration;
+    private AbstractTestCase thisTestCase;
     
-    public EventChangeTestConfig(Configuration configuration) {
+    public EventChangeTestConfig(AbstractTestCase thisTestCase, Configuration configuration) {
         super();
+        this.thisTestCase = thisTestCase;
         this.configuration = configuration;
     }
 
@@ -36,4 +39,8 @@ public class EventChangeTestConfig extends Event {
         return configuration;
     }
 
+    public AbstractTestCase getThisTestCase() {
+        return thisTestCase;
+    }
+    
 }

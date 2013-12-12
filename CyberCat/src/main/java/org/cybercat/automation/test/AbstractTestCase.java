@@ -17,8 +17,10 @@ package org.cybercat.automation.test;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestCaseInitializationException;
 import org.cybercat.automation.annotations.AnnotationBuilder;
 import org.cybercat.automation.annotations.CCTestCase;
 import org.cybercat.automation.core.AutomationMain;
@@ -32,6 +34,7 @@ public abstract class AbstractTestCase {
     public AutomationMain automationMain;
     public ResourceBundle testData;
     public EventManager evm;
+    private String errorMessage;
     
 
     public void beforeTest() throws AutomationFrameworkException {
@@ -46,6 +49,9 @@ public abstract class AbstractTestCase {
         evm.notify(new EventStopTest(this.getClass(), this.getClass().getSimpleName(), this.getClass().getName(), new Date()));
     }
 
+    public void setInitializationFail(String errorMessage){
+        this.errorMessage = errorMessage;
+    }
     
     public abstract void setup() throws AutomationFrameworkException;
 
@@ -56,7 +62,9 @@ public abstract class AbstractTestCase {
         if (tAnnotation != null) {
             subtitles = tAnnotation.description();
         }
-        evm.notify(new EventChangeTestConfig(config));
+        evm.notify(new EventChangeTestConfig(this, config));
+        if(StringUtils.isNotBlank(errorMessage))
+            throw new TestCaseInitializationException(errorMessage);
         evm.notify(new EventStartTest(this.getClass(),  subtitles, getBugIDsFromAnnotation()));
     }
 
