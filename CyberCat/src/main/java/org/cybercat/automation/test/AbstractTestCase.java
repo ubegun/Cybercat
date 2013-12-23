@@ -31,7 +31,6 @@ import org.cybercat.automation.events.EventStopTest;
 
 public abstract class AbstractTestCase {
 
-    public AutomationMain automationMain;
     public ResourceBundle testData;
     public EventManager evm;
     private String errorMessage;
