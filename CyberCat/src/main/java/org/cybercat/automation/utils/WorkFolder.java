@@ -24,34 +24,41 @@ import java.util.List;
 
 public class WorkFolder {
 
+    public static final Path Home = Paths.get("Cybercat");
 
-    public static final WorkFolder Home = new WorkFolder(Paths.get("Cybercat"));
-    public static final WorkFolder Log = new WorkFolder(Paths.get("Cybercat", "LOG"));
-    public static final WorkFolder Har = new WorkFolder(Paths.get("Cybercat", "LOG", "Har"));
-    public static final WorkFolder Model = new WorkFolder(Paths.get("Cybercat", "Model"));
-    public static final WorkFolder Screenshots = new WorkFolder(Paths.get("Cybercat", "WebDriverScreenshots"));
-    public static final WorkFolder DownloadedFiles = new WorkFolder(Paths.get("Cybercat", "DownloadedFiles"));
-    public static final WorkFolder MediaFolder = new WorkFolder(Paths.get("Cybercat", "Video"));
-    public static final WorkFolder Report_Relative = new WorkFolder(Paths.get("report"));
-    public static final WorkFolder Report_Folder = new WorkFolder(Paths.get("Cybercat", "HtmlReport", "html"));
-    public static final WorkFolder Extensions_Relative = new WorkFolder(Paths.get(".", "extensions"));
-    public static final WorkFolder Report_ScreenShot_Relative = new WorkFolder(Paths.get("report", "screenShot"));
-    public static final WorkFolder NGReport = new WorkFolder(Paths.get("Cybercat", "testng-output"));
-
+    public static final WorkFolder Log = new WorkFolder(Home, Paths.get("LOG"));
+    public static final WorkFolder Har = new WorkFolder(Home, Paths.get("LOG", "Har"));
+    public static final WorkFolder Model = new WorkFolder(Home, Paths.get("Model"));
+    public static final WorkFolder Screenshots = new WorkFolder(Home, Paths.get("WebDriverScreenshots"));
+    public static final WorkFolder DownloadedFiles = new WorkFolder(Home, Paths.get("DownloadedFiles"));
+    public static final WorkFolder MediaFolder = new WorkFolder(Home, Paths.get("Video"));
+    public static final WorkFolder Report_Relative = new WorkFolder(Home, Paths.get("report"));
+    public static final WorkFolder Report_Folder = new WorkFolder(Home, Paths.get("HtmlReport", "html"));
+    public static final WorkFolder Extensions_Relative = new WorkFolder(Home, Paths.get("extensions"));
+    public static final WorkFolder Report_ScreenShot_Relative = new WorkFolder(Home, Paths.get("report", "screenShot"));
+    public static final WorkFolder NGReport = new WorkFolder(Home, Paths.get("testng-output"));
 
     private static Path BASIC_FOLDER = Paths.get("C:", "TEMP");
-    private Path path;
 
+    private Path path;
 
     /**
      * Initialize basic directory to store artifacts
+     * 
      * @param basicFolderPath
      */
     public static void initWorkFolders(String basicFolderPath) {
-            if(basicFolderPath!= null)
-                BASIC_FOLDER = Paths.get(basicFolderPath);
+        if (basicFolderPath != null)
+            BASIC_FOLDER = Paths.get(basicFolderPath);
     }
 
+    private WorkFolder(Path... paths) {
+        StringBuffer result = new StringBuffer("");
+        for (Path path : paths) {
+            result.append(path.toString());
+        }
+        this.path = Paths.get(result.toString());
+    }
 
     private WorkFolder(Path path) {
         this.path = path;
@@ -78,14 +85,16 @@ public class WorkFolder {
 
     /**
      * Returns absolute path of this folder (BaseDir path + relative folder path)
+     * 
      * @return
      */
     public Path getPath() {
-        return Paths.get(BASIC_FOLDER.toString(),this.path.toString());
+        return Paths.get(BASIC_FOLDER.toString(), this.path.toString());
     }
 
     /**
      * Returns relative path of this folder without Basic dir
+     * 
      * @return
      */
     public Path getRelativePath() {
