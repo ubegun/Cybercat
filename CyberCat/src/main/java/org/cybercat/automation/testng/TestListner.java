@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.cybercat.automation.test;
+package org.cybercat.automation.testng;
 
 import java.io.BufferedWriter;
 import java.nio.charset.Charset;
@@ -30,6 +30,7 @@ import org.cybercat.automation.events.EventTestFail;
 import org.cybercat.automation.events.EventStartTestStep;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestCase;
+import org.cybercat.automation.test.AbstractTestCase;
 import org.cybercat.automation.utils.CommonUtils;
 import org.cybercat.automation.utils.WorkFolder;
 
@@ -41,9 +42,10 @@ public class TestListner {
 
     private static final Logger log = Logger.getLogger(TestListner.class);
     
-    public void onTestStart(Class<?> testClass, String methodName, String testDesctiptin) throws AutomationFrameworkException {
+
+    public void onTestStart(Class<? extends AbstractTestCase> testClass, String methodName, String testDesctiptin) throws AutomationFrameworkException {
         EventManager evm = AutomationMain.getEventManager();
-        evm.notify(new EventStartTestStep(testClass, testDesctiptin, methodName));
+        evm.notify(new EventStartTestStep(testClass, null,  testDesctiptin, methodName));
         if(testDesctiptin != null)
             evm.notify(new EventAddSubtitles(testDesctiptin));
         log.info("\n\n##### " + testClass.getName()+ " test, " + methodName+ "method with description: \"" + testDesctiptin + "\" has been started ######\n\n");

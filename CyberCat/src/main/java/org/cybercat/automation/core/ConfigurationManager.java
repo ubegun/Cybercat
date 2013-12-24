@@ -43,11 +43,13 @@ import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
+import org.cybercat.automation.test.AbstractTestCase;
 import org.cybercat.automation.utils.WorkFolder;
 import org.springframework.context.ApplicationContext;
 
 /**
  * Application initial configuration class.
+ * scope: thread
  */
 public class ConfigurationManager implements AddonContainer {
 
@@ -60,6 +62,7 @@ public class ConfigurationManager implements AddonContainer {
     private ScreenshotManager screenshotManager;
     private JiraReportManager jiraReportManager;
     private PerformanceReportManager performanceReportManager;
+    private Class<? extends AbstractTestCase> testClass;
 
     public ConfigurationManager() {
         super();
@@ -153,7 +156,8 @@ public class ConfigurationManager implements AddonContainer {
 
             @Override
             public void doActon(EventStartTest event) throws Exception {
-                TestCase test = new TestCase(event.getTestClass().getName());
+                testClass = event.getTestClass();
+                TestCase test = new TestCase(testClass.getName());
                 test.setQtName(event.getDescription());
                 TestArtifactManager.updateTestInfo(test);
             }
@@ -226,6 +230,10 @@ public class ConfigurationManager implements AddonContainer {
         eventManager.setupListener(browser);
         return browser;
     }    
+
+    protected Class<? extends AbstractTestCase> getTestClass() {
+        return testClass;
+    }
 
     /**
      * Returns undefined value. Null value displays this module is running as default

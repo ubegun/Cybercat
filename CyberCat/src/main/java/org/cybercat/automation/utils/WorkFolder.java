@@ -32,11 +32,9 @@ public class WorkFolder {
     public static final WorkFolder Screenshots = new WorkFolder(Home, Paths.get("WebDriverScreenshots"));
     public static final WorkFolder DownloadedFiles = new WorkFolder(Home, Paths.get("DownloadedFiles"));
     public static final WorkFolder MediaFolder = new WorkFolder(Home, Paths.get("Video"));
-    public static final WorkFolder Report_Relative = new WorkFolder(Home, Paths.get("report"));
-    public static final WorkFolder Report_Folder = new WorkFolder(Home, Paths.get("HtmlReport", "html"));
+    public static final WorkFolder Report = new WorkFolder(Home, Paths.get("Report"));
+    public static final WorkFolder Report_Folder = new WorkFolder(Home, Paths.get("Report", "html"));
     public static final WorkFolder Extensions_Relative = new WorkFolder(Home, Paths.get("extensions"));
-    public static final WorkFolder Report_ScreenShot_Relative = new WorkFolder(Home, Paths.get("report", "screenShot"));
-    public static final WorkFolder NGReport = new WorkFolder(Home, Paths.get("testng-output"));
 
     private static Path BASIC_FOLDER = Paths.get("C:", "TEMP");
 
@@ -55,7 +53,7 @@ public class WorkFolder {
     private WorkFolder(Path... paths) {
         StringBuffer result = new StringBuffer("");
         for (Path path : paths) {
-            result.append(path.toString());
+            result.append("/").append(path.toString());
         }
         this.path = Paths.get(result.toString());
     }

@@ -22,6 +22,8 @@ import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.annotations.CCRedirectionStep;
 import org.cybercat.automation.annotations.CCTestStep;
 import org.cybercat.automation.events.EventStartTestStep;
+import org.cybercat.automation.test.AbstractFeature;
+import org.cybercat.automation.test.AbstractTestCase;
 
 /**
  * @author Ubegun
@@ -34,16 +36,20 @@ public class TestStepAspect {
         super();
     }
 
+    @SuppressWarnings("unchecked")
     @Before("target(bean) && @annotation(testStep)")
     public void stepNotification(JoinPoint jp, Object bean,  CCTestStep testStep) throws AutomationFrameworkException{
-        AutomationMain.getEventManager().notify(new EventStartTestStep(bean.getClass(),testStep.value(), jp.getSignature().getName())); 
+        Class<? extends AbstractTestCase> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
+        AutomationMain.getEventManager().notify(new EventStartTestStep(test, (Class<? extends AbstractFeature>) bean.getClass() ,testStep.value(), jp.getSignature().getName())); 
     }
 
 
+    @SuppressWarnings("unchecked")
     @Before("target(bean) && @annotation(redirectionStep)")
     public void redirectionstep(JoinPoint jp, Object bean,  CCRedirectionStep redirectionStep) throws AutomationFrameworkException{
+        Class<? extends AbstractTestCase> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
         Browser.getCurrentBrowser().get(redirectionStep.url());
-        AutomationMain.getEventManager().notify(new EventStartTestStep(bean.getClass(),redirectionStep.desctiption(), jp.getSignature().getName())); 
+        AutomationMain.getEventManager().notify(new EventStartTestStep(test ,(Class<? extends AbstractFeature>) bean.getClass(),redirectionStep.desctiption(), jp.getSignature().getName())); 
     }
 
 }

@@ -16,6 +16,8 @@
 
 package org.uncommons.reportng;
 
+import static org.cybercat.automation.utils.WorkFolder.Report_Folder;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +31,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import org.apache.velocity.VelocityContext;
 import org.testng.IClass;
 import org.testng.IInvokedMethod;
@@ -39,6 +42,7 @@ import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.xml.XmlSuite;
+
 
 /**
  * Enhanced HTML reporter for TestNG that uses Velocity templates to generate its
@@ -72,7 +76,6 @@ public class HTMLReporter extends AbstractReporter
     private static final String METHODS_KEY = "methods";
     private static final String ONLY_FAILURES_KEY = "onlyReportFailures";
 
-    private static final String REPORT_DIRECTORY = "html";
 
     private static final Comparator<ITestNGMethod> METHOD_COMPARATOR = new TestMethodComparator();
     private static final Comparator<ITestResult> RESULT_COMPARATOR = new TestResultComparator();
@@ -95,12 +98,13 @@ public class HTMLReporter extends AbstractReporter
                                List<ISuite> suites,
                                String outputDirectoryName)
     {
-        removeEmptyDirectories(new File(outputDirectoryName));
+        System.out.println("\n\n####################\n" + Report_Folder.toString() +"\n###################\n\n"); 
+        removeEmptyDirectories(Report_Folder.getPath().toFile());
         
         boolean useFrames = System.getProperty(FRAMES_PROPERTY, "true").equals("true");
         boolean onlyFailures = System.getProperty(ONLY_FAILURES_PROPERTY, "false").equals("true");
 
-        File outputDirectory = new File(outputDirectoryName, REPORT_DIRECTORY);
+        File outputDirectory = Report_Folder.getPath().toFile();
         outputDirectory.mkdirs();
 
         try
@@ -124,6 +128,8 @@ public class HTMLReporter extends AbstractReporter
         }
     }
 
+    
+    
 
     /**
      * Create the index file that sets up the frameset.
@@ -206,6 +212,7 @@ public class HTMLReporter extends AbstractReporter
     }
 
 
+    @SuppressWarnings("unused")
     private void createChronology(List<ISuite> suites, File outputDirectory) throws Exception
     {
         int index = 1;

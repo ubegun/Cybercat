@@ -14,28 +14,30 @@
  */
 package org.cybercat.automation.events;
 
-import java.nio.file.Path;
-
 import org.cybercat.automation.addons.common.MakeScreenshotEvent.ImageFormat;
 import org.cybercat.automation.events.EventManager.EventTypes;
+import org.cybercat.automation.test.AbstractFeature;
+import org.cybercat.automation.test.AbstractTestCase;
 import org.cybercat.automation.utils.CommonUtils;
 
 
 public class EventStartTestStep extends Event {
     
-    private Class<?> testClass;
+    private Class<? extends AbstractTestCase> testClass;
     private String subtitles;
     private String methodName;
     private ImageFormat format;
     private String startStepTime;
+    private Class<? extends AbstractFeature> featureClass;
     
-    public EventStartTestStep(Class<?> testClass, String subtitles, String methodName) {
-        this(testClass, subtitles, methodName, ImageFormat.JPEG);
+    public EventStartTestStep(Class<? extends AbstractTestCase> testClass, Class<? extends AbstractFeature> featureClass,   String subtitles, String methodName) {
+        this(testClass, featureClass, subtitles, methodName, ImageFormat.JPEG);
     }
     
-    public EventStartTestStep(Class<?> testClass, String subtitles, String methodName, ImageFormat format) {
+    public EventStartTestStep(Class<? extends AbstractTestCase>  testClass, Class<? extends AbstractFeature> featureClass, String subtitles, String methodName, ImageFormat format) {
         super();
         this.testClass = testClass;
+        this.featureClass = featureClass;
         this.subtitles = subtitles;
         this.methodName = methodName;
         this.format = format;
@@ -67,6 +69,14 @@ public class EventStartTestStep extends Event {
 
     public String getStartStepTime() {
         return startStepTime;
+    }
+
+    public Class<? extends AbstractFeature> getFeatureClass() {
+        return featureClass;
+    }
+
+    public void setFeatureClass(Class<? extends AbstractFeature> featureClass) {
+        this.featureClass = featureClass;
     }
     
 }

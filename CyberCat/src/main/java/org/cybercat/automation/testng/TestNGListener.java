@@ -16,7 +16,6 @@ package org.cybercat.automation.testng;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.test.TestListner;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
