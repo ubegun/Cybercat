@@ -191,8 +191,9 @@ public class ConfigurationManager implements AddonContainer {
         Browsers browserType = Browsers.valueOf(AutomationMain.getProperty("browser.name"));
         if (AutomationMain.getPropertyBoolean(REMOTE_SERVER)) {
             browser = getRemoteBrowser(browserType);
+        }else{ 
+            browser = getLocalBrowser(browserType);
         }
-        browser = getLocalBrowser(browserType);
         return browser;
     }    
     
