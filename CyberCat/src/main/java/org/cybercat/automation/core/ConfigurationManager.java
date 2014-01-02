@@ -168,6 +168,7 @@ public class ConfigurationManager implements AddonContainer {
             @Override
             public void doActon(EventChangeTestConfig event) throws Exception {
                 eventManager.release();
+                AutomationMain.getMainFactory().getPageFactory().release();
                 eventManager.setupListeners(holders);
             }
 

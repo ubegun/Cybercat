@@ -16,9 +16,7 @@ package org.cybercat.automation.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.Locale;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -30,8 +28,6 @@ import org.cybercat.automation.annotations.CCProperty;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
-import org.junit.internal.builders.AnnotatedBuilder;
-import org.openqa.selenium.Cookie;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.context.ApplicationContext;
 
@@ -158,6 +154,11 @@ public class PageFactoryImpl implements PageFactory {
         throw new PageObjectException("Page object creation problem.", e);
     }
     }
+
+	@Override
+	public void release() {
+		this.context = null;
+	}
 
 
 }
