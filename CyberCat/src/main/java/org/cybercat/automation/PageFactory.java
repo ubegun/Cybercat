@@ -49,10 +49,12 @@ public interface PageFactory {
      * (xpath, css name, id, name) 
      */
     <T extends AbstractProcessor> T createElementProcessor(PathType type);
-    
-    /**
-     * This method release page factory from this session and next call to the page factory methods calls initialization procedure.      
-     */
+
+	/**
+	 * This method releases the page factory from the current session and a
+	 * subsequent addressing to the methods of the page factory will call the
+	 * procedure of initialization of this factory.
+	 */
     void release();
 
 }
