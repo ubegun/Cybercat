@@ -13,6 +13,7 @@
    <script type="text/javascript" src="jquery-1.9.1.js"></script>
    <script type="text/javascript" src="reportng.js"></script>
    <script type="text/javascript" src="artifactsManager.js"></script>
+   <script>  initArtifact('$!{artifactJSON}'); </script>
    <script type="text/javascript" src="bugsManager.js"></script>
 </head>
 <body>

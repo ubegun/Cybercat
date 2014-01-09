@@ -91,8 +91,11 @@ public class TestArtifactManager {
     
     public static synchronized ArtifactIndex getIndex() throws PageModelException{ 
         ArtifactIndex index = new ArtifactIndex();
-        if( Files.exists(getInstance().indexFile))
+        if( Files.exists(getInstance().indexFile)){
             index = getInstance().load();
+        } else{
+        	index.getTests().add(new TestCase(""));
+        }
         return index; 
     }
 

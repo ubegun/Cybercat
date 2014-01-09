@@ -48,7 +48,7 @@
     <dependency>
       <groupId>org.cybercat.autotest</groupId>
       <artifactId>cybercat-automation-core</artifactId>
-      <version>1.0-RC3</version>
+      <version>1.0-RC4</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -111,8 +111,7 @@
             </property>
             <property>
               <name>listener</name>
-              <value>org.uncommons.reportng.HTMLReporter,
-                org.uncommons.reportng.JUnitXMLReporter</value>
+              <value>org.uncommons.reportng.HTMLReporter, org.uncommons.reportng.JUnitXMLReporter</value>
             </property>
           </properties>
           <workingDirectory>target/</workingDirectory>
