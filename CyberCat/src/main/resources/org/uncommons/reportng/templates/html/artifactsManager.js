@@ -53,14 +53,14 @@ function initArtifact(jsonIndex) {
                     });
                 });
 
+                $('.exceptionImageWrapper').click(function(event) {
+                    $('.exceptionImage').toggle(800);
+                });
+
+                $('.imagesLabel').click(function(event) {
+                    $('.imagesWrapper').toggle(800);
+                });
+                
             });
-
-    $('.exceptionImageWrapper').click(function(event) {
-        $('.exceptionImage').toggle(800);
-    });
-
-    $('.imagesLabel').click(function(event) {
-        $('.imagesWrapper').toggle(800);
-    });
 
 };
