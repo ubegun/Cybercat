@@ -269,6 +269,15 @@ public class PageElement {
         thisPage.execJS("arguments[0].setAttribute(arguments[1], arguments[2])", element, attributeName, value);
     }
     
+    /**
+     * Apply script for this element ""
+     * @param script
+     * @throws AutomationFrameworkException
+     */
+    public void executeScript(String script) throws AutomationFrameworkException{
+        executeScript(script, getElement());
+    }
+    
     protected void executeScript(String script, Object... args) throws AutomationFrameworkException{
         try{ 
             Browser.getCurrentBrowser().executeScript(script, args);
