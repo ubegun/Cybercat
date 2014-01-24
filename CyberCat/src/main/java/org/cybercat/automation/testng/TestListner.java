@@ -44,10 +44,6 @@ public class TestListner {
     
 
     public void onTestStart(Class<? extends AbstractTestCase> testClass, String methodName, String testDesctiptin) throws AutomationFrameworkException {
-        EventManager evm = AutomationMain.getEventManager();
-        evm.notify(new EventStartTestStep(testClass, null,  testDesctiptin, methodName));
-        if(testDesctiptin != null)
-            evm.notify(new EventAddSubtitles(testDesctiptin));
         log.info("\n\n##### " + testClass.getName()+ " test, " + methodName+ "method with description: \"" + testDesctiptin + "\" has been started ######\n\n");
         
     }
