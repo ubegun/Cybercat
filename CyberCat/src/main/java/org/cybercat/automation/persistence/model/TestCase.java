@@ -17,7 +17,9 @@ package org.cybercat.automation.persistence.model;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -38,6 +40,7 @@ public class TestCase {
     private String cookies;
     private String qtName;
     private Set<JiraInfo> bugs;
+    private Map<String, String> artifacts = new HashMap<String, String>();
 
     public static class JiraInfo {
 
@@ -160,6 +163,18 @@ public class TestCase {
         this.bugs = bugs;
     }
 
+    public Map<String, String> getArtifacts() {
+        return artifacts;
+    }
+
+    public void putArtifact(String key, String value){
+        this.artifacts.put(key, value);
+    }
+    
+    public void setArtifacts(Map<String, String> artifacts) {
+        this.artifacts = artifacts;
+    }
+
     /**
      * @param test
      */
@@ -182,6 +197,9 @@ public class TestCase {
             this.qtName = test.getQtName();
         if (test.getBugs() != null)
             this.bugs = test.getBugs();
+        if (test.getArtifacts() != null && test.getArtifacts().size() > 0){
+            this.artifacts.putAll(test.getArtifacts());
+        }
     }
 
     @Override
@@ -195,18 +213,17 @@ public class TestCase {
         return StringUtils.equals(this.testGUID, ((TestCase) obj).testGUID);
     }
 
-    public String getRelativePath(String pathString){
+    public static String getRelativePath(String pathString){
         Path path = Paths.get(pathString);
         //FIXME rewrite this piece of code to avoid replacing '\' with '/'. right now it is done to make links valid in firefox
         return WorkFolder.Report_Folder.getPath().relativize(path).normalize().toString().replaceAll("\\\\","/");
     }
 
-    public List<String> getRelativePath(List<String> pathStrings){
+    public static List<String> getRelativePath(List<String> pathStrings){
         List<String> paths = new ArrayList<>();
         for(String pathString : pathStrings){
             paths.add(getRelativePath(pathString));
         }
-
         return paths;
     }
 

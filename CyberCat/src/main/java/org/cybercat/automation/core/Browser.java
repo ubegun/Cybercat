@@ -262,7 +262,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
 
     public String getSessionId() {
         SessionId sessionId = driver.getSessionId();
-        return sessionId.toString();
+        return sessionId == null? "-1" : sessionId.toString();
     }
 
     public boolean isWaitForEndOfPage() {

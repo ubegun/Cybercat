@@ -14,9 +14,8 @@
  */
 package org.cybercat.automation.addons.yslow;
 
-import java.io.BufferedWriter;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,15 +24,19 @@ import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.PageFactory;
-import org.cybercat.automation.addons.common.StartPerformanceMeasureEvent;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
 import org.cybercat.automation.components.PageElement;
 import org.cybercat.automation.components.StatefulElement;
 import org.cybercat.automation.components.TextContainer;
 import org.cybercat.automation.core.AddonContainer;
+import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.core.Browser;
 import org.cybercat.automation.events.EventListener;
+import org.cybercat.automation.events.EventStartTest;
+import org.cybercat.automation.persistence.TestArtifactManager;
+import org.cybercat.automation.persistence.model.TestCase;
+import org.cybercat.automation.utils.WorkFolder;
 
 /**
  * User: Oleh_Kovalyshyn Date: 4/8/13 Time: 3:03 PM
@@ -43,6 +46,7 @@ public class PerformanceReportManager implements AddonContainer {
     private static final Logger log = Logger.getLogger(PerformanceReportManager.class);
     public final static String PERFOMANCE_REPORT = "Perfomance report";
     private YSlow ySlow;
+    private String thisTest;
 
     @Override
     public Collection<EventListener<?>> createListeners(Configuration config) {
@@ -52,40 +56,41 @@ public class PerformanceReportManager implements AddonContainer {
 
         ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
 
+        listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 100){
+
+            @Override
+            public void doActon(EventStartTest event) throws Exception {
+                thisTest =  event.getTestClass().getName();
+            }
+        });
+        
+        
         listeners.add(new EventListener<GetPerformanceReportEvent>(GetPerformanceReportEvent.class, 100) {
 
             @Override
             public void doActon(GetPerformanceReportEvent event) throws Exception {
                 log.debug("Performance measuring finished");
-                Browser.getCurrentBrowser().switchToFrame("YSLOW-bookmarklet");
-                BufferedWriter writer = Files.newBufferedWriter(
-                        Paths.get(event.getPath().toString(), event.getFileName()), Charset.defaultCharset());
-                writer.write(ySlow.getReportSource());
-                Browser.getCurrentBrowser().switchToDefaultContent();
-            }
-        });
-
-        listeners.add(new EventListener<StartPerformanceMeasureEvent>(StartPerformanceMeasureEvent.class, 100) {
-
-            @Override
-            public void doActon(StartPerformanceMeasureEvent event) throws Exception {
-
-                PageFactory pageFactory = event.getPageFactory();
-
-                log.debug("Performance measuring started");
-                init(event.getPageFactory());
+                PageFactory pageFactory = AutomationMain.getMainFactory().getPageFactory();
+                init();
                 Browser.getCurrentBrowser().switchToFrame("YSLOW-bookmarklet");
                 ySlow = pageFactory.createPage(YSlow.class);
                 ySlow.run();
+                try{
+                    Path yslowFile = Paths.get(WorkFolder.Har.toString(), event.getFileName());
+                    Files.write(yslowFile, ySlow.getReportSource().getBytes());
+                    TestCase test = new TestCase(thisTest);
+                    test.putArtifact("YSLOW#" + event.getPageDescription(),TestCase.getRelativePath(yslowFile.toString()));
+                    TestArtifactManager.updateTestInfo(test);
+                }catch(Exception e){
+                    log.error(e);
+                }
                 Browser.getCurrentBrowser().switchToDefaultContent();
-
             }
         });
-
         return listeners;
     }
 
-    private void init(PageFactory pageFactory) throws AutomationFrameworkException {
+    private void init() throws AutomationFrameworkException {
         Browser.getCurrentBrowser()
           .executeScript(
                         "javascript:(function(y,p,o){p=y.body.appendChild(y.createElement('iframe'));"
@@ -114,7 +119,6 @@ public class PerformanceReportManager implements AddonContainer {
 
         public String getReportSource() throws AutomationFrameworkException {
             validateElement("progbar_text", StatefulElement.PresentStatus.PRESENT_NOT_VISIBLE, 60);
-
             return getPageSource();
 
         }

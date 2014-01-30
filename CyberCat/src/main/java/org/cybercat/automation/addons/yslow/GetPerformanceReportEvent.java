@@ -14,11 +14,6 @@
  */
 package org.cybercat.automation.addons.yslow;
 
-
-
-import java.nio.file.Path;
-
-import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.events.Event;
 import org.cybercat.automation.events.EventManager;
 
@@ -30,11 +25,11 @@ import org.cybercat.automation.events.EventManager;
 public class GetPerformanceReportEvent extends Event {
 
     private String fileName;
-    private Path path;
+    private String pageDescription;
 
-    public GetPerformanceReportEvent(Path path,String fileName) {
+    public GetPerformanceReportEvent(String pageDescription,String fileName) {
         this.fileName = fileName;
-        this.path = path;
+        this.pageDescription = pageDescription;
     }
 
     @Override
@@ -50,12 +45,13 @@ public class GetPerformanceReportEvent extends Event {
         this.fileName = fileName;
     }
 
-    public Path getPath() {
-        return path;
+    public String getPageDescription() {
+        return pageDescription;
     }
 
-    public void setPath(Path path) {
-        this.path = path;
+    public void setPageDescription(String pageDescription) {
+        this.pageDescription = pageDescription;
     }
+    
 
 }
