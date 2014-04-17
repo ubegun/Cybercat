@@ -133,6 +133,10 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         driver.switchTo().frame(name);
     }
 
+    public void switchToFrame(int index){
+    	super.driver = (RemoteWebDriver) super.driver.switchTo().frame(index);
+    }
+    
     public Browser getAnotherWindow(String name) throws PageObjectException {
         return new Browser((RemoteWebDriver) driver.switchTo().window(name), this.browserType, this.isRemote);
     }
