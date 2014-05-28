@@ -1,8 +1,6 @@
 package org.apache.automation.pages;
 
-import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
 import org.cybercat.automation.components.GroupElements;
@@ -11,8 +9,6 @@ import org.cybercat.automation.components.TextContainer;
 
 public class TableOfContentsFragment  extends AbstractPageObject {
 
-    private static Logger log = Logger.getLogger(TableOfContentsFragment.class); 
-    
 
     @Override
     protected void initPageElement() {

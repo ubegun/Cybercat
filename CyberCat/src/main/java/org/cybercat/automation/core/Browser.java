@@ -193,6 +193,18 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         }
 
     }
+    
+    public void removeAllCookies(){
+    	driver.manage().deleteAllCookies();
+    }
+    
+    public void removeCookie(String cookieName){
+    	driver.manage().deleteCookieNamed(cookieName);
+    }
+
+    public void removeCookie(Cookie cookie){
+    	driver.manage().deleteCookie(cookie);
+    }
 
     public Set<Cookie> getCookies() {
         return driver.manage().getCookies();
@@ -232,16 +244,14 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
      */
     public void waitForAjaxRequestsEnding(long timeToWaitInSeconds) {
 
-        ExpectedCondition<Boolean> ajax = new ExpectedCondition<Boolean>() {
+        WebDriverWait wait = createWaitDriver(timeToWaitInSeconds);
+        wait.until(new ExpectedCondition<Boolean>() {
             @Override
             @Nullable
             public Boolean apply(@Nullable WebDriver input) {
                 return (Boolean) executeScript("if(window.jQuery.active >0) return false; else return true;");
             }
-        };
-
-        WebDriverWait wait = createWaitDriver(timeToWaitInSeconds);
-        wait.until(ajax);
+        });
     }
 
     public Actions getActions() {
