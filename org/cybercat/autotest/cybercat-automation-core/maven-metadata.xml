@@ -3,14 +3,10 @@
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-automation-core</artifactId>
   <versioning>
-    <release>1.0-RC8</release>
+    <release>1.0-realise</release>
     <versions>
-      <version>1.0-RC3</version>
-      <version>1.0-RC4</version>
-      <version>1.0-RC5</version>
-      <version>1.0-RC6</version>
-      <version>1.0-RC8</version>
+      <version>1.0-realise</version>
     </versions>
-    <lastUpdated>20140528140207</lastUpdated>
+    <lastUpdated>20140721145614</lastUpdated>
   </versioning>
 </metadata>
