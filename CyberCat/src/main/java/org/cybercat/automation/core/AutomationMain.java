@@ -157,15 +157,12 @@ public final class AutomationMain {
             System.out.println("===============================Runtime properties===============================");
             System.out.println("environment propery file:\t" + propertyFileName);
             String basicArtifactsDir = System.getProperty("config.basicArtifactsDir");
-            System.out.println("artifacts directory:\t" + basicArtifactsDir);
-            System.out.println("Report title:\t\t"
-                    + System.getProperty("org.uncommons.reportng.title", "Cybercat sample"));
-            System.out.println("================================================================================");
             if (StringUtils.isEmpty(propertyFileName)) {
                 System.setProperty("config.properties", env_properties);
             }
             try {
-                ConfigurationManager.initWorkDirectories(basicArtifactsDir);
+                System.out.println("artifacts directory:\t" + ConfigurationManager.initWorkDirectories(basicArtifactsDir));
+                
             } catch (Exception e) {
                 throw new AutomationFrameworkException("Model initialization exception.", e);
             }
@@ -176,6 +173,8 @@ public final class AutomationMain {
             } catch (Exception e) {
                 throw new AutomationFrameworkException("Spring context initialization exception.", e);
             }
+            System.out.println("Report title:\t\t" + System.getProperty("org.uncommons.reportng.title", "Cybercat sample"));
+            System.out.println("================================================================================");
 
         }
         return automationMain;

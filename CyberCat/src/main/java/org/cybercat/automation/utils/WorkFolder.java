@@ -36,7 +36,8 @@ public class WorkFolder {
     public static final WorkFolder Report_Folder = new WorkFolder(Home, Paths.get("Report", "html"));
     public static final WorkFolder Extensions_Relative = new WorkFolder(Home, Paths.get("extensions"));
 
-    private static Path BASIC_FOLDER = Paths.get("C:", "TEMP");
+    //Legacy 
+    private static Path BASIC_FOLDER = Paths.get(System.getProperty("user.home"));
 
     private Path path;
 
@@ -45,9 +46,10 @@ public class WorkFolder {
      * 
      * @param basicFolderPath
      */
-    public static void initWorkFolders(String basicFolderPath) {
+    public static String initWorkFolders(String basicFolderPath) {
         if (basicFolderPath != null)
             BASIC_FOLDER = Paths.get(basicFolderPath);
+        return BASIC_FOLDER.toString();
     }
 
     private WorkFolder(Path... paths) {

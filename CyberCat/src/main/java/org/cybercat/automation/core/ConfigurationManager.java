@@ -130,10 +130,10 @@ public class ConfigurationManager implements AddonContainer {
      * 
      * @throws PageModelException
      */
-    public static void initWorkDirectories(String basicDirPath) throws PageModelException {
+    public static String initWorkDirectories(String basicDirPath) throws PageModelException {
 
         // set basic directory to store artifacts
-        WorkFolder.initWorkFolders(basicDirPath);
+        String baseDir = WorkFolder.initWorkFolders(basicDirPath);
 
         WorkFolder[] folders = WorkFolder.values();
         for (int i = 0; i < folders.length; i++) {
@@ -143,6 +143,7 @@ public class ConfigurationManager implements AddonContainer {
                 throw new PageModelException("Model initialization exception.", e);
             }
         }
+        return baseDir;
     }
 
     public EventManager getEventManager() {
@@ -202,6 +203,7 @@ public class ConfigurationManager implements AddonContainer {
         try {
             browser = (Browser) context.getBean(browserType.name());
         } catch (Exception e) {
+        	e.printStackTrace();
             log.error(browser.toString() + " browser is unsupported by your system.");
             throw new PageObjectException(e);
         }

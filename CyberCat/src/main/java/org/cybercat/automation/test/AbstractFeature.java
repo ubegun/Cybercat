@@ -14,21 +14,12 @@
  */
 package org.cybercat.automation.test;
 
-import java.lang.reflect.Constructor;
-
-import org.apache.log4j.Logger;
-import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.annotations.AnnotationBuilder;
-import org.cybercat.automation.core.TestStepAspect;
-import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 
 /**
  * @author Ubegun
  * 
  */
 public abstract class AbstractFeature implements IVersionControl, IFeature{
-
-    private static Logger log = Logger.getLogger(AbstractFeature.class);
 
     /**
      * This is the only constructor available. It will be called to create your feature.

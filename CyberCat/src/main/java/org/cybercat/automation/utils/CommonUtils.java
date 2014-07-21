@@ -122,7 +122,12 @@ public class CommonUtils {
         return System.currentTimeMillis() * 10000 + (counter++);
     }
 
+    /**
+     * This method generates positive random number
+     */
     public static int generateNumber(int ind) {
+    	if(ind < 1)
+    		return 0; 
         int index = rand.nextInt(ind) + 1;
         log.info("Random value is " + index);
         return index;
