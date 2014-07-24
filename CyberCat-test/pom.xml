@@ -33,7 +33,7 @@
             <updatePolicy>always</updatePolicy>
         </snapshots>
     </repository>
-</repositories>  
+</repositories>
   <dependencies>
     <dependency>
       <groupId>log4j</groupId>

@@ -35,8 +35,9 @@ public class FirefoxProfiler extends FirefoxProfile {
 
     public FirefoxProfiler() {
         super();
-        File firebug = new File("src/main/resources/extensions/firebug-1.10.6-fx.xpi");
-        File netExport = new File("src/main/resources/extensions/netExport-0.9b2.xpi");
+        // leaving it as is. possible solution was using ClassPathResource but it corrupts files during extracting from archive.
+        File firebug = new File("src/main/resources/extensions/firebug.xpi");
+        File netExport = new File("src/main/resources/extensions/netExport.xpi");
         try {
             super.addExtension(firebug);
             super.addExtension(netExport);

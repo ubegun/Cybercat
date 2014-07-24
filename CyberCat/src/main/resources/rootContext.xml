@@ -109,6 +109,10 @@
     <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.internetExplorer"/></constructor-arg>
   </bean>
 
+  <bean id="firefoxWithExtensions" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
+        <constructor-arg ref="firefoxDriverSpecial"/>
+        <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.firefox"/></constructor-arg>
+  </bean>
 
 <!-- Page entities block   -->
 
