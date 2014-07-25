@@ -1,3 +1,11 @@
+The main purpose of Cybercat project is:
+ - speed up automation tests creation
+ - minimize familiarization time with the project environment
+ - minimize efforts for maintenance large number of tests
+ - providing detailed informaton about tests execution process
+
+
+
 ﻿*************Recource files *************
 
 Below you can find the list of files necessary for starting the project. The structure of their files in the project tree look at the CyberCat-test sample project.
