@@ -52,10 +52,10 @@ public class RemoteServerProvider {
                 String profileName = configProperties.getProperty("browser.profile.name", null);
                 if(StringUtils.isNotBlank(profileName)){
                     ProfilesIni allProfiles = new ProfilesIni();
-                    FirefoxProfile profile = allProfiles.getProfile(profileName);
+                    FirefoxProfiler firefoxProfiler = new FirefoxProfiler();
+                    FirefoxProfile profile = firefoxProfiler.addNetExportPreferences(allProfiles.getProfile(profileName));
                     capabilities.setCapability(FirefoxDriver.PROFILE, profile);
                 }
-
                 break;
             case chrome:
                 capabilities = DesiredCapabilities.chrome();
@@ -67,11 +67,6 @@ public class RemoteServerProvider {
                 break;
             case safari:
                 capabilities = DesiredCapabilities.safari();
-                break;
-            case firefoxWithExtensions:
-                capabilities = DesiredCapabilities.firefox();
-                FirefoxProfile profile = new FirefoxProfiler();
-                capabilities.setCapability(FirefoxDriver.PROFILE, profile);
                 break;
             default:
                 new PageObjectException("Browser type unsupported.");

@@ -35,30 +35,6 @@ public class FirefoxProfiler extends FirefoxProfile {
 
     public FirefoxProfiler() {
         super();
-        // leaving it as is. possible solution was using ClassPathResource but it corrupts files during extracting from archive.
-        File firebug = new File("src/main/resources/extensions/firebug.xpi");
-        File netExport = new File("src/main/resources/extensions/netExport.xpi");
-        try {
-            super.addExtension(firebug);
-            super.addExtension(netExport);
-        } catch (IOException err) {
-            log.error(err);
-        }
-        super.setPreference("app.update.enabled", false);
-        super.setPreference("app.update.enabled", false);
-        String domain = "extensions.firebug.";
-
-        // Set default Firebug preferences
-        super.setPreference(domain + "currentVersion", "1.10.6");
-        super.setPreference(domain + "allPagesActivation", "on");
-        super.setPreference(domain + "defaultPanelName", "net");
-        super.setPreference(domain + "net.enableSites", true);
-
-        // Set default NetExport preferences
-        super.setPreference(domain + "netexport.alwaysEnableAutoExport", true);
-        super.setPreference(domain + "netexport.showPreview", false);
-        super.setPreference(domain + "netexport.pageLoadedTimeout", "60000");
-        super.setPreference(domain + "netexport.defaultLogDir", Paths.get(WorkFolder.Log.getPath().toString(), "har").toString());
     }
 
     private void initProrerties(Map<String, String> prorerties) {
@@ -91,6 +67,24 @@ public class FirefoxProfiler extends FirefoxProfile {
         }
 
         return true;
+    }
+
+    public FirefoxProfile addNetExportPreferences(FirefoxProfile firefoxProfile){
+        firefoxProfile.setPreference("app.update.enabled", false);
+        String domain = "extensions.firebug.";
+
+        // Set default Firebug preferences
+        firefoxProfile.setPreference(domain + "currentVersion", "1.10.6");
+        firefoxProfile.setPreference(domain + "allPagesActivation", "on");
+        firefoxProfile.setPreference(domain + "defaultPanelName", "net");
+        firefoxProfile.setPreference(domain + "net.enableSites", true);
+
+        // Set default NetExport preferences
+        firefoxProfile.setPreference(domain + "netexport.alwaysEnableAutoExport", true);
+        firefoxProfile.setPreference(domain + "netexport.showPreview", false);
+        firefoxProfile.setPreference(domain + "netexport.pageLoadedTimeout", "60000");
+        firefoxProfile.setPreference(domain + "netexport.defaultLogDir", Paths.get(WorkFolder.Log.getPath().toString(), "har").toString());
+        return firefoxProfile;
     }
 
 }
