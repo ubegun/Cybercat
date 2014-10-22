@@ -1,18 +1,18 @@
 The main purpose of Cybercat project is:
- - speed up automation tests creation
+ - speed up automation tests creating
  - minimize familiarization time with the project environment
- - minimize efforts for maintenance large number of tests
- - providing detailed informaton about tests execution process
+ - minimize efforts for maintenance og large bulks of tests
+ - providing a detailed informaton on tests execution process
 
 
 
 ﻿*************Recource files *************
 
-Below you can find the list of files necessary for starting the project. The structure of their files in the project tree look at the CyberCat-test sample project.
+Below you can find the list of files necessary to start the project. You can find the files structure in the project tree of the CyberCat-test sample project.
 
 Locators_en.properties – contains localization pair for Xpath. (see the chapter “Localization mechanism”)
 MetaData.properties – this file contains the authorization parameters  for some modules of the system (not used currently and will be reworked or removed in the upper versions of the product)
-pageObjectContext.xml – this file describes the way of initializing objects AbstractPageObject (see the chapter Page Objects)
+pageObjectContext.xml – this file describes the way of objects initializion (AbstractPageObject) (see the chapter Page Objects)
 test.properties – a configuration file containing the main system settings (see the chapter Configuration file)
 
 
@@ -22,8 +22,8 @@ This file contains different settings necessary for project working. By default 
 test
   `---resources
         `--test.properties  
-but you can change the file name and its place in the project structure by using the system variable in the command line - Dconfig.properties=[my project].properties.
-Now more details on the properties:
+but you can change the file name and its location in the project structure by using the system variable in the command line - Dconfig.properties=[my project].properties.
+More details on the properties:
 
 The settings file is divided into two sections: mandatory (system) settings and the settings defined by the user. All the mandatory settings are ennumerated in the /CyberCat-test/src/test/resources/test.properties.null file, which is not used by the system, but only demonstrates the minimum set necessary for starting the system.
 
@@ -41,7 +41,7 @@ This option defines site language localization and is used in the localization m
 this block is used for the integration with Jira issue tracking system. If you don`t use this mechanism, just leave the lines blank.
 
 #Version control
-This block of settings is responsible for the version system control settings. F or the current moment version system control works with the classes implementing Ifeature,IIntegrationService interfaces.
+This block of settings is responsible for the version control system settings. F or the current moment version system control works with the classes implementing Ifeature,IIntegrationService interfaces.
 The marker interface for this mechanism is IversionControl interface.
 If you don`t want to use this mechanism at the moment, you can set the following values:
 app.version=1
@@ -58,7 +58,7 @@ Here you can also add any settings you wish. Any settings downloaded into the sy
 where String is the name of the option in the configuration file
 for example:
 AutomationMain.getProperty("version.control.root.package")
- вернет строку содержащую "org.myproject"
+ will return the string containing "org.myproject"
  
  
  ************** Test Case****************
