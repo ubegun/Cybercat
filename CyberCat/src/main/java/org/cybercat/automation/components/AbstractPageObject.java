@@ -1,11 +1,11 @@
 /**Copyright 2013 The Cybercat project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,12 +42,11 @@ import com.sun.media.Log;
 /**
  * Abstract page element providing methods for managing html elements at user page.
  * <br>
- *  Adds element to the page. It is recommended to use it for setting elements in initPageElement() method.
- *  To work with set element use Get method that corresponds your element type.<br> When getting element through 
- *  Get method, it it initialized and validated on the web page. While validating it is checked whether 
- *  it is visible on the web page. If an objects is not visible or<br> initialization 
- *  process failed, PageObjectException is thrown.
- * 
+ * Adds element to the page. It is recommended to use it for setting elements in initPageElement() method.
+ * To work with set element use Get method that corresponds your element type.<br> When getting element through
+ * Get method, it it initialized and validated on the web page. While validating it is checked whether
+ * it is visible on the web page. If an objects is not visible or<br> initialization
+ * process failed, PageObjectException is thrown.
  */
 public abstract class AbstractPageObject {
 
@@ -67,10 +66,10 @@ public abstract class AbstractPageObject {
     private Browser browser;
     private String pageUrl;
     //initialized pageFragments
-    private List<AbstractPageObject> pageFragments = new ArrayList<AbstractPageObject>();
+    private List<AbstractPageObject> pageFragments = new ArrayList<>();
     Locale currentLocation;
     protected ResourceBundle pageResourceBundle;
-    Map<String, PageElement> elements = new HashMap<String, PageElement>();
+    Map<String, PageElement> elements = new HashMap<>();
     @SuppressWarnings("unused")
     private String title;
 
@@ -84,14 +83,14 @@ public abstract class AbstractPageObject {
     @Transient
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
-    }    
+    }
 
     @Transient
     public void init(Browser browser, Locale locale) throws AutomationFrameworkException {
-        if(this.state == PageState.INITIALIZED){
+        if (this.state == PageState.INITIALIZED) {
             LOG.error("This page has been initialized. Please call detach() method first.");
             return;
-        }    
+        }
         this.state = PageState.INITIALIZED;
         AnnotationBuilder.processCCPageFragment(this);
         LOG.info(this.getClass().getSimpleName() + "\n page initialization...");
@@ -110,13 +109,12 @@ public abstract class AbstractPageObject {
     }
 
     @Transient
-    public void detach(){
+    public void detach() {
         this.cleanupElements();
         state = PageState.CREATED;
         browser = null;
     }
-    
-    
+
     /**
      * initialize page elements for final implementation
      */
@@ -129,19 +127,19 @@ public abstract class AbstractPageObject {
 
     /**
      * @return
-     * @throws AutomationFrameworkException 
+     * @throws org.cybercat.automation.AutomationFrameworkException
      */
     private Browser getBrowser() throws AutomationFrameworkException {
-        if(browser == null)
-            browser = Browser.getCurrentBrowser();        
+        if (browser == null)
+            browser = Browser.getCurrentBrowser();
         return browser;
     }
 
     /**
      * Returns the page element allowing to identify if the page has loaded yet
-     * 
-     * @throws PageObjectException
-     * @throws AutomationFrameworkException 
+     *
+     * @throws org.cybercat.automation.PageObjectException
+     * @throws org.cybercat.automation.AutomationFrameworkException
      */
     protected abstract PageElement getUniqueElement() throws AutomationFrameworkException;
 
@@ -151,7 +149,7 @@ public abstract class AbstractPageObject {
 
     /**
      * Adds element to the page. It is recommended to use it for setting elements in initPageElement() method.
-     * 
+     *
      * @param element
      */
     @Transient
@@ -162,67 +160,203 @@ public abstract class AbstractPageObject {
 
     /**
      * Returns status of element by name. Time to wait for status is specified in property file
-     * 
+     *
      * @param elementName - the name of the element that was set in init mode
-     * @throws AutomationFrameworkException 
+     * @throws org.cybercat.automation.AutomationFrameworkException
      */
     protected PresentStatus getElementStatus(String elementName, Object... arg) throws AutomationFrameworkException {
-        if (!this.elements.containsKey(elementName))
-            throw new PageElementRuntimeException(elementName + " element is not defined.");
-        PageElement element = this.elements.get(elementName);
-        element.setPath(replaceKey(element.getPath()));
-        element.updatePath(arg);
-        StatefulElement<PageElement> result = new StatefulElement<PageElement>(element);
+        PageElement element = updateElementPath(elementName, arg);
+        StatefulElement<PageElement> result = new StatefulElement<>(element);
         result.setPath(replaceKey(result.getPath()));
         result.initWebElement(getBrowser());
         return result.getPresentStatus();
     }
 
-
+    @Deprecated
     protected boolean isElementPresent(String elementName, int timeoutSec) throws AutomationFrameworkException {
         return validateElementWithTimeOut(elementName, PresentStatus.VISIBLE, timeoutSec);
     }
 
     /**
-     * Validate element's status by specified status. Waiting timeout is set to 0
-     * 
+     * Validate element's status by PresentStatus.VISIBLE. Waiting timeout is set to 0
+     *
      * @param elementName - the name of the element that was set in init mode
-     * @param expectedStatus - expected status from {@link PresentStatus} enumeration
-     * @return
-     * @throws AutomationFrameworkException 
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
      */
-    protected boolean validateElement(String elementName, PresentStatus extectedStatus, Object... arg) throws AutomationFrameworkException {
-        if (!this.elements.containsKey(elementName))
-            throw new PageElementRuntimeException(elementName + " element is not defined.");
-        PageElement element = this.elements.get(elementName);
-        element.setPath(replaceKey(element.getPath()));
-        element.updatePath(arg);
-        StatefulElement<PageElement> result = new StatefulElement<PageElement>(element, extectedStatus, 0);
+    protected boolean validateElement(String elementName, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, PresentStatus.VISIBLE, 0, arg);
+    }
+
+    /**
+     * Validate element's status by specified status. Waiting timeout is set to 0
+     *
+     * @param elementName    - the name of the element that was set in init mode
+     * @param expectedStatus - expected status from {@link org.cybercat.automation.components.StatefulElement.PresentStatus} enumeration
+     * @param arg            - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElement(String elementName, PresentStatus expectedStatus, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, expectedStatus, 0, arg);
+    }
+
+    /**
+     * Waits for element's specified PresentStatus.VISIBLE.
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param timeout     - Defines the implicit and explicit timeouts. Waiting time for the set element mode in seconds.
+     * @param arg         - arguments that modify xPath.
+     * @return
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElementWithTimeOut(String elementName, int timeout, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, PresentStatus.VISIBLE, timeout, arg);
+    }
+
+    /**
+     * Waits for element's specified status.
+     *
+     * @param elementName    - the name of the element that was set in init mode
+     * @param expectedStatus - expected status from {@link org.cybercat.automation.components.StatefulElement.PresentStatus} enumeration
+     * @param timeout        - Defines the implicit and explicit timeouts. Waiting time for the set element mode in seconds.
+     * @param arg            - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
+     */
+    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, int timeout, Object... arg) throws AutomationFrameworkException {
+        PageElement element = updateElementPath(elementName, arg);
+        StatefulElement<PageElement> result = new StatefulElement<>(element, expectedStatus, timeout);
         result.initWebElement(getBrowser());
         return result.isValid();
     }
 
+
     /**
-     *     Waits for element's specified status.
-     *      
+     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status. Waiting timeout is set to 0
+     *
      * @param elementName - the name of the element that was set in init mode
-     * @param expectedStatus - expected status from {@link PresentStatus} enumeration
-     * @param timeout - Defines the implicit and explicit timeouts. Waiting time for the set element mode in seconds. 
-     * @param arg - arguments that modify xPath. 
-     * @see  String#format(String, Object...) 
-     * @return boolean 
-     * @throws AutomationFrameworkException 
+     * @param attrName    - name of attribute
+     * @param attrValue   - value of attribute
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
      */
-    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, int timeout, Object... arg) throws AutomationFrameworkException {
-        if (!this.elements.containsKey(elementName))
-            throw new PageElementRuntimeException(elementName + " element is not defined.");
-        PageElement element = this.elements.get(elementName);
-        element.setPath(replaceKey(element.getPath()));
-        element.updatePath(arg);
-        StatefulElement<PageElement> result = new StatefulElement<PageElement>(element, expectedStatus, timeout);
+    protected boolean validateElement(String elementName, String attrName, String attrValue, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, attrName, attrValue, 0, arg);
+    }
+
+    /**
+     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status. Waiting timeout is set to 0
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attributes  - map of attributes with name - value
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElement(String elementName, Map<String, String> attributes, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, attributes, 0, arg);
+    }
+
+    /**
+     * Validate element's attribute by specific status. Waiting timeout is set to 0
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attrName    - name of attribute
+     * @param attrValue   - value of attribute
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElement(String elementName, PresentStatus expectedStatus, String attrName, String attrValue, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, expectedStatus, attrName, attrValue, 0, arg);
+    }
+
+    /**
+     * Validate element's attribute by specific status. Waiting timeout is set to 0
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attributes  - map of attributes with name - value
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElement(String elementName, PresentStatus expectedStatus, Map<String, String> attributes, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, expectedStatus, attributes, 0, arg);
+    }
+
+
+    /**
+     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attrName    - name of attribute
+     * @param attrValue   - value of attribute
+     * @param timeout     - time for waiting
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElementWithTimeOut(String elementName, String attrName, String attrValue, int timeout, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, PresentStatus.ATTRIBUTE_PRESENT, attrName, attrValue, timeout, arg);
+    }
+
+    /**
+     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attributes  - map of attributes with name - value
+     * @param timeout     - time for waiting
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElementWithTimeOut(String elementName, Map<String, String> attributes, int timeout, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, PresentStatus.ATTRIBUTE_PRESENT, attributes, timeout, arg);
+    }
+
+    /**
+     * Validate element's attribute by specific status
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attrName    - name of attribute
+     * @param attrValue   - value of attribute
+     * @param timeout     - time for waiting
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, String attrName, String attrValue, int timeout, Object... arg) throws AutomationFrameworkException {
+        Map<String, String> attributes = new HashMap<>(1);
+        attributes.put(attrName, attrValue);
+        return validateElementWithTimeOut(elementName, expectedStatus, attributes, timeout, arg);
+    }
+
+    /**
+     * Validate element's attribute by specific  status
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attributes  - map of attributes with name - value
+     * @param timeout     - time for waiting
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, Map<String, String> attributes, int timeout, Object... arg) throws AutomationFrameworkException {
+        PageElement element = updateElementPath(elementName, arg);
+        StatefulElement<PageElement> result = new StatefulElement<>(element, expectedStatus, attributes, timeout);
         result.initWebElement(getBrowser());
         return result.isValid();
     }
+
+    /*
+    *
+    *
+    */
+
 
     @SuppressWarnings("unchecked")
     protected <T extends PageElement> T getElementByName(String name, Object... arg) throws AutomationFrameworkException {
@@ -243,18 +377,17 @@ public abstract class AbstractPageObject {
         element.detach();
         element.updatePath(arg);
         element.setPath(replaceKey(element.getPath()));
-        try{
+        try {
             element.initWebElement(getBrowser());
-        }catch(AutomationFrameworkException e){ 
+        } catch (AutomationFrameworkException e) {
             LOG.warn("The element not found: \n " + this.getClass().getSimpleName() + "\n\t `-> " + element.getName());
             throw new AutomationFrameworkException(e);
-        }    
+        }
         return element;
     }
 
     /**
      * Replace localized key Key format: {key.name}
-     * 
      */
     private String[] replaceKey(String[] paths) {
         for (int i = 0; i < paths.length; i++) {
@@ -290,122 +423,122 @@ public abstract class AbstractPageObject {
         return null;
     }
 
-        
+
     /**
-     * Returns a valid element of {@link JQButton} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.JQButton} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected JQButton getJQButton(String name, Object... arg) throws AutomationFrameworkException {
         return (JQButton) getElementByName(name, arg);
     }
-    
+
     /**
-     * Returns a valid element of {@link Button} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.Button} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected Button getButton(String name, Object... arg) throws AutomationFrameworkException {
         return (Button) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link SvgChart} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.SvgChart} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected SvgChart getSvgChart(String name, Object... arg) throws AutomationFrameworkException {
         return (SvgChart) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link SelectorBox} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.SelectorBox} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected SelectorBox getSelectorBox(String name, Object... arg) throws AutomationFrameworkException {
         return (SelectorBox) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link TextContainer} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.TextContainer} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected TextContainer getTextContainer(String name, Object... arg) throws AutomationFrameworkException {
         return (TextContainer) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link TextField} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.TextField} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected TextField getTextField(String name, Object... arg) throws AutomationFrameworkException {
         return (TextField) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link RadioGroup} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.RadioGroup} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected RadioGroup getRadioGroup(String name, Object... arg) throws AutomationFrameworkException {
         return (RadioGroup) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link GroupElements} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.GroupElements} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected GroupElements<?> getGroupElements(String name, Object... arg) throws AutomationFrameworkException {
         return (GroupElements<?>) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link NavigationLink} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.NavigationLink} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected NavigationLink getNavigationLink(String name, Object... arg) throws AutomationFrameworkException {
         return (NavigationLink) getElementByName(name, arg);
     }
 
     /**
-     * Returns a valid element of {@link CheckBox} type
-     *  
+     * Returns a valid element of {@link org.cybercat.automation.components.CheckBox} type
+     *
      * @param name - name of element
-     * @param arg - arguments that modify xPath. 
-     * @throws AutomationFrameworkException 
-     * @see  String#format(String, Object...) 
+     * @param arg  - arguments that modify xPath.
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     * @see String#format(String, Object...)
      */
     protected CheckBox getCheckBox(String name, Object... arg) throws AutomationFrameworkException {
         return (CheckBox) getElementByName(name, arg);
@@ -428,7 +561,7 @@ public abstract class AbstractPageObject {
     public void addPageFragment(AbstractPageObject pageFragment) {
         this.pageFragments.add(pageFragment);
     }
-    
+
     @Transient
     public void setPageFactory(PageFactory pageFactory) {
         this.pageFactory = pageFactory;
@@ -479,11 +612,11 @@ public abstract class AbstractPageObject {
     }
 
     protected Object execJS(String script, Object... args) throws AutomationFrameworkException {
-        try{ 
+        try {
             return getBrowser().executeScript(script, args);
-        }catch(Exception e){  
-            Log.error("Execution Java script for " + this.getClass().getSimpleName() + " page object. Script: " +  script);
-            throw new AutomationFrameworkException("Execution Java script for " + this.getClass().getSimpleName() + " page object. Script: " +  script, e);
+        } catch (Exception e) {
+            Log.error("Execution Java script for " + this.getClass().getSimpleName() + " page object. Script: " + script);
+            throw new AutomationFrameworkException("Execution Java script for " + this.getClass().getSimpleName() + " page object. Script: " + script, e);
         }
     }
 
@@ -539,10 +672,9 @@ public abstract class AbstractPageObject {
 
     /**
      * Provides wait until all of ajax requests on page will be finished
-     * 
-     * @param timeToWaitInSeconds
-     *            - maximum time to wait in seconds
-     * @throws PageObjectException
+     *
+     * @param timeToWaitInSeconds - maximum time to wait in seconds
+     * @throws org.cybercat.automation.PageObjectException
      */
     protected void waitForAjaxRequestsEnding(long timeToWaitInSeconds) throws PageObjectException {
         try {
@@ -585,6 +717,16 @@ public abstract class AbstractPageObject {
 
     protected String getPageSource() throws AutomationFrameworkException {
         return getBrowser().getPageSource();
+    }
+
+
+    private PageElement updateElementPath(String elementName, Object... arg) throws AutomationFrameworkException {
+        if (!this.elements.containsKey(elementName))
+            throw new PageElementRuntimeException(elementName + " element is not defined.");
+        PageElement element = this.elements.get(elementName);
+        element.setPath(replaceKey(element.getPath()));
+        element.updatePath(arg);
+        return element;
     }
 
 }
