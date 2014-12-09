@@ -14,10 +14,6 @@
  */
 package org.cybercat.automation.browsers;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Properties;
-
 import org.apache.commons.lang3.StringUtils;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.core.Browser;
@@ -29,6 +25,10 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
 
 
 public class RemoteServerProvider {
@@ -47,30 +47,38 @@ public class RemoteServerProvider {
         try {
             DesiredCapabilities capabilities = null;
             switch (browser) {
-            case firefox:
-                capabilities = DesiredCapabilities.firefox();
-                String profileName = configProperties.getProperty("browser.profile.name", null);
-                if(StringUtils.isNotBlank(profileName)){
-                    ProfilesIni allProfiles = new ProfilesIni();
-                    FirefoxProfiler firefoxProfiler = new FirefoxProfiler();
-                    FirefoxProfile profile = firefoxProfiler.addNetExportPreferences(allProfiles.getProfile(profileName));
-                    capabilities.setCapability(FirefoxDriver.PROFILE, profile);
-                }
-                break;
-            case chrome:
-                capabilities = DesiredCapabilities.chrome();
-                break;
-            case internetExplorer:
-                capabilities = DesiredCapabilities.internetExplorer();
-                capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-                capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-                break;
-            case safari:
-                capabilities = DesiredCapabilities.safari();
-                break;
-            default:
-                new PageObjectException("Browser type unsupported.");
-                break;
+                case firefox:
+                    capabilities = DesiredCapabilities.firefox();
+                    String profileName = configProperties.getProperty("browser.profile.name", null);
+                    if (StringUtils.isNotBlank(profileName)) {
+                        ProfilesIni allProfiles = new ProfilesIni();
+                        FirefoxProfiler firefoxProfiler = new FirefoxProfiler();
+                        FirefoxProfile profile = firefoxProfiler.addNetExportPreferences(allProfiles.getProfile(profileName));
+                        capabilities.setCapability(FirefoxDriver.PROFILE, profile);
+                    }
+                    break;
+                case chrome:
+                    capabilities = DesiredCapabilities.chrome();
+                    break;
+                case internetExplorer:
+                    capabilities = DesiredCapabilities.internetExplorer();
+                    capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+                    break;
+                case safari:
+                    capabilities = DesiredCapabilities.safari();
+                    break;
+                case android:
+                    capabilities = new DesiredCapabilities();
+                    capabilities.setCapability("platformName", "Android");
+                    capabilities.setCapability("platformVersion", configProperties.getProperty("android.version"));
+                    capabilities.setCapability("deviceName", "Android Emulator");
+                    capabilities.setCapability("browserName", configProperties.getProperty("android.browser"));
+                    capabilities.setCapability("newCommandTimeout", "360");
+                    break;
+                default:
+                    new PageObjectException("Browser type unsupported.");
+                    break;
             }
             return capabilities;
         } catch (Exception e) {
