@@ -15,6 +15,8 @@
 
 package org.cybercat.automation.test;
 
+import org.cybercat.automation.core.Platform;
+
 /**
  * Marker interface showing that component that implements it assumes using version control system.
  * 
@@ -27,4 +29,7 @@ public interface IVersionControl {
      */
     public int getVersion();
 
+    public Platform[] getPlatforms();
+
+    public boolean isSupportsPlatform(Platform platform);
 }
