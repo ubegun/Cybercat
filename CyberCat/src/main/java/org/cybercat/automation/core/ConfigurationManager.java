@@ -1,11 +1,11 @@
 /**Copyright 2013 The Cybercat project
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *     
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,8 +14,19 @@
  */
 package org.cybercat.automation.core;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import org.apache.log4j.Logger;
-import org.cybercat.automation.*;
+import org.cybercat.automation.AutomationFrameworkException;
+import org.cybercat.automation.Configuration;
+import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.PersistenceManager;
+import org.cybercat.automation.ResourceManager;
 import org.cybercat.automation.addons.AddonProvider;
 import org.cybercat.automation.addons.common.ScreenshotManager;
 import org.cybercat.automation.addons.common.TestLoggerAddon;
@@ -68,7 +79,7 @@ public class ConfigurationManager implements AddonContainer {
 
     /**
      * Initializes listener holders. This is the main method for creating holders that control listeners` life cycle.
-     *
+     * 
      */
     private void createHolders() {
         try {
@@ -97,7 +108,7 @@ public class ConfigurationManager implements AddonContainer {
 
     /**
      * Creates default users described in MetaData.properties file.
-     *
+     * 
      * @throws PageModelException
      */
     public void initXmlRepository() throws PageModelException {
@@ -116,7 +127,7 @@ public class ConfigurationManager implements AddonContainer {
 
     /**
      * Initializes work directories that store screenshots, logs, xml models etc.
-     *
+     * 
      * @throws PageModelException
      */
     public static String initWorkDirectories(String basicDirPath) throws PageModelException {
@@ -167,10 +178,10 @@ public class ConfigurationManager implements AddonContainer {
     }
 
     private final static String REMOTE_SERVER = "remote.server";
-
+    
     /**
      * Returns browser instance by name Additional info in selenium documentation for Webdriver
-     *
+     * 
      * @param browser
      *            - browser name
      * @return - Webdriver
@@ -182,12 +193,12 @@ public class ConfigurationManager implements AddonContainer {
         Browsers browserType = Browsers.valueOf(AutomationMain.getProperty("browser.name"));
         if (AutomationMain.getPropertyBoolean(REMOTE_SERVER)) {
             browser = getRemoteBrowser(browserType);
-        }else{
+        }else{ 
             browser = getLocalBrowser(browserType);
         }
         return browser;
-    }
-
+    }    
+    
     private Browser getLocalBrowser(Browsers browserType) throws AutomationFrameworkException {
         try {
             browser = (Browser) context.getBean(browserType.name());
@@ -200,7 +211,7 @@ public class ConfigurationManager implements AddonContainer {
         browser = setupBrowser(browser);
         return browser;
     }
-
+    
     private Browser getRemoteBrowser(Browsers browserType) throws PageObjectException {
         try {
             RemoteServerProvider rsp = context.getBean(RemoteServerProvider.class);
@@ -215,7 +226,7 @@ public class ConfigurationManager implements AddonContainer {
         }
 
     }
-
+    
     private Browser setupBrowser(Browser browser) throws AutomationFrameworkException {
         if (!getBrowser().getBrowserType().equals(Browsers.android)) {
             browser.callMaximize();
@@ -224,7 +235,7 @@ public class ConfigurationManager implements AddonContainer {
         screenshotManager.setScreenshotProvider(browser);
         eventManager.setupListener(browser);
         return browser;
-    }
+    }    
 
     protected Class<? extends AbstractTestCase> getTestClass() {
         return testClass;
