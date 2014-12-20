@@ -47,9 +47,6 @@ import org.cybercat.automation.test.AbstractTestCase;
 import org.cybercat.automation.utils.WorkFolder;
 import org.springframework.context.ApplicationContext;
 
-import java.io.IOException;
-import java.util.*;
-
 /**
  * Application initial configuration class.
  * scope: thread
