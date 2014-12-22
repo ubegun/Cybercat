@@ -7,7 +7,7 @@
   <artifactId>cybercat-sample-test</artifactId>
   <version>0.4-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Webdriver Core for automation testing</name>
+  <name>Webdriver Core for automation testing (tests)</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

@@ -17,6 +17,7 @@ package org.cybercat.automation.annotations;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.core.AutomationMain;
+import org.cybercat.automation.core.Platform;
 import org.cybercat.automation.core.TestStepAspect;
 import org.cybercat.automation.core.integration.IIntegrationService;
 import org.cybercat.automation.core.integration.IntegrationServiceAspect;
