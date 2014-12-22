@@ -15,6 +15,7 @@
 
 package org.cybercat.automation.core.integration;
 
+import org.cybercat.automation.core.Platform;
 import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.test.IVersionControl;
 
@@ -32,4 +33,14 @@ public interface IIntegrationService extends IVersionControl {
      * initialization of all annotated fields of this object
      */
     void setup();
+
+    @Override
+    default boolean isSupportsPlatform(Platform platform) {
+        return true;
+    }
+
+    @Override
+    default Platform[] getPlatforms() {
+        return new Platform[1];
+    }
 }

@@ -68,6 +68,14 @@ public class RemoteServerProvider {
             case safari:
                 capabilities = DesiredCapabilities.safari();
                 break;
+			case android:
+                capabilities = new DesiredCapabilities();
+                capabilities.setCapability("platformName", "Android");
+                capabilities.setCapability("platformVersion", configProperties.getProperty("android.version"));
+                capabilities.setCapability("deviceName", "Android Emulator");
+                capabilities.setCapability("browserName", configProperties.getProperty("android.browser"));
+                capabilities.setCapability("newCommandTimeout", "360");
+                break;
             default:
                 new PageObjectException("Browser type unsupported.");
                 break;

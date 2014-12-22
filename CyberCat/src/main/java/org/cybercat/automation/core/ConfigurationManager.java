@@ -199,7 +199,7 @@ public class ConfigurationManager implements AddonContainer {
         return browser;
     }    
     
-    private Browser getLocalBrowser(Browsers browserType) throws PageObjectException {
+    private Browser getLocalBrowser(Browsers browserType) throws AutomationFrameworkException {
         try {
             browser = (Browser) context.getBean(browserType.name());
         } catch (Exception e) {
@@ -227,8 +227,10 @@ public class ConfigurationManager implements AddonContainer {
 
     }
     
-    private Browser setupBrowser(Browser browser){
-        browser.callMaximize();
+    private Browser setupBrowser(Browser browser) throws AutomationFrameworkException {
+        if (!getBrowser().getBrowserType().equals(Browsers.android)) {
+            browser.callMaximize();
+        }
         browser.setEventManager(getEventManager());
         screenshotManager.setScreenshotProvider(browser);
         eventManager.setupListener(browser);

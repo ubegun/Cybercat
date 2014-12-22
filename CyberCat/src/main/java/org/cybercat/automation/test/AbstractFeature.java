@@ -15,25 +15,41 @@
 package org.cybercat.automation.test;
 
 
+import org.cybercat.automation.core.Platform;
+
 /**
  * @author Ubegun
  * 
  */
 public abstract class AbstractFeature implements IVersionControl, IFeature{
 
+    protected Platform[] platforms;
+
     /**
      * This is the only constructor available. It will be called to create your feature.
      */
     protected AbstractFeature() {        
         super();
+        platforms = getPlatforms();
     }
     
     /**
      * Identifies version by default. can be redefined to change version feature.  
      */
     @Override
+    @Override
     public int getVersion() {
         return 0;
+    }
+
+    @Override
+    public final boolean isSupportsPlatform(Platform platform) {
+        for (Platform p : platforms) {
+            if (platform.equals(p)) {
+                return true;
+            }
+        }
+        return false;
     }
   
 }

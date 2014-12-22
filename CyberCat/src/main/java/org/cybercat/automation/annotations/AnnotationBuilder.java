@@ -43,8 +43,10 @@ public class AnnotationBuilder {
     
     private static Logger log = Logger.getLogger(AnnotationBuilder.class);
     
-    public static final <T extends IFeature> void processCCPageObject(T entity) throws AutomationFrameworkException{
-        for(Field field: entity.getClass().getDeclaredFields()){
+    public static final <T extends IFeature> void processCCPageObject(T entity, Class<? extends Object> clazz) throws AutomationFrameworkException{
+        if (clazz == null)
+            return;
+        for(Field field: clazz.getDeclaredFields()) {
             field.setAccessible(true);
             if(field.getAnnotation(CCPageObject.class) != null){
                 createPageObjectField(entity, field);
@@ -52,8 +54,12 @@ public class AnnotationBuilder {
                 processPropertyField(entity, field);
             }
         }    
+        processCCPageObject(entity, (Class<? extends Object>) clazz.getSuperclass());
     }
         
+    public static final <T extends IFeature> void processCCPageObject(T entity) throws AutomationFrameworkException{
+        processCCPageObject(entity, entity.getClass());
+    }
     
     private static Reflections reflections;
     
@@ -72,9 +78,11 @@ public class AnnotationBuilder {
     private final static <T extends IVersionControl> Class<T> versionControlPreprocessor(Class<T> providerzz) throws AutomationFrameworkException {
         Reflections refSearch;
         int version = 0;
+        Platform platform;
         try{
             refSearch = getReflections();
             version = (int) AutomationMain.getPropertyLong("app.version");
+            platform = Platform.fromValue(AutomationMain.getProperty("platform.type"));
             if(refSearch == null || version < 0)
                 return providerzz;
         }catch(Exception e ){    
@@ -87,11 +95,13 @@ public class AnnotationBuilder {
         for (Class<? extends T> classProvider : providers) {
             try {
                 Constructor<T> c = (Constructor<T>) classProvider.getConstructor();
-                candidate = c.newInstance();
-                if (candidate.getVersion() == version)
-                    return (Class<T>) candidate.getClass();
-                if (caught == null || (candidate.getVersion() < version && caught.getVersion() < candidate.getVersion())) {
-                    caught = candidate;
+                if (!Modifier.isAbstract(classProvider.getModifiers())) {
+                    candidate = c.newInstance();
+                    if (candidate.getVersion() == version && candidate.isSupportsPlatform(platform))
+                        return (Class<T>) candidate.getClass();
+                    if (caught == null || (candidate.getVersion() < version && caught.getVersion() < candidate.getVersion()) && candidate.isSupportsPlatform(platform)) {
+                        caught = candidate;
+                    }
                 }
 
             } catch (Exception e) {

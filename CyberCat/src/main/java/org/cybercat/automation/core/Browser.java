@@ -70,7 +70,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
      * The list of browsers supported by our system.
      */
     public static enum Browsers {
-        firefox, chrome, internetExplorer, safari, firefoxWithExtensions
+        firefox, chrome, internetExplorer, safari, firefoxWithExtensions, android
     }
 
     public Browser(RemoteWebDriver driver, Browsers browserType) throws PageObjectException {
