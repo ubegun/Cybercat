@@ -37,7 +37,6 @@ public abstract class AbstractFeature implements IVersionControl, IFeature{
      * Identifies version by default. can be redefined to change version feature.  
      */
     @Override
-    @Override
     public int getVersion() {
         return 0;
     }
