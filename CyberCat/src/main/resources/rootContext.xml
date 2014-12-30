@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"        
+       xmlns:util="http://www.springframework.org/schema/util" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+           
+<context:annotation-config />
+<context:component-scan base-package="org.cybercat.automation"/>
+
+  <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+      <property name="scopes">
+          <map>
+              <entry key="thread">
+                  <bean class="org.cybercat.automation.core.WeakReferenceThreadScope"/>
+              </entry>
+          </map>
+      </property>
+  </bean>
+
+  <!-- Configuration constants -->
+
+  <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="location" value="#{ systemProperties['config.properties'] }"/>
+  </bean>
+  
+  <bean  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations" value="#{ systemProperties['config.properties'] }" />
+  </bean>
+  
+  <bean id="profilesIni" class="org.openqa.selenium.firefox.internal.ProfilesIni" lazy-init="true" scope="prototype"/>
+
+  
+  <!-- Web browsers block -->
+  
+  <bean id="firefoxProfile" class="org.cybercat.automation.browsers.FirefoxProfiler" lazy-init="true" scope="prototype">
+    <constructor-arg>
+      <map>
+         <entry key="network.ntlm.send-lm-response" value="true"/>
+         <entry key="browser.safebrowsing.malware.enabled" value="false"/>         
+        <entry key="network.http.phishy-userpass-length" value="255"/>
+        <entry key="browser.cache.disk.enable" value="false"/>
+        <entry key="browser.cache.memmory.enable" value="false"/>
+      </map>
+    </constructor-arg>
+  </bean>
+  
+  <bean id="firefoxProfileWithNetExport" class="org.cybercat.automation.browsers.FirefoxProfiler" lazy-init="true" scope="prototype" />
+  
+  <bean id="internetExplorerCapabilities" class="org.cybercat.automation.browsers.InternetExplorerCapabilities" lazy-init="true" scope="prototype"/>
+
+  <bean id="chromeProfile" class="org.cybercat.automation.browsers.ChromeProfile" scope="prototype"/>
+   
+  <bean id="firefoxDriver" class="org.openqa.selenium.firefox.FirefoxDriver" lazy-init="true" scope="prototype">
+    <constructor-arg>
+       <ref bean="firefoxProfile" />
+      <!--<ref bean="firefoxProfileWithExtentions" />  -->   
+    </constructor-arg>
+  </bean>
+  
+  <bean id="firefoxDriverSpecial" class="org.openqa.selenium.firefox.FirefoxDriver" lazy-init="true" scope="prototype">
+    <constructor-arg>
+      <ref bean="firefoxProfileWithNetExport" />
+    </constructor-arg>
+  </bean>  
+  
+  <bean id="internetExplorerDriver" class="org.openqa.selenium.ie.InternetExplorerDriver" lazy-init="true" scope="prototype">
+    <constructor-arg>
+       <bean id="explorerCapabilities" class = "org.openqa.selenium.remote.DesiredCapabilities" 
+            factory-bean="internetExplorerCapabilities" factory-method="getIeProfile"/>
+    </constructor-arg>
+  </bean>
+  
+  <bean id="safariDriver" class="org.openqa.selenium.safari.SafariDriver" lazy-init="true" scope="prototype"/>
+  
+  <bean id="chromeDriver" class="org.openqa.selenium.chrome.ChromeDriver" lazy-init="true" scope="prototype">
+      <constructor-arg>
+       <bean id="chromeCapabilities" class = "org.openqa.selenium.remote.DesiredCapabilities" 
+            factory-bean="chromeProfile" factory-method="getCapabilities"/>
+    </constructor-arg>
+  </bean>
+  
+  <bean id="RemoteServerProvider" class="org.cybercat.automation.browsers.RemoteServerProvider" scope="prototype">
+    <constructor-arg ref="configProperties"/>
+  </bean>
+
+
+  <bean id="firefox" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
+    <constructor-arg ref="firefoxDriver"/>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.firefox"/></constructor-arg>
+  </bean>
+  
+  <bean id="chrome" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
+    <constructor-arg ref="chromeDriver"/>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.chrome"/></constructor-arg>
+  </bean>
+
+  <bean id="safari" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
+    <constructor-arg ref="safariDriver"/>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.safari"/></constructor-arg>
+  </bean>
+
+  <bean id="internetExplorer" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
+    <constructor-arg ref="internetExplorerDriver"/>
+    <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.internetExplorer"/></constructor-arg>
+  </bean>
+
+  <bean id="firefoxWithExtensions" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
+        <constructor-arg ref="firefoxDriverSpecial"/>
+        <constructor-arg><util:constant static-field="org.cybercat.automation.core.Browser.Browsers.firefox"/></constructor-arg>
+  </bean>
+
+<!-- Page entities block   -->
+
+ <bean id="pageFactory" class="org.cybercat.automation.core.PageFactoryImpl" scope="thread" lazy-init="true">
+    <constructor-arg name="baseUrl" value="${home.page.baseUrl}" />
+ </bean>
+
+   <!-- TODO: to change scope on singleton --> 
+  <bean id="byXPath" class="org.cybercat.automation.components.processor.XPathProcessor" scope="prototype">
+    <constructor-arg value="${implicit.timeout}"/>
+    <constructor-arg value="${explicit.timeout}"/>
+  </bean>
+
+  <bean id="byCssSelector" class="org.cybercat.automation.components.processor.CssSelector" scope="prototype">
+    <constructor-arg value="${implicit.timeout}"/>
+    <constructor-arg value="${explicit.timeout}"/>
+  </bean>
+  
+  <bean id="byId" class="org.cybercat.automation.components.processor.IdProcessor" scope="prototype">
+    <constructor-arg value="${implicit.timeout}"/>
+    <constructor-arg value="${explicit.timeout}"/>
+  </bean>
+  
+  <bean id="byName" class="org.cybercat.automation.components.processor.NameProcessor" scope="prototype">
+    <constructor-arg value="${implicit.timeout}"/>
+    <constructor-arg value="${explicit.timeout}"/>
+  </bean>
+  
+   <bean id="byClassName" class="org.cybercat.automation.components.processor.ClassProcessor" scope="prototype">
+    <constructor-arg value="${implicit.timeout}"/>
+    <constructor-arg value="${explicit.timeout}"/>
+  </bean>
+  
+   <bean id="byLinkText" class="org.cybercat.automation.components.processor.LinkTextProcessor" scope="prototype">
+    <constructor-arg value="${implicit.timeout}"/>
+    <constructor-arg value="${explicit.timeout}"/>
+  </bean>
+
+  <bean id="persistenceManager" class="org.cybercat.automation.PersistenceManager" scope="singleton" lazy-init="false"/>
+    
+  <bean id="configurationManager" class="org.cybercat.automation.core.ConfigurationManager" lazy-init="false" scope="thread"/>
+
+  <bean id="eventManager" class="org.cybercat.automation.core.EventManagerImpl" scope="singleton" lazy-init="false"/>
+
+
+  <bean id="mediaMetaData" class="org.cybercat.automation.addons.media.MediaMetaData">
+    <constructor-arg type="int" value="1"/>
+    <constructor-arg type="int" value="768"/>
+    <constructor-arg type="int" value="1024"/>
+    <constructor-arg type="int" value="4"/>
+  </bean>
+
+  <bean id="mediaController" class="org.cybercat.automation.addons.media.MediaController" scope="thread" lazy-init="false">
+    <constructor-arg ref="mediaMetaData"/>
+    <constructor-arg ref="eventManager"/>
+  </bean>  
+
+
+
+</beans>

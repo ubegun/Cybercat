@@ -1,0 +1,3 @@
+<tr class="bugTest">
+    <td colspan="2" class="group">$testClass.name</td>
+</tr>

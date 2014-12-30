@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cybercat.autotest</groupId>
+  <artifactId>cybercat-sample-test</artifactId>
+  <version>0.4-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Webdriver Core for automation testing (tests)</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <automation.deps.output.folder>lib</automation.deps.output.folder>
+    <automation.test.package.name>org.cybercat.automation</automation.test.package.name>
+    <selenium.version>2.37.0</selenium.version>
+    <testng.version>6.8.5</testng.version>
+    <junit.version>4.10</junit.version>
+    <springframework.version>3.1.1.RELEASE</springframework.version>
+    <log4j.version>1.2.14</log4j.version>
+    <commons-lang3.version>3.1</commons-lang3.version>
+    <args4j.version>2.0.12</args4j.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <cxf.version>2.7.0</cxf.version>
+    <axis.version>1.4</axis.version>
+  </properties>
+<repositories>
+    <repository>
+        <id>Cybercat-mvn-repo</id>
+        <url>https://raw.github.com/ubegun/Cybercat/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
+  <dependencies>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons-lang3.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.cybercat.autotest</groupId>
+      <artifactId>cybercat-automation-core</artifactId>
+      <version>1.0-realise</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <downloadSources>false</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>${basedir}/testng-suites/demo-suite.xml</suiteXmlFile>
+          </suiteXmlFiles>
+          <properties>
+            <property>
+              <name>usedefaultlisteners</name>
+              <value>false</value>
+            </property>
+            <property>
+              <name>listener</name>
+              <value>org.uncommons.reportng.HTMLReporter, org.uncommons.reportng.JUnitXMLReporter</value>
+            </property>
+          </properties>
+          <workingDirectory>target/</workingDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <configuration>
+              <target>
+                <property name="compile_classpath" refid="maven.compile.classpath" />
+                <property name="runtime_classpath" refid="maven.runtime.classpath" />
+                <property name="test_classpath" refid="maven.test.classpath" />
+                <property name="plugin_classpath" refid="maven.plugin.classpath" />
+                <propertyfile file="cybercat.atest.properties">
+                  <entry key="compile_classpath" value="${compile_classpath}" />
+                  <entry key="runtime_classpath" value="${runtime_classpath}" />
+                  <entry key="test_classpath" value="${test_classpath}" />
+                  <entry key="basedir" value="${basedir}" />
+                  <entry key="config.basicArtifactsDir" value="${config.basicArtifactsDir}" />
+                  <entry key="config.properties" value="${config.properties}" />
+                </propertyfile>
+                <echo>Running external test suite...</echo>
+                <echo message="test.property = ${config.properties}" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project> 

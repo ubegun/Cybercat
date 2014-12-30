@@ -1,0 +1,35 @@
+##Web driver settings  
+remote.server=false
+selenium.host=localhost
+selenium.port=4444
+##Browser settings 
+# acceptable parameters for browser.name [firefox, chrome, internetExplorer, safari, firefoxWithExtensions]
+browser.name=firefox 
+
+#this option works with no-remote web driver configuration only
+browser.profile.name=
+
+##Log info
+environment.name=Cybercat sample test
+
+#Site language
+language=en
+
+######## Common values
+##Time-outs 
+timeout=15
+implicit.timeout=60
+explicit.timeout=60
+
+######### URL's
+
+######### Jira Adddon
+jira.soap.wsdl.url=
+jira.soap.endpoint=
+jira.login=
+jira.password=
+
+######## Version control
+app.version=
+version.control.root.package=
+external.addon.package=
