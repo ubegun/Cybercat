@@ -41,8 +41,7 @@
     <constructor-arg>
       <map>
          <entry key="network.ntlm.send-lm-response" value="true"/>
-         <entry key="browser.safebrowsing.malware.enabled" value="false"/>         
-        <entry key="network.http.phishy-userpass-length" value="255"/>
+         <entry key="browser.safebrowsing.malware.enabled" value="false"/>
         <entry key="browser.cache.disk.enable" value="false"/>
         <entry key="browser.cache.memmory.enable" value="false"/>
       </map>
