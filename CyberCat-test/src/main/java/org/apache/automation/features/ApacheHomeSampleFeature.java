@@ -61,6 +61,7 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     @CCRedirectionStep(desctiption = "Navigation to stat page", url = "http://apache.org/")
     public IApacheHomeFeature gotoApache() throws AutomationFrameworkException {
         apacheWelcome.validateTopFragment();
+        apacheWelcome.validateElementStatuses();
         return this;
     }
 

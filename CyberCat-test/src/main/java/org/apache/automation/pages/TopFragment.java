@@ -6,6 +6,11 @@ import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
 import org.cybercat.automation.components.PageElement;
+import org.cybercat.automation.components.StatefulElement;
+import org.testng.Assert;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TopFragment extends AbstractPageObject{
 
@@ -13,6 +18,7 @@ public class TopFragment extends AbstractPageObject{
     @Override
     protected void initPageElement() {
         addElement(new Button("Foundation", PathType.byXPath, ".//*[@href='/foundation/']"));
+        addElement(new Button("FoundationWithMissingAttr", PathType.byXPath, ".//*[@href='%s']"));
         addElement(new Button("Projects", PathType.byXPath, ".//*[@href='http://projects.apache.org']"));
         addElement(new Button("People", PathType.byXPath, ".//*[@href='http://people.apache.org']"));
         addElement(new Button("Get Involved", PathType.byXPath, ".//*[@href='/foundation/getinvolved.html']"));
@@ -40,6 +46,42 @@ public class TopFragment extends AbstractPageObject{
         if(!StringUtils.contains(expected, value.getText())){
             throw new PageObjectException(value.getName() + "field have text:" + value.getText() + " but expected value is :" + expected);
         }
+    }
+
+    public void validateElementStatuses() throws AutomationFrameworkException {
+
+        Map<String,String> map = new HashMap<>();
+        map.put("href","http://apache.org/foundation/");
+
+        Assert.assertTrue(validateElement("Foundation"));
+        Assert.assertTrue(validateElement("Foundation", StatefulElement.PresentStatus.VISIBLE));
+        Assert.assertTrue(validateElement("Foundation", map));
+        Assert.assertTrue(validateElement("Foundation", "href", "http://apache.org/foundation/", StatefulElement.PresentStatus.ATTRIBUTE_PRESENT));
+        Assert.assertTrue(validateElement("Foundation", map, StatefulElement.PresentStatus.ATTRIBUTE_PRESENT));
+
+        Assert.assertTrue(validateElementWithTimeOut("Foundation", 10));
+        Assert.assertTrue(validateElementWithTimeOut("Foundation", StatefulElement.PresentStatus.VISIBLE, 10));
+        Assert.assertTrue(validateElementWithTimeOut("Foundation", "href", "http://apache.org/foundation/", 10));
+        Assert.assertTrue(validateElementWithTimeOut("Foundation", map, 10));
+        Assert.assertTrue(validateElementWithTimeOut("Foundation", "href", "http://apache.org/foundation/", StatefulElement.PresentStatus.VISIBLE, 10));
+        Assert.assertTrue(validateElementWithTimeOut("Foundation", map, StatefulElement.PresentStatus.VISIBLE, 10));
+
+        // test with arg substitution
+
+        Assert.assertTrue(validateElement("FoundationWithMissingAttr","/foundation/"));
+        Assert.assertTrue(validateElement("FoundationWithMissingAttr", StatefulElement.PresentStatus.VISIBLE,"/foundation/"));
+        Assert.assertTrue(validateElement("FoundationWithMissingAttr", map,"/foundation/"));
+        Assert.assertTrue(validateElement("FoundationWithMissingAttr", "href", "http://apache.org/foundation/", StatefulElement.PresentStatus.ATTRIBUTE_PRESENT,"/foundation/"));
+        Assert.assertTrue(validateElement("FoundationWithMissingAttr", map, StatefulElement.PresentStatus.ATTRIBUTE_PRESENT,"/foundation/"));
+
+
+        Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", 10,"/foundation/"));
+        Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", StatefulElement.PresentStatus.VISIBLE, 10,"/foundation/"));
+        Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", "href", "http://apache.org/foundation/", 10,"/foundation/"));
+        Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", map, 10,"/foundation/"));
+        Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", "href", "http://apache.org/foundation/", StatefulElement.PresentStatus.VISIBLE, 10,"/foundation/"));
+        Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", map, StatefulElement.PresentStatus.VISIBLE, 10,"/foundation/"));
+
     }
     
 }
