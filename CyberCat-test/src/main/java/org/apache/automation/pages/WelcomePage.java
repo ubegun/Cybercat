@@ -40,4 +40,8 @@ public class WelcomePage extends AbstractPageObject {
     public void selectProject(String projectName) throws AutomationFrameworkException{
         tableOfContentsFragment.navigateToProject(projectName);
     }
+
+    public void validateElementStatuses() throws AutomationFrameworkException {
+        topFragment.validateElementStatuses();
+    }
 }

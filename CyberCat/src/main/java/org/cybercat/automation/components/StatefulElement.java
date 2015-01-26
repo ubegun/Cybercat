@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -92,18 +93,21 @@ public class StatefulElement<T extends PageElement> extends PageElement {
         @Override
         public boolean onSuccess(Boolean elements, String path) {
             isValid &= elements.booleanValue();
+            presentStatus = PresentStatus.PRESENT_NOT_VISIBLE;
             return false;
         }
 
         @Override
         public void onException(String path) {
             super.onException(path);
+            isValid = false;
             presentStatus = PresentStatus.VISIBLE;
         }
 
         @Override
         public void onException(Exception e, String path) {
             super.onException(e, path);
+            isValid = false;
             presentStatus = PresentStatus.VISIBLE;
         }
     };
@@ -119,7 +123,7 @@ public class StatefulElement<T extends PageElement> extends PageElement {
                         boolean isAttribute = webDriver.findElement(By.xpath(path))
                                 .getAttribute(entry.getKey()).equalsIgnoreCase(entry.getValue().trim());
                         if (isAttribute != isAttributeExpected)
-                            return false;
+                            throw new NoSuchElementException();
                     }
                     return true;
                 }
@@ -145,8 +149,9 @@ public class StatefulElement<T extends PageElement> extends PageElement {
         }
 
         private void setPresentStatusOnException() {
-            presentStatus = PresentStatus.ATTRIBUTE_NOT_PRESENT;
-            if (!isAttributeExpected)
+            if(isAttributeExpected)
+                presentStatus = PresentStatus.ATTRIBUTE_NOT_PRESENT;
+            else
                 presentStatus = PresentStatus.ATTRIBUTE_PRESENT;
         }
     };
@@ -211,17 +216,23 @@ public class StatefulElement<T extends PageElement> extends PageElement {
                 isValid = true;
                 processor.setImplicitTimeout(0);
                 processor.initWebElementByCriteria(browser, invisibilityCriteria);
-                if (isValid) {
+                /*if (isValid) {
                     presentStatus = PresentStatus.PRESENT_NOT_VISIBLE;
-                }
+                }*/
                 break;
             case ATTRIBUTE_PRESENT:
                 isAttributeExpected = true;
                 processor.initWebElementByCriteria(browser, attributeCriteria);
+                if(isValid) {
+                    presentStatus = PresentStatus.ATTRIBUTE_PRESENT;
+                }
                 break;
             case ATTRIBUTE_NOT_PRESENT:
                 isAttributeExpected = false;
                 processor.initWebElementByCriteria(browser, attributeCriteria);
+                if(isValid){
+                    presentStatus = PresentStatus.ATTRIBUTE_NOT_PRESENT;
+                }
                 break;
             default:
                 break;
