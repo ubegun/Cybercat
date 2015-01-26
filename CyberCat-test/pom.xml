@@ -27,7 +27,7 @@
 <repositories>
     <repository>
         <id>Cybercat-mvn-repo</id>
-        <url>https://raw.github.com/ubegun/Cybercat/mvn-repo/</url>
+        <url>https://raw.github.com/ubegun/Cybercat/mvn-repo-java-7/</url>
         <snapshots>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
@@ -48,7 +48,7 @@
     <dependency>
       <groupId>org.cybercat.autotest</groupId>
       <artifactId>cybercat-automation-core</artifactId>
-      <version>1.0-realise</version>
+      <version>1.0-realise-java-7</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
