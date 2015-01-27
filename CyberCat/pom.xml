@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cybercat.autotest</groupId>
     <artifactId>cybercat-automation-core</artifactId>
-    <version>1.0.1-release</version>
+    <version>1.1.2-release</version>
     <url>https://github.com/ubegun/Cybercat</url>
     <packaging>jar</packaging>
     <name>Webdriver Core for automation testing</name>
@@ -22,7 +22,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <automation.deps.output.folder>lib</automation.deps.output.folder>
         <automation.test.package.name>org.cybercat.automation</automation.test.package.name>
-        <selenium.version>2.39.0</selenium.version>
+        <selenium.version>2.44.0</selenium.version>
         <testng.version>6.8.5</testng.version>
         <junit.version>4.10</junit.version>
         <springframework.version>3.1.1.RELEASE</springframework.version>
@@ -153,7 +153,7 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.9.9-RC1</version>
+            <version>0.9.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>xml-apis</groupId>
@@ -223,7 +223,7 @@
             <plugin>
               <groupId>com.github.github</groupId>
               <artifactId>site-maven-plugin</artifactId>
-              <version>0.9</version>
+              <version>0.10</version>
               <configuration>
                 <message>Maven artifacts for ${project.artifactId} ${project.version}</message>
                 <!-- git commit message -->

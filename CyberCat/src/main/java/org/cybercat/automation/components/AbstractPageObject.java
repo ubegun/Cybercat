@@ -203,6 +203,62 @@ public abstract class AbstractPageObject {
     }
 
     /**
+     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status. Waiting timeout is set to 0
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attrName    - name of attribute
+     * @param attrValue   - value of attribute
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    /*protected boolean validateElement(String elementName, String attrName, String attrValue, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, attrName, attrValue, 0, arg);
+    }*/
+
+    /**
+     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status. Waiting timeout is set to 0
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attributes  - map of attributes with name - value
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElement(String elementName, Map<String, String> attributes, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, attributes, 0, arg);
+    }
+
+    /**
+     * Validate element's attribute by specific status. Waiting timeout is set to 0
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attrName    - name of attribute
+     * @param attrValue   - value of attribute
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElement(String elementName, String attrName, String attrValue, PresentStatus expectedStatus, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, attrName, attrValue,expectedStatus, 0, arg);
+    }
+
+    /**
+     * Validate element's attribute by specific status. Waiting timeout is set to 0
+     *
+     * @param elementName - the name of the element that was set in init mode
+     * @param attributes  - map of attributes with name - value
+     * @param arg         - arguments that modify xPath.
+     * @return boolean
+     * @throws org.cybercat.automation.AutomationFrameworkException
+     */
+    protected boolean validateElement(String elementName,Map<String, String> attributes, PresentStatus expectedStatus, Object... arg) throws AutomationFrameworkException {
+        return validateElementWithTimeOut(elementName, attributes,expectedStatus, 0, arg);
+    }
+
+
+
+    /**
      * Waits for element's specified PresentStatus.VISIBLE.
      *
      * @param elementName - the name of the element that was set in init mode
@@ -233,62 +289,6 @@ public abstract class AbstractPageObject {
         return result.isValid();
     }
 
-
-    /**
-     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status. Waiting timeout is set to 0
-     *
-     * @param elementName - the name of the element that was set in init mode
-     * @param attrName    - name of attribute
-     * @param attrValue   - value of attribute
-     * @param arg         - arguments that modify xPath.
-     * @return boolean
-     * @throws org.cybercat.automation.AutomationFrameworkException
-     */
-    protected boolean validateElement(String elementName, String attrName, String attrValue, Object... arg) throws AutomationFrameworkException {
-        return validateElementWithTimeOut(elementName, attrName, attrValue, 0, arg);
-    }
-
-    /**
-     * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status. Waiting timeout is set to 0
-     *
-     * @param elementName - the name of the element that was set in init mode
-     * @param attributes  - map of attributes with name - value
-     * @param arg         - arguments that modify xPath.
-     * @return boolean
-     * @throws org.cybercat.automation.AutomationFrameworkException
-     */
-    protected boolean validateElement(String elementName, Map<String, String> attributes, Object... arg) throws AutomationFrameworkException {
-        return validateElementWithTimeOut(elementName, attributes, 0, arg);
-    }
-
-    /**
-     * Validate element's attribute by specific status. Waiting timeout is set to 0
-     *
-     * @param elementName - the name of the element that was set in init mode
-     * @param attrName    - name of attribute
-     * @param attrValue   - value of attribute
-     * @param arg         - arguments that modify xPath.
-     * @return boolean
-     * @throws org.cybercat.automation.AutomationFrameworkException
-     */
-    protected boolean validateElement(String elementName, PresentStatus expectedStatus, String attrName, String attrValue, Object... arg) throws AutomationFrameworkException {
-        return validateElementWithTimeOut(elementName, expectedStatus, attrName, attrValue, 0, arg);
-    }
-
-    /**
-     * Validate element's attribute by specific status. Waiting timeout is set to 0
-     *
-     * @param elementName - the name of the element that was set in init mode
-     * @param attributes  - map of attributes with name - value
-     * @param arg         - arguments that modify xPath.
-     * @return boolean
-     * @throws org.cybercat.automation.AutomationFrameworkException
-     */
-    protected boolean validateElement(String elementName, PresentStatus expectedStatus, Map<String, String> attributes, Object... arg) throws AutomationFrameworkException {
-        return validateElementWithTimeOut(elementName, expectedStatus, attributes, 0, arg);
-    }
-
-
     /**
      * Validate element's attribute by PresentStatus.ATTRIBUTE_PRESENT status
      *
@@ -301,7 +301,7 @@ public abstract class AbstractPageObject {
      * @throws org.cybercat.automation.AutomationFrameworkException
      */
     protected boolean validateElementWithTimeOut(String elementName, String attrName, String attrValue, int timeout, Object... arg) throws AutomationFrameworkException {
-        return validateElementWithTimeOut(elementName, PresentStatus.ATTRIBUTE_PRESENT, attrName, attrValue, timeout, arg);
+        return validateElementWithTimeOut(elementName, attrName, attrValue, PresentStatus.ATTRIBUTE_PRESENT, timeout, arg);
     }
 
     /**
@@ -315,7 +315,7 @@ public abstract class AbstractPageObject {
      * @throws org.cybercat.automation.AutomationFrameworkException
      */
     protected boolean validateElementWithTimeOut(String elementName, Map<String, String> attributes, int timeout, Object... arg) throws AutomationFrameworkException {
-        return validateElementWithTimeOut(elementName, PresentStatus.ATTRIBUTE_PRESENT, attributes, timeout, arg);
+        return validateElementWithTimeOut(elementName, attributes,PresentStatus.ATTRIBUTE_PRESENT, timeout, arg);
     }
 
     /**
@@ -329,10 +329,10 @@ public abstract class AbstractPageObject {
      * @return boolean
      * @throws org.cybercat.automation.AutomationFrameworkException
      */
-    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, String attrName, String attrValue, int timeout, Object... arg) throws AutomationFrameworkException {
+    protected boolean validateElementWithTimeOut(String elementName, String attrName, String attrValue,PresentStatus expectedStatus, int timeout, Object... arg) throws AutomationFrameworkException {
         Map<String, String> attributes = new HashMap<>(1);
         attributes.put(attrName, attrValue);
-        return validateElementWithTimeOut(elementName, expectedStatus, attributes, timeout, arg);
+        return validateElementWithTimeOut(elementName, attributes,expectedStatus, timeout, arg);
     }
 
     /**
@@ -345,7 +345,7 @@ public abstract class AbstractPageObject {
      * @return boolean
      * @throws org.cybercat.automation.AutomationFrameworkException
      */
-    protected boolean validateElementWithTimeOut(String elementName, PresentStatus expectedStatus, Map<String, String> attributes, int timeout, Object... arg) throws AutomationFrameworkException {
+    protected boolean validateElementWithTimeOut(String elementName, Map<String,String> attributes,PresentStatus expectedStatus,  int timeout, Object... arg) throws AutomationFrameworkException {
         PageElement element = updateElementPath(elementName, arg);
         StatefulElement<PageElement> result = new StatefulElement<>(element, expectedStatus, attributes, timeout);
         result.initWebElement(getBrowser());
@@ -638,7 +638,7 @@ public abstract class AbstractPageObject {
         return true;
     }
 
-    protected List<PageElement> getMissingElements() throws AutomationFrameworkException {
+    /*protected List<PageElement> getMissingElements() throws AutomationFrameworkException {
         Collection<PageElement> elements = this.elements.values();
         List<PageElement> missElements = new ArrayList<>();
         for (PageElement element : elements) {
@@ -651,7 +651,7 @@ public abstract class AbstractPageObject {
             LOG.warn("Missing elements: " + missElements);
         }
         return missElements;
-    }
+    }*/
 
     protected String getCurrentUrl() throws AutomationFrameworkException {
         String url = getBrowser().getCurrentUrl();

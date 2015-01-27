@@ -21,6 +21,7 @@ import org.cybercat.automation.annotations.CCIntegrationService;
 import org.cybercat.automation.annotations.CCPageObject;
 import org.cybercat.automation.annotations.CCRedirectionStep;
 import org.cybercat.automation.annotations.CCTestStep;
+import org.cybercat.automation.core.Platform;
 import org.cybercat.automation.test.AbstractFeature;
 
 /**
@@ -61,6 +62,7 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     @CCRedirectionStep(desctiption = "Navigation to stat page", url = "http://apache.org/")
     public IApacheHomeFeature gotoApache() throws AutomationFrameworkException {
         apacheWelcome.validateTopFragment();
+        apacheWelcome.validateElementStatuses();
         return this;
     }
 
@@ -72,5 +74,9 @@ public class ApacheHomeSampleFeature extends AbstractFeature implements IApacheH
     public IApacheHomeFeature gotoAdvertise() throws AutomationFrameworkException {
         return this;
     }
-    
+
+    @Override
+    public Platform[] getPlatforms() {
+        return new Platform[]{Platform.WEB};
+    }
 }

@@ -7,7 +7,7 @@
   <artifactId>cybercat-sample-test</artifactId>
   <version>0.4-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Webdriver Core for automation testing</name>
+  <name>Webdriver Core for automation testing (tests)</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -23,11 +23,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cxf.version>2.7.0</cxf.version>
     <axis.version>1.4</axis.version>
+    <cybercat.version>1.1.2-release</cybercat.version>
   </properties>
 <repositories>
     <repository>
         <id>Cybercat-mvn-repo</id>
-        <url>https://raw.github.com/ubegun/Cybercat/mvn-repo/</url>
+        <url>https://raw.github.com/YagelNasManit/Cybercat/mvn-repo/</url>
         <snapshots>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
@@ -48,7 +49,7 @@
     <dependency>
       <groupId>org.cybercat.autotest</groupId>
       <artifactId>cybercat-automation-core</artifactId>
-      <version>1.0-realise</version>
+      <version>${cybercat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -70,8 +71,8 @@
         <version>2.4</version>
         <configuration>
           <encoding>UTF-8</encoding>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <plugin>
