@@ -3,10 +3,7 @@ package org.apache.automation.pages;
 import org.apache.commons.lang3.StringUtils;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
-import org.cybercat.automation.components.AbstractPageObject;
-import org.cybercat.automation.components.Button;
-import org.cybercat.automation.components.PageElement;
-import org.cybercat.automation.components.StatefulElement;
+import org.cybercat.automation.components.*;
 import org.testng.Assert;
 
 import java.util.HashMap;
@@ -24,6 +21,9 @@ public class TopFragment extends AbstractPageObject{
         addElement(new Button("Get Involved", PathType.byXPath, ".//*[@href='/foundation/getinvolved.html']"));
         addElement(new Button("Download", PathType.byXPath, ".//*[@href='/dyn/closer.cgi']"));
         addElement(new Button("Support Apache", PathType.byXPath, ".//*[@href='/foundation/sponsorship.html']"));
+
+        addElement(new TextContainer("SearchForm.Hidden.Input",PathType.byXPath,"//input[@name='sitesearch']"));
+        addElement(new TextContainer("FakeElement",PathType.byXPath,"//input[@name = 'fake']"));
     }
 
     @Override
@@ -81,6 +81,26 @@ public class TopFragment extends AbstractPageObject{
         Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", map, 10,"/foundation/"));
         Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", "href", "http://apache.org/foundation/", StatefulElement.PresentStatus.VISIBLE, 10,"/foundation/"));
         Assert.assertTrue(validateElementWithTimeOut("FoundationWithMissingAttr", map, StatefulElement.PresentStatus.VISIBLE, 10,"/foundation/"));
+
+
+        //validate element visibility
+        Assert.assertTrue(validateElement("Foundation", StatefulElement.PresentStatus.VISIBLE));
+        Assert.assertFalse(validateElement("Foundation", StatefulElement.PresentStatus.PRESENT_NOT_VISIBLE));
+        Assert.assertFalse(validateElement("Foundation", StatefulElement.PresentStatus.NOT_PRESENT_ON_DOM));
+
+        //validate element invisibility
+        Assert.assertTrue(validateElement("SearchForm.Hidden.Input", StatefulElement.PresentStatus.PRESENT_NOT_VISIBLE));
+        Assert.assertFalse(validateElement("SearchForm.Hidden.Input", StatefulElement.PresentStatus.NOT_PRESENT_ON_DOM));
+        Assert.assertFalse(validateElement("SearchForm.Hidden.Input", StatefulElement.PresentStatus.VISIBLE));
+
+        // validate element not present on dom
+        Assert.assertFalse(validateElement("FakeElement", StatefulElement.PresentStatus.PRESENT_NOT_VISIBLE));
+        Assert.assertTrue(validateElement("FakeElement", StatefulElement.PresentStatus.NOT_PRESENT_ON_DOM));
+        Assert.assertFalse(validateElement("FakeElement", StatefulElement.PresentStatus.VISIBLE));
+
+
+
+
 
     }
     
