@@ -83,32 +83,38 @@ public class StatefulElement<T extends PageElement> extends PageElement {
         }
     };
 
-    AbstractCriteria<Boolean> invisibilityCriteria = new AbstractCriteria<Boolean>(path) {
+    AbstractCriteria<List<WebElement>> notPresentOnDomCriteria = new AbstractCriteria<List<WebElement>>(path) {
 
         @Override
-        public ExpectedCondition<Boolean> getExpectedCondition(String path) {
-            return ExpectedConditions.invisibilityOfElementLocated(processor.getByElement(path));
+        public ExpectedCondition<List<WebElement>> getExpectedCondition(String path) {
+            return ExpectedConditions.presenceOfAllElementsLocatedBy(processor.getByElement(path));
         }
 
         @Override
-        public boolean onSuccess(Boolean elements, String path) {
-            isValid &= elements.booleanValue();
-            presentStatus = PresentStatus.PRESENT_NOT_VISIBLE;
-            return false;
+        public boolean onSuccess(List<WebElement> elements, String path) {
+            if (elements != null && !elements.isEmpty()) {
+                setElement(elements.get(0));
+                setState(ElementState.INITIALIZED);
+                if (waitPresent()) {
+                    presentStatus = PresentStatus.VISIBLE;
+                } else {
+                    presentStatus = PresentStatus.PRESENT_NOT_VISIBLE;
+                }
+                return false;
+            }
+            return true;
         }
 
         @Override
         public void onException(String path) {
             super.onException(path);
-            isValid = false;
-            presentStatus = PresentStatus.VISIBLE;
+            presentStatus = PresentStatus.PRESENT_NOT_VISIBLE;
         }
 
         @Override
         public void onException(Exception e, String path) {
             super.onException(e, path);
-            isValid = false;
-            presentStatus = PresentStatus.VISIBLE;
+                presentStatus = PresentStatus.NOT_PRESENT_ON_DOM;
         }
     };
 
@@ -133,7 +139,7 @@ public class StatefulElement<T extends PageElement> extends PageElement {
 
         @Override
         public boolean onSuccess(Boolean elements, String path) {
-            return isValid = elements.booleanValue();
+            return isValid = elements;
         }
 
         @Override
@@ -207,18 +213,12 @@ public class StatefulElement<T extends PageElement> extends PageElement {
             case NOT_PRESENT_ON_DOM:
                 isValid = true;
                 processor.setImplicitTimeout(0);
-                processor.initWebElementByCriteria(browser, invisibilityCriteria);
-                if (isValid) {
-                    presentStatus = PresentStatus.NOT_PRESENT_ON_DOM;
-                }
+                processor.initWebElementByCriteria(browser, notPresentOnDomCriteria);
                 break;
             case PRESENT_NOT_VISIBLE:
                 isValid = true;
                 processor.setImplicitTimeout(0);
-                processor.initWebElementByCriteria(browser, invisibilityCriteria);
-                /*if (isValid) {
-                    presentStatus = PresentStatus.PRESENT_NOT_VISIBLE;
-                }*/
+                processor.initWebElementByCriteria(browser, visibilityCriteria);
                 break;
             case ATTRIBUTE_PRESENT:
                 isAttributeExpected = true;
