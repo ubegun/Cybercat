@@ -101,7 +101,7 @@ public class AnnotationBuilder {
                     candidate = c.newInstance();
                     if (candidate.getVersion() == version && candidate.isSupportsPlatform(platform))
                         return (Class<T>) candidate.getClass();
-                    if (caught == null || (candidate.getVersion() < version && caught.getVersion() < candidate.getVersion()) && candidate.isSupportsPlatform(platform)) {
+                    if ((caught == null || (candidate.getVersion() < version && caught.getVersion() < candidate.getVersion())) && candidate.isSupportsPlatform(platform)) {
                         caught = candidate;
                     }
                 }
