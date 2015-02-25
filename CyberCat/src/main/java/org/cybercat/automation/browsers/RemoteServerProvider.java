@@ -51,9 +51,7 @@ public class RemoteServerProvider {
                 capabilities = DesiredCapabilities.firefox();
                 String profileName = configProperties.getProperty("browser.profile.name", null);
                 if(StringUtils.isNotBlank(profileName)){
-                    ProfilesIni allProfiles = new ProfilesIni();
-                    FirefoxProfiler firefoxProfiler = new FirefoxProfiler();
-                    FirefoxProfile profile = firefoxProfiler.addNetExportPreferences(allProfiles.getProfile(profileName));
+                    FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
                     capabilities.setCapability(FirefoxDriver.PROFILE, profile);
                 }
                 break;
