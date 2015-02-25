@@ -41,6 +41,6 @@ public interface IIntegrationService extends IVersionControl {
 
     @Override
     default Platform[] getPlatforms() {
-        return new Platform[1];
+        return new Platform[]{Platform.WEB, Platform.TABLET, Platform.MOBILE};
     }
 }
