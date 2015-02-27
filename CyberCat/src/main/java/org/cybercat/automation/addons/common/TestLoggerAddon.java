@@ -14,12 +14,17 @@
  */
 package org.cybercat.automation.addons.common;
 
-import java.nio.file.Path;
+
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.Configuration;
+import org.cybercat.automation.addons.common.logging.appender.AbstractLogAppender;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.core.AddonContainer;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventStartTest;
@@ -36,11 +41,12 @@ import org.cybercat.automation.utils.WorkFolder;
 public class TestLoggerAddon implements AddonContainer {
 
     public final static String FULL_LOG = "Full log";
-    private TestLogAppender thisLogger;
+    private List<AbstractLogAppender> logAppenders;
+    private Logger log = LogManager.getLogger(TestLoggerAddon.class);
     
     public TestLoggerAddon() {
         super();
-        thisLogger =  TestLogAppender.getLogger();
+        logAppenders =  AbstractLogAppender.getLogAppenders();
     }
 
     @Override
@@ -52,17 +58,25 @@ public class TestLoggerAddon implements AddonContainer {
         listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 100) {
             @Override
             public void doActon(EventStartTest event) throws Exception {
-                thisLogger.startRecording();
+                for(AbstractLogAppender thisLogger: logAppenders) {
+                    thisLogger.startRecording();
+                }
             }
         });
         listeners.add(new EventListener<EventStopTest>(EventStopTest.class, 100) {
             @Override
             public void doActon(EventStopTest event) throws Exception {
-                Path fullLog = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getDirName(),
-                        CommonUtils.dateToString(event.getStopTime()) + event.getFileName() + "_full.log");
-                thisLogger.flush(fullLog);
+                log.log(LogLevel.TEST_FINISH, event.getStopTime());
+
+                String directory = Paths.get(WorkFolder.Screenshots.getPath().toString(),event.getDirName(),CommonUtils.dateToString(event.getStopTime()) + event.getFileName()+ "_full.").toString();
+
+               /* String directory = WorkFolder.Screenshots.getPath().toString() + "\\"
+                        + event.getDirName() + "\\" + CommonUtils.dateToString(event.getStopTime()) + event.getFileName() + "_full.";*/
+
                 TestCase test = new TestCase(event.getTestClass().getName());
-                test.setFullLog(fullLog.toString());
+                for(AbstractLogAppender logAppender: logAppenders) {
+                    logAppender.flush(test, directory);
+                }
                 TestArtifactManager.updateTestInfo(test);
             }
         });

@@ -14,9 +14,11 @@
  */
 package org.cybercat.automation.components;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.core.Browser;
 import org.cybercat.automation.utils.CommonUtils;
@@ -25,7 +27,7 @@ import org.openqa.selenium.Keys;
 
 public class TextField extends Button {
 
-    private final static Logger log = Logger.getLogger(TextField.class);
+    private final static Logger log = LogManager.getLogger(TextField.class);
 
     public TextField(String name, PathType type, String path) {
         super(name, type, path);
@@ -47,6 +49,7 @@ public class TextField extends Button {
             super.getElement().clear();
             super.getElement().sendKeys(text);
             log.info(getName() + " text field was filled with the following text: " + text);
+            log.log(LogLevel.ELEMENT_ACTION, getName() + " text field was filled with the following text: " + text);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -59,6 +62,7 @@ public class TextField extends Button {
     
     public void clearTextField() throws PageObjectException {
         log.info("clear "+getName()+" text field");
+        log.log(LogLevel.ELEMENT_ACTION, "clear "+getName()+" text field");
         getElement().clear();        
     }
 
@@ -67,6 +71,7 @@ public class TextField extends Button {
             // highlightElement();
             super.getElement().sendKeys(Keys.valueOf(keyName));
             log.info(getName() + " text field was filled with the following text: " + keyName);
+            log.log(LogLevel.ELEMENT_ACTION, getName() + " text field was filled with the following text: " + keyName);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -81,6 +86,7 @@ public class TextField extends Button {
                 throw new PageObjectException(e);
             }
             log.info(getName() + " text field was filled with the following text: " + text);
+            log.log(LogLevel.ELEMENT_ACTION, getName() + " text field was filled with the following text: " + text);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -97,6 +103,7 @@ public class TextField extends Button {
          String query = String.format("arguments[0].innerHTML = '%s'", text);
          Browser.getCurrentBrowser().executeScript(query, super.getElement());
          log.info(getName() + " text field was filled with the following text: " + text);
+         log.log(LogLevel.ELEMENT_ACTION, getName() + " text field was filled with the following text: " + text);
         } else {
          throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -106,6 +113,7 @@ public class TextField extends Button {
         if (super.getElement() != null) {            
             super.getElement().sendKeys(text);
             log.info(getName() + " text field was filled with the following text: " + text);
+            log.log(LogLevel.ELEMENT_ACTION, getName() + " text field was filled with the following text: " + text);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }

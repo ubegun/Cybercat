@@ -15,9 +15,11 @@
 package org.cybercat.automation.components;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
 import org.cybercat.automation.core.Browser;
@@ -25,7 +27,7 @@ import org.cybercat.automation.core.Browser;
 
 public class RadioGroup extends PageElement {
 
-    private final static Logger log = Logger.getLogger(RadioGroup.class);
+    private final static Logger log = LogManager.getLogger(RadioGroup.class);
 
     // private HashMap<String, Button> entries = new HashMap();
     // private RemoteWebDriver driver;
@@ -53,6 +55,7 @@ public class RadioGroup extends PageElement {
         entries[index].initWebElement(Browser.getCurrentBrowser());
         entries[index].click();
         log.info("Selected: " + entries[index].getName());
+        log.log(LogLevel.ELEMENT_ACTION, "Radio Group => Selected: " + entries[index].getName());
     }
 
     // when declaring radio button its name must contain label specified on UI

@@ -14,7 +14,8 @@
  */
 package org.cybercat.automation.testng;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -22,7 +23,7 @@ import org.testng.TestListenerAdapter;
 
 public class TestNGListener extends TestListenerAdapter {
 
-    private static final Logger log = Logger.getLogger(TestNGListener.class);
+    private static final Logger log = LogManager.getLogger(TestNGListener.class);
     private int stepCount;
     private TestListner testListner;
     

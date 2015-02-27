@@ -14,28 +14,26 @@
  */
 package org.cybercat.automation.utils;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 
 
 public class CommonUtils {
 
-    private static final Logger log = Logger.getLogger(CommonUtils.class);
+    private static final Logger log = LogManager.getLogger(CommonUtils.class);
    
     private static Random rand = new Random();   
 
@@ -224,4 +222,16 @@ public class CommonUtils {
         }
         return buf.toString();
     }
+
+    public static String readFromResourceFile(String folderName, String fileName){
+        String readValue = null;
+        try {
+            readValue = IOUtils.toString(Class.class.getResourceAsStream("/" + folderName + "/" + fileName), "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return readValue;
+    }
+
+
 }

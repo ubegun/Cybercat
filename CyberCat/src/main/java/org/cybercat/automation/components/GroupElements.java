@@ -18,7 +18,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageElementRuntimeException;
 import org.cybercat.automation.PageObjectException;
@@ -34,7 +35,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class GroupElements<T extends PageElement> extends PageElement{
 
-    private static Logger log = Logger.getLogger(GroupElements.class);
+    private static Logger log = LogManager.getLogger(GroupElements.class);
 
     private List<T> subElements = new ArrayList<T>();
     private Class<T> eType;

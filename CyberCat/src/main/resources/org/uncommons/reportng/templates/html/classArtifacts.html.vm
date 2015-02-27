@@ -6,6 +6,14 @@
     <td>
         <table style="width:99%">
             <tr>
+
+                <td class="fullLogHtml hidden">
+                    <a href="#" target="_blank">
+                        <img class="icon" src="html-log-icon.png">
+                        <br><span class="iconDescription">HTML Full Log</span>
+                    </a>
+                </td>
+
                 <td class="fullLog hidden">
                     <a href="#" target="_blank">
                         <img class="icon" src="full-log-icon.png">

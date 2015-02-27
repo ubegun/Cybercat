@@ -6,14 +6,14 @@ import java.rmi.RemoteException;
 
 import javax.xml.rpc.ServiceException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.core.AutomationMain;
 
 public class Jira {
 
-    private static Logger log = Logger.getLogger(Jira.class);
+    private static Logger log = LogManager.getLogger(Jira.class);
     
     JiraSoapService jiraService;
     String authToken;

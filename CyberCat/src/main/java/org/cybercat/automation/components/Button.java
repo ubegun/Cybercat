@@ -14,9 +14,11 @@
  */
 package org.cybercat.automation.components;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.Point;
@@ -24,7 +26,7 @@ import org.openqa.selenium.Point;
 
 public class Button extends TextContainer {
 
-    private final static Logger LOG = Logger.getLogger(Button.class);
+    private final static Logger LOG = LogManager.getLogger(Button.class);
     
     public Button(String name, PathType type, String path) {
         super(name, type, path);
@@ -49,6 +51,7 @@ public class Button extends TextContainer {
             try {
                 super.highlightElement();
                 LOG.info("click on: " + super.getName());
+                LOG.log(LogLevel.ELEMENT_ACTION, "CLICK on element:  " + super.getName() +"; ELEMENT NAME: "+ super.getText() + "; ELEMENT PATH: "+ getPath()[0]);
                 getElement().click();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -68,6 +71,7 @@ public class Button extends TextContainer {
                 super.highlightElement();
                 getElement().submit();
                 LOG.info("clicked on: " + super.getName());
+                LOG.log(LogLevel.ELEMENT_ACTION, "CLICK on element:  " + super.getName() +"; ELEMENT NAME: "+ super.getText() + "; ELEMENT PATH: "+ getPath()[0]);
             } catch (Exception e) {
                 throw new PageObjectException("Unable to click on " + this.getName() + " element: " + this.getPath()[0], e);
             }
@@ -81,6 +85,7 @@ public class Button extends TextContainer {
     
     public void clickOffset(Point cord) throws AutomationFrameworkException {
         LOG.info("Offset click to element: " + getElement().getTagName() + ", by coordinates: " + cord);
+        LOG.log(LogLevel.ELEMENT_ACTION, "Offset click to element: " + super.getName() + ", by coordinates: " + cord +"; ELEMENT NAME: "+ super.getText() + "; ELEMENT PATH: "+ getPath()[0]);
         try{  
             Browser.getCurrentBrowser().getActions().moveToElement(getElement(), cord.getX(), cord.getY()).click().perform();
         }catch(Exception e){  
@@ -95,6 +100,8 @@ public class Button extends TextContainer {
 
     public void dragOffset(int x,int y) throws AutomationFrameworkException {
         LOG.info("Offset drag of element: " + getElement().getTagName() + ", by coordinates: " + " x ="+x+" y="+y);
+        LOG.log(LogLevel.ELEMENT_ACTION, "Frag offset of element: " + super.getName() + ", by coordinates: " + " x ="+x+" y="+y
+                +"; ELEMENT NAME: "+ super.getText() + "; ELEMENT PATH: "+ getPath()[0]);
         try{ 
             Browser.getCurrentBrowser().getActions().moveToElement(getElement()).clickAndHold().moveByOffset(x,y).release().perform();
         }catch(Exception e){  
@@ -112,7 +119,8 @@ public class Button extends TextContainer {
     }
 
     public void hower() throws AutomationFrameworkException{
-        try{ 
+        try{
+            LOG.log(LogLevel.ELEMENT_ACTION, "Hover on element " + super.getName() + "; ELEMENT NAME: " + super.getText() + "; ELEMENT PATH: "+ getPath()[0]);
             Browser.getCurrentBrowser().getActions().moveToElement(getElement()).perform();
         }catch(Exception e){  
             LOG.error("Exception on hower action for " + getName() + " element ." + 

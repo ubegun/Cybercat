@@ -19,7 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.core.AutomationMain;
 import org.reflections.Reflections;
@@ -32,7 +33,7 @@ public class AddonProvider {
 
     private Set<ExteranlAddon> addons;
     
-    private final static Logger logger = Logger.getLogger(AddonProvider.class); 
+    private final static Logger logger = LogManager.getLogger(AddonProvider.class);
 
     /**
      * @throws AutomationFrameworkException

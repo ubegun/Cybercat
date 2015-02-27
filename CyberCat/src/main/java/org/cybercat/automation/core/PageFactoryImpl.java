@@ -19,10 +19,15 @@ import java.lang.reflect.Field;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.HtmlLogBuilder;
+import org.cybercat.automation.addons.common.logging.provider.HtmlLogHelper;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
+import org.cybercat.automation.addons.common.logging.provider.LogLevelAnalyzer;
 import org.cybercat.automation.annotations.AnnotationBuilder;
 import org.cybercat.automation.annotations.CCProperty;
 import org.cybercat.automation.components.AbstractPageObject;
@@ -36,7 +41,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class PageFactoryImpl implements PageFactory {
 
-    private static Logger LOG = Logger.getLogger(PageFactoryImpl.class);
+    private static Logger LOG = LogManager.getLogger(PageFactoryImpl.class);
 
     /**
      * Spring application context
@@ -85,6 +90,8 @@ public class PageFactoryImpl implements PageFactory {
         try {
             Browser browser = Browser.getCurrentBrowser();
             LOG.info("Current URL: " + getCurrentUrl());
+            LOG.log(LogLevel.PAGE_START, HtmlLogHelper.makeBold("OPEN PAGE:  ") + page.getClass().getName() + "; "
+                    + HtmlLogHelper.makeBold("PAGE URL: ") + getCurrentUrl() , HtmlLogBuilder.PageStartStatus.PAGE_OPEN);
             if (StringUtils.isNotBlank(page.getPageUrl()) 
                     && !browser.getCurrentUrl().contains(page.getPageUrl())) {
                 LOG.error("Navigate to URL: " + page.getPageUrl());

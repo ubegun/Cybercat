@@ -30,7 +30,8 @@ import java.util.Collection;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.addons.common.MakeScreenshotEvent.ImageFormat;
@@ -51,7 +52,7 @@ import org.cybercat.automation.utils.WorkFolder;
 
 public class ScreenshotManager implements AddonContainer {
 
-    private static Logger log = Logger.getLogger(ScreenshotManager.class);
+    private static Logger log = LogManager.getLogger(ScreenshotManager.class);
     public static final String STEPS_SCREENSHOT = "Steps screenshot";
     public static final String EXCEPTION_SCREENSHOT = "Exception screenshot";
     private int bottomOffset;

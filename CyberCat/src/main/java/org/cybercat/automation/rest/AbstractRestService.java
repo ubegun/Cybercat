@@ -16,13 +16,14 @@ package org.cybercat.automation.rest;
 
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.persistence.model.Identity;
 import org.json.JSONObject;
 
 public abstract class AbstractRestService {
 
-    private static final Logger LOG = Logger.getLogger(AbstractRestService.class);
+    private static final Logger LOG = LogManager.getLogger(AbstractRestService.class);
 
     protected Identity sessionOwner; 
     

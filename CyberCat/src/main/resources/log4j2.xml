@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Configuration status="WARN" packages="org.cybercat.automation.addons.common.logging">
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <TestLogAppender name="TextLog" logType="log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </TestLogAppender>
+
+        <TestLogAppender name="HtmlLog" logType="html">
+            <HTMLLogLayout contentType="text/html" fontSize="14"/>
+        </TestLogAppender>
+
+    </Appenders>
+
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="TextLog" level="debug"/>
+            <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="HtmlLog"/>
+        </Root>
+    </Loggers>
+</Configuration>

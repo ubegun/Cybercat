@@ -302,6 +302,7 @@ public class HTMLReporter extends AbstractReporter {
         copyBinary(outputDirectory, "cookies-icon.png", "cookies-icon.png");
         copyBinary(outputDirectory, "exception-image-icon.png", "exception-image-icon.png");
         copyBinary(outputDirectory, "full-log-icon.png", "full-log-icon.png");
+        copyBinary(outputDirectory, "html-log-icon.png", "html-log-icon.png");
         copyBinary(outputDirectory, "short-log-icon.png", "short-log-icon.png");
         copyBinary(outputDirectory, "step-images-icon.png", "step-images-icon.png");
         copyBinary(outputDirectory, "video-icon.png", "video-icon.png");

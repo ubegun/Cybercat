@@ -17,7 +17,8 @@ package org.cybercat.automation.core;
 import java.lang.reflect.Field;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -29,7 +30,7 @@ import org.cybercat.automation.components.AbstractPageObject.PageState;
 @Aspect
 public class PageObjectStateControlAcpect {
     
-    Logger log = Logger.getLogger(PageObjectStateControlAcpect.class);
+    Logger log = LogManager.getLogger(PageObjectStateControlAcpect.class);
 
     private PageFactoryImpl pFactory;
 

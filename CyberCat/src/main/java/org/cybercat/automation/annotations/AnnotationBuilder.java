@@ -1,11 +1,11 @@
 /**Copyright 2013 The Cybercat project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,10 +20,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.HtmlLogHelper;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.core.Platform;
@@ -42,9 +47,11 @@ import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
  *
  */
 public class AnnotationBuilder {
-    
-    private static Logger log = Logger.getLogger(AnnotationBuilder.class);
-    
+
+    private static Logger log = LogManager.getLogger(AnnotationBuilder.class);
+
+    static Map featureFields = new HashMap<>();
+
     public static final <T extends IFeature> void processCCPageObject(T entity, Class<? extends Object> clazz) throws AutomationFrameworkException{
         if (clazz == null)
             return;
@@ -55,27 +62,27 @@ public class AnnotationBuilder {
             }else if (field.getAnnotation(CCProperty.class) != null) {
                 processPropertyField(entity, field);
             }
-        }    
+        }
         processCCPageObject(entity, (Class<? extends Object>) clazz.getSuperclass());
     }
-        
+
     public static final <T extends IFeature> void processCCPageObject(T entity) throws AutomationFrameworkException{
         processCCPageObject(entity, entity.getClass());
     }
-    
+
     private static Reflections reflections;
-    
+
     private static Reflections getReflections() throws AutomationFrameworkException{
         if(reflections != null)
             return reflections;
-        String rootPackage = AutomationMain.getProperty("version.control.root.package");        
+        String rootPackage = AutomationMain.getProperty("version.control.root.package");
         if(rootPackage == null )
             return null;
         reflections = new Reflections(rootPackage);
         return reflections;
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     private final static <T extends IVersionControl> Class<T> versionControlPreprocessor(Class<T> providerzz) throws AutomationFrameworkException {
         Reflections refSearch;
@@ -87,46 +94,53 @@ public class AnnotationBuilder {
             platform = Platform.fromValue(AutomationMain.getProperty("platform.type"));
             if(refSearch == null || version < 0)
                 return providerzz;
-        }catch(Exception e ){    
+        }catch(Exception e ){
             return providerzz;
-        }        
+        }
         Set<Class<? extends T>> providers = refSearch.getSubTypesOf(providerzz);
-        if(providers == null || providers.size() == 0)
-            return  providerzz;
+        if(providers == null || providers.size() == 0) {
+            log.log(LogLevel.CONFIGURATION_START, HtmlLogHelper.addColorToText("There are no sub types of: " + providerzz.getName(), "#C00000"));
+            return providerzz;
+        }
         T candidate, caught = null;
         for (Class<? extends T> classProvider : providers) {
             try {
                 Constructor<T> c = (Constructor<T>) classProvider.getConstructor();
                 if (!Modifier.isAbstract(classProvider.getModifiers())) {
                     candidate = c.newInstance();
-                    if (candidate.getVersion() == version && candidate.isSupportsPlatform(platform))
+                    HtmlLogHelper.writeFeatureNameLog(HtmlLogHelper.getFeatureFields(candidate, featureFields), candidate);
+                    if (candidate.getVersion() == version && candidate.isSupportsPlatform(platform)) {
+                        HtmlLogHelper.writePlatformVsVersionLog(candidate.getPlatforms(), candidate.getVersion());
                         return (Class<T>) candidate.getClass();
+                    }
                     if ((caught == null || (candidate.getVersion() < version && caught.getVersion() < candidate.getVersion())) && candidate.isSupportsPlatform(platform)) {
                         caught = candidate;
                     }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        HtmlLogHelper.writePlatformVsVersionLog(caught.getPlatforms(), caught.getVersion());
+
         return (Class<T>) caught.getClass();
     }
-    
+
     public static final <T extends AbstractTestCase> void processCCFeature(T entity) throws AutomationFrameworkException{
         processCCFeatureForObject(entity);
     }
-    
-    
+
+
     public static final <T extends IFeature> void processCCFeature(T entity) throws AutomationFrameworkException{
         processCCFeatureForObject(entity);
     }
 
-    
+
     private static <T extends Object> void processCCFeatureForObject(T entity) throws AutomationFrameworkException {
         processCCFeatureForObject(entity, entity.getClass());
     }
-    
+
     private static <T extends Object> void processCCFeatureForObject(T entity, Class<? extends Object> clazz) throws AutomationFrameworkException {
         if (clazz == null)
             return;
@@ -143,7 +157,7 @@ public class AnnotationBuilder {
         processCCFeatureForObject(entity, (Class<? extends Object>) clazz.getSuperclass());
     }
 
-    
+
     public static final <T extends AbstractPageObject> void processCCPageFragment(T entity) throws AutomationFrameworkException {
         processCCPageFragment(entity, entity.getClass());
     }
@@ -162,11 +176,10 @@ public class AnnotationBuilder {
         }
         processCCPageFragment(entity, (Class<? extends AbstractPageObject>) clazz.getSuperclass());
     }
-    
+
     /**
      * @param targetObject
-     * @param fields
-     * @return
+     * @param field
      * @throws AutomationFrameworkException
      * @throws PageObjectException
      */
@@ -181,7 +194,7 @@ public class AnnotationBuilder {
             throw new AutomationFrameworkException("Unexpected field type :" + field.getType().getSimpleName()
                     + " field name: " + field.getName()
                     + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
+                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e);
         }
         try {
             T po = (T) pageFactory.createPage(clazz);
@@ -189,18 +202,17 @@ public class AnnotationBuilder {
             field.set(targetObject, po);
             return po;
         } catch (Exception e) {
-            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
+            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support."
                     + " field name: " + field.getName()
                     + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
                     ,e );
         }
-    }    
+    }
 
-    
+
     /**
      * @param entity
-     * @param fields
-     * @param i
+     * @param field
      * @return
      * @throws AutomationFrameworkException
      */
@@ -214,19 +226,20 @@ public class AnnotationBuilder {
             throw new AutomationFrameworkException("Unexpected field type :" + field.getType().getSimpleName()
                     + " field name: " + field.getName()
                     + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
+                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e);
         }
         try {
+            log.log(LogLevel.CONFIGURATION_START, HtmlLogHelper.addColorToText(HtmlLogHelper.makeBold("START FEATURE CREATING."), "#e18728"));
             field.set(entity, createFeature(versionControlPreprocessor(clazz)));
         } catch (Exception e) {
-            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
+            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support."
                     + " field name: " + field.getName()
                     + " class: " + entity.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
                     ,e );
         }
         return clazz;
-    }    
-    
+    }
+
     @SuppressWarnings("unchecked")
     private final static <T extends IFeature> T createFeature(Class<T> eType) throws AutomationFrameworkException {
         try {
@@ -238,43 +251,44 @@ public class AnnotationBuilder {
             proxyFactory.addAspect(TestStepAspect.class);
             result = (T) proxyFactory.getProxy();
             log.info(eType.getSimpleName() + " feature has been created.");
+            log.log(LogLevel.CONFIGURATION_START, HtmlLogHelper.addColorToText(HtmlLogHelper.makeBold("FEATURE HAS BEEN CREATED: "), "#54b948") + eType.getSimpleName());
             return result;
         } catch (Exception e) {
             // handle test fail
-            throw new AutomationFrameworkException("Feature factoring exception. ", e);            
+            throw new AutomationFrameworkException("Feature factoring exception. ", e);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    private static final void createIntegrationService(Field field, Object targetObject) throws AutomationFrameworkException{  
+    private static final void createIntegrationService(Field field, Object targetObject) throws AutomationFrameworkException{
         Class<IIntegrationService> clazz;
         try{
-            clazz = (Class<IIntegrationService>) field.getType();                    
+            clazz = (Class<IIntegrationService>) field.getType();
         }catch(Exception e){
             throw new AutomationFrameworkException("Unexpected field type :" + field.getType().getSimpleName()
                     + " field name: " + field.getName()
                     + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
-                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e); 
+                    + " \n\tThis field must be of the type that extends AbstractPageObject class." , e);
         }
         try {
-            
+            log.log(LogLevel.CONFIGURATION_START, HtmlLogHelper.addColorToText(HtmlLogHelper.makeBold("&nbsp;&nbsp;START INTEGRATION SERVICE CREATING: "), "#e18728"));
             field.set(targetObject, createIntegrationService(clazz, field.getAnnotation(CCIntegrationService.class)));
         } catch (Exception e) {
-            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support." 
+            throw new AutomationFrameworkException("Set filed exception. Please, save this log and contact the Cybercat project support."
                     + " field name: " + field.getName()
                     + " class: " + targetObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId()
                     ,e );
-        }                                
+        }
 
     }
-    
+
     private static void processIntegrationService(Object targetObject, Class<? extends Object> clazz) throws AutomationFrameworkException{
         if (clazz == null)
             return;
         for(Field field : clazz.getDeclaredFields()){
             field.setAccessible(true);
             if(field.getAnnotation(CCProperty.class) != null){
-                processPropertyField(targetObject, field);                                
+                processPropertyField(targetObject, field);
             }
         }
         processIntegrationService(targetObject, clazz.getSuperclass());
@@ -282,16 +296,18 @@ public class AnnotationBuilder {
 
     /**
      * @param targetObject
-     * @param fields
-     * @param i
+     * @param field
      * @throws AutomationFrameworkException
      */
     public static void processPropertyField(Object targetObject, Field field) throws AutomationFrameworkException {
         try {
             CCProperty properties = field.getAnnotation(CCProperty.class);
             StringBuffer value = new StringBuffer("");
-            for(String prop :properties.value()){ 
+            for(String prop :properties.value()){
                 value.append(AutomationMain.getProperty(prop));
+                if (!(targetObject instanceof AbstractPageObject) && field.get(targetObject) == null) {
+                    log.log(LogLevel.CONFIGURATION_START, HtmlLogHelper.makeBold("&nbsp;&nbsp;Properties of ") + targetObject.getClass().getSimpleName() + ":<p> &nbsp;&nbsp;&minus;&nbsp; " + prop + " = " + value.toString() + "; ");
+                }
             }
             field.set(targetObject, value.toString());
         } catch (Exception e) {
@@ -301,8 +317,8 @@ public class AnnotationBuilder {
                             + " Thread ID:" + Thread.currentThread().getId(), e);
         }
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     private static final <T extends IIntegrationService> T createIntegrationService(Class<T> clazz, CCIntegrationService aService) throws AutomationFrameworkException{
         Class<T> cService =  versionControlPreprocessor(clazz);
@@ -316,7 +332,8 @@ public class AnnotationBuilder {
             proxyFactory.addAspect(new IntegrationServiceAspect(aService.hasSession()));
             result = (T) proxyFactory.getProxy();
             log.info(cService.getSimpleName() + " integration Service has been created.");
-            return result;            
+            log.log(LogLevel.CONFIGURATION_START, HtmlLogHelper.addColorToText(HtmlLogHelper.makeBold("&nbsp;&nbsp;INTEGRATION SERVICE HAS BEEN CREATED: "), "#54b948") + cService.getSimpleName());
+            return result;
         } catch (Exception e) {
             throw new AutomationFrameworkException("Integration service creation problem.", e);
         }

@@ -21,7 +21,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.PageObjectException;
@@ -30,6 +31,7 @@ import org.cybercat.automation.ResourceManager;
 import org.cybercat.automation.addons.AddonProvider;
 import org.cybercat.automation.addons.common.ScreenshotManager;
 import org.cybercat.automation.addons.common.TestLoggerAddon;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.addons.jira.JiraReportManager;
 import org.cybercat.automation.addons.media.MediaController;
 import org.cybercat.automation.addons.yslow.PerformanceReportManager;
@@ -53,7 +55,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class ConfigurationManager implements AddonContainer {
 
-    private static Logger log = Logger.getLogger(ConfigurationManager.class);
+    private static Logger log = LogManager.getLogger(ConfigurationManager.class);
 
     private ApplicationContext context;
     private EventManagerImpl eventManager;
@@ -158,6 +160,7 @@ public class ConfigurationManager implements AddonContainer {
             @Override
             public void doActon(EventStartTest event) throws Exception {
                 testClass = event.getTestClass();
+                log.log(LogLevel.TEST_START, event.getDescription(), event.getTestClass().getName());
                 TestCase test = new TestCase(testClass.getName());
                 test.setQtName(event.getDescription());
                 TestArtifactManager.updateTestInfo(test);
@@ -178,15 +181,8 @@ public class ConfigurationManager implements AddonContainer {
     }
 
     private final static String REMOTE_SERVER = "remote.server";
-    
-    /**
-     * Returns browser instance by name Additional info in selenium documentation for Webdriver
-     * 
-     * @param browser
-     *            - browser name
-     * @return - Webdriver
-     * @throws PageObjectException
-     */
+
+
     protected Browser getBrowser() throws AutomationFrameworkException {
         if(browser != null && !browser.isClosed())
             return browser;

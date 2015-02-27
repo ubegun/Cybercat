@@ -17,9 +17,11 @@ package org.cybercat.automation.components;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor;
 import org.cybercat.automation.components.processor.AbstractProcessor.AbstractCriteria;
@@ -48,7 +50,7 @@ public class PageElement {
     protected WebDriverWait wait;
     private ElementState state = ElementState.CREATED;
 
-    private static Logger log = Logger.getLogger(PageElement.class);
+    private static Logger log = LogManager.getLogger(PageElement.class);
 
     protected PageElement(String name, PathType type, String path) {
         this(name, type, new String[] { path });
@@ -126,7 +128,7 @@ public class PageElement {
     }
 
     /**
-     * @param driver
+     * @param browser
      * @throws PageObjectException
      */
     public void initWebElement(final Browser browser) throws PageObjectException {
@@ -243,6 +245,7 @@ public class PageElement {
     public String getAtributeByName(String name) {
         String value = element.getAttribute(name);
         log.info("Atribute " + name + " contains \"" + value + "\" value");
+        log.log(LogLevel.ELEMENT_ACTION, "Get element attribute -> Atribute " + name + " contains \"" + value + "\" value");
         return value;
     }
 
@@ -303,6 +306,7 @@ public class PageElement {
     
     public void sendKeys(CharSequence... keys){
         log.info("Send keys to TextField: "+getName());
+        log.log(LogLevel.ELEMENT_ACTION, "Send keys to TextField: " + getName());
         getElement().sendKeys(keys);
     }
     

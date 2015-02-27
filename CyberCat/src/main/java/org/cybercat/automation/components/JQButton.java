@@ -15,9 +15,11 @@
 
 package org.cybercat.automation.components;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.WebElement;
@@ -28,7 +30,7 @@ import org.openqa.selenium.WebElement;
  */
 public class JQButton extends Button {
 
-    private final static Logger LOG = Logger.getLogger(JQButton.class);
+    private final static Logger LOG = LogManager.getLogger(JQButton.class);
     
     /**
      * @param name
@@ -51,6 +53,7 @@ public class JQButton extends Button {
             try {
                 super.highlightElement();
                 LOG.info("click on: " + super.getName());
+                LOG.log(LogLevel.ELEMENT_ACTION, "Click on element " + super.getName());
                 executeScript("arguments[0].focus();", getElement());
                 scrollElementToScreenCenter(getElement());
                 getElement().click();
@@ -68,11 +71,13 @@ public class JQButton extends Button {
     
     public void fireClick() throws AutomationFrameworkException{
         super.highlightElement();
+        LOG.log(LogLevel.ELEMENT_ACTION, "Click on element " + super.getName());
         executeScript("arguments[0].click();", getElement());
     }
 
     public void focusFireClick() throws AutomationFrameworkException{
         super.highlightElement();
+        LOG.log(LogLevel.ELEMENT_ACTION, "Click on element " + super.getName());
         executeScript("var dispatchMouseEvent = function(target, var_args) {" +
                 "  var e = document.createEvent('MouseEvents');" +
                 "  e.initEvent.apply(e, Array.prototype.slice.call(arguments, 1));" +

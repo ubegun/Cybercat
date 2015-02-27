@@ -24,7 +24,9 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.PageObjectException;
@@ -57,7 +59,7 @@ import com.sun.istack.Nullable;
 
 public class Browser extends ScreenshotProvider implements AddonContainer {
 
-    private static final Logger log = Logger.getLogger(Browser.class);
+    private static final Logger log = LogManager.getLogger(Browser.class);
 
     private Browsers browserType;
     private boolean isRemote;
@@ -134,7 +136,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     }
 
     public void switchToFrame(int index){
-    	super.driver = (RemoteWebDriver) super.driver.switchTo().frame(index);
+    	driver = (RemoteWebDriver) driver.switchTo().frame(index);
     }
     
     public Browser getAnotherWindow(String name) throws PageObjectException {
@@ -239,7 +241,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     /**
      * Waits until all ajax requests on page will end
      * 
-     * @param timeToWait
+     * @param timeToWaitInSeconds
      *            - maximum time to wait
      */
     public void waitForAjaxRequestsEnding(long timeToWaitInSeconds) {
@@ -315,6 +317,8 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
 
             @Override
             public void doActon(EventTestFail event) throws Exception {
+                log.log(LogLevel.TEST_FAIL, "Class name : " + event.getTestClass().getName() + "<br>Test method name: " + event.getMethodName()
+                        + "<br>Exception message: " + event.getException(), event.getException().getStackTrace());
                 log.error("URL: " + getCurrentUrl());
                 saveCookies(event);
             }

@@ -21,13 +21,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.cybercat.automation.AutomationFrameworkException;
+import org.cybercat.automation.addons.common.logging.provider.HtmlLogHelper;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.core.AutomationMain;
-import org.cybercat.automation.events.EventAddSubtitles;
-import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventTestFail;
-import org.cybercat.automation.events.EventStartTestStep;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestCase;
 import org.cybercat.automation.test.AbstractTestCase;
@@ -40,11 +40,13 @@ import org.cybercat.automation.utils.WorkFolder;
  */
 public class TestListner {
 
-    private static final Logger log = Logger.getLogger(TestListner.class);
+    private static final Logger log = LogManager.getLogger(TestListner.class);
     
 
     public void onTestStart(Class<? extends AbstractTestCase> testClass, String methodName, String testDesctiptin) throws AutomationFrameworkException {
         log.info("\n\n##### " + testClass.getName()+ " test, " + methodName+ "method with description: \"" + testDesctiptin + "\" has been started ######\n\n");
+        log.log(LogLevel.TEST_METHOD_START, HtmlLogHelper.makeBold("TEST METHOD STARTED: ") +
+                HtmlLogHelper.makeUnderline("Name:") + methodName + HtmlLogHelper.makeUnderline("; Description: ") + testDesctiptin);
         
     }
 

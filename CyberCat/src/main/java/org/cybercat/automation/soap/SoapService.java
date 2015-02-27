@@ -20,12 +20,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.persistence.model.Identity;
 
 public abstract class SoapService {
 
-    private static Logger LOG = Logger.getLogger(SoapService.class);
+    private static Logger LOG = LogManager.getLogger(SoapService.class);
 
     private ISessionManager soapSession;
     private boolean isAuthorized = false;

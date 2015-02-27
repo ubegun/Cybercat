@@ -26,7 +26,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.persistence.model.Identity;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -36,7 +37,7 @@ import com.sun.syndication.io.XmlReader;
 
 public class DefaultRssReader implements RssReader {
 
-    private static final Logger LOG = Logger.getLogger(DefaultRssReader.class);
+    private static final Logger LOG = LogManager.getLogger(DefaultRssReader.class);
 
     public DefaultRssReader(final Identity user) {
         Authenticator.setDefault(new Authenticator() {

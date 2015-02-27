@@ -17,15 +17,17 @@ package org.cybercat.automation.components;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.core.Browser;
 
 
 public class TextContainer extends PageElement {
     
-    private final static Logger log = Logger.getLogger(TextContainer.class);
+    private final static Logger log = LogManager.getLogger(TextContainer.class);
     
     public TextContainer(String name, PathType type, String path) {
         super(name, type, path);
@@ -49,6 +51,7 @@ public class TextContainer extends PageElement {
         try {
             String text = getElement().getText();
             log.info("element text is: "+text);
+            log.log(LogLevel.ELEMENT_ACTION, "Get element text: " + getName() + "[path: " + getPath()[0] + "] ELEMENT TEXT is: " + text);
             return text;
         } catch (Exception e) {
             throw new PageObjectException("Unable to get text in element: " + getName() + " by path:" + getPath()[0], e);

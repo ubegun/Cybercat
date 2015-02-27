@@ -14,19 +14,16 @@
  */
 package org.cybercat.automation.browsers;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.utils.WorkFolder;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 
 public class FirefoxProfiler extends FirefoxProfile {
-
-    private static Logger log = Logger.getLogger(FirefoxProfiler.class);
 
     public FirefoxProfiler(Map<String, String> prorerties) {
         super();

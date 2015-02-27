@@ -18,6 +18,11 @@ function initArtifact(jsonIndex) {
                                     $('.fullLog>a').attr('href', val.fullLog);
                                 }
 
+                                if (val.fullLogHtml) {
+                                    $('.fullLogHtml').removeClass('hidden');
+                                    $('.fullLogHtml>a').attr('href', val.fullLogHtml);
+                                }
+
                                 if (val.exceptionImage) {
                                     $('.exceptionImageWrapper').removeClass('hidden');
                                     $('.exceptionImage>td>a').attr('href', val.exceptionImage);

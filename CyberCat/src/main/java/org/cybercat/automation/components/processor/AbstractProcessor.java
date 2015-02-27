@@ -20,7 +20,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.core.Browser;
 import org.openqa.selenium.By;
@@ -32,13 +33,13 @@ public abstract class AbstractProcessor {
     
     private final static ForkJoinPool mainPool = new ForkJoinPool(100);
 
-    private static Logger LOG = Logger.getLogger(AbstractProcessor.class);
+    private static Logger LOG = LogManager.getLogger(AbstractProcessor.class);
 
     private WebDriverWait wait;
 
     public long implicitTimeout = 30; //default value
     public long explicitTimeout = 30; //default value
-    private Stack<ForkPathFinder> tasks = new Stack<ForkPathFinder>(); 
+    private Stack<ForkPathFinder> tasks = new Stack<ForkPathFinder>();
 
     public AbstractProcessor(long implicitTimeout, long explicitTimeout){
         this.implicitTimeout = implicitTimeout;

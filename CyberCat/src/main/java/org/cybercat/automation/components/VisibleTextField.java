@@ -17,7 +17,8 @@ package org.cybercat.automation.components;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.components.processor.AbstractProcessor.AbstractCriteria;
@@ -29,7 +30,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class VisibleTextField extends TextField {
 
-    private static Logger log = Logger.getLogger(VisibleTextField.class);
+    private static Logger log = LogManager.getLogger(VisibleTextField.class);
     
     public VisibleTextField(String name, PathType type, String path) {
         super(name, type, path);

@@ -36,6 +36,7 @@ public class TestCase {
     private String exceptionImage;
     private String video;
     private String fullLog;
+    private String fullLogHtml;
     private String shortLog;
     private String cookies;
     private String qtName;
@@ -117,6 +118,14 @@ public class TestCase {
         this.fullLog = fullLog;
     }
 
+    public String getFullLogHtml() {
+        return fullLogHtml;
+    }
+
+    public void setFullLogHtml(String fullLogHtml) {
+        this.fullLogHtml = fullLogHtml;
+    }
+
     public String getShortLog() {
         return shortLog;
     }
@@ -187,6 +196,8 @@ public class TestCase {
             this.video = getRelativePath(test.getVideo());
         if (test.getFullLog() != null)
             this.fullLog = getRelativePath(test.getFullLog());
+        if (test.getFullLogHtml() != null)
+            this.fullLogHtml = getRelativePath(test.getFullLogHtml());
         if (test.getShortLog() != null)
             this.shortLog = getRelativePath(test.getShortLog());
         if(test.getExceptionImage()!= null)
@@ -230,7 +241,7 @@ public class TestCase {
     @Override
     public String toString() {
         return "TestCase [testGUID=" + testGUID + ", images=" + images + ", exceptionImage=" + exceptionImage
-                + ", video=" + video + ", fullLog=" + fullLog + ", shortLog=" + shortLog + ", cookies=" + cookies
+                + ", video=" + video + ", fullLog=" + fullLog + ", fullLogHtml=" + fullLogHtml +", shortLog=" + shortLog + ", cookies=" + cookies
                 + " ] ";
     }
 

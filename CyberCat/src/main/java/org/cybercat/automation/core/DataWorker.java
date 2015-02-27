@@ -18,12 +18,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.persistence.ActionType;
 
 public abstract class DataWorker {
 
-    private final static Logger LOG = Logger.getLogger(DataWorker.class);
+    private final static Logger LOG = LogManager.getLogger(DataWorker.class);
 
     private Collection<DataWorker> workers;
     protected Collection<ActionType> supportedTypes;

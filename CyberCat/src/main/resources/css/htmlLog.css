@@ -1,0 +1,104 @@
+.Container {
+    padding: 0;
+    margin: 0;
+}
+
+.Container li {
+    list-style-type: none;
+}
+
+.Node {
+    margin-left: 18px;
+}
+
+.IsRoot {
+    margin-left: 0;
+}
+
+.Expand {
+    width: 18px;
+    height: 18px;
+    float: left;
+}
+
+
+.Content {
+    margin-left:18px;
+    min-height: 18px;
+}
+
+
+.ExpandOpen .Expand:after {
+    font-size: 20px;
+    font-weight: bold;
+    content: "-";
+}
+
+.ExpandClosed .Expand:after {
+    font-size: 20px;
+    font-weight: bold;
+    content: "+";
+}
+
+.ExpandOpen .Container {
+    display: block;
+}
+
+.ExpandClosed .Container {
+    display: none;
+}
+
+.ExpandOpen .Expand, .ExpandClosed .Expand {
+    cursor: pointer;
+}
+
+.ExpandLeaf .Expand {
+    cursor: auto;
+}
+
+.test-header {
+    font-size:20px;
+    background-color:#272727;
+    margin-left:-25px;
+    padding-bottom:5px;
+    padding-top:5px;
+    text-align:center;
+    color: white;
+}
+
+.test-fail-summary {
+    color:#c00000;
+    padding-top:6px;
+    padding-bottom: 6px;
+    padding-right: 15px;
+    font-size: 20px;
+}
+
+.test-step{
+    background-color:#e18728;
+    margin-left:-25px;
+    padding-bottom:5px;
+    padding-top:5px;
+}
+
+
+.test-case-fail {
+    color:#C00000;
+    padding-top:3px;
+    padding-bottom: 3px;
+    font-weight: bold;
+}
+
+.Closed {
+	display: none;
+}
+
+.Opened {
+	display: block;
+}
+
+.conf {
+     font-size: 18px;
+     font-weight: bold;
+     cursor: pointer;
+}

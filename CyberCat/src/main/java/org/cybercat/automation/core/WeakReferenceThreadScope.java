@@ -18,14 +18,15 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
 import org.springframework.core.NamedThreadLocal;
 
 public class WeakReferenceThreadScope implements Scope {
 
-    private static final Logger logger = Logger.getLogger(WeakReferenceThreadScope.class);
+    private static final Logger logger = LogManager.getLogger(WeakReferenceThreadScope.class);
 
     private final ThreadLocal<Map <String, WeakReference<Object>>> threadScope = new NamedThreadLocal<Map <String, WeakReference<Object>>>(
             "SimpleThreadScope") {

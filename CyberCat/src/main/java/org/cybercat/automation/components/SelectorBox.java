@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.addons.common.logging.provider.LogLevel;
 import org.cybercat.automation.components.AbstractPageObject.PathType;
 import org.cybercat.automation.utils.CommonUtils;
 import org.openqa.selenium.WebElement;
@@ -29,7 +31,7 @@ import org.openqa.selenium.support.ui.Select;
 
 public class SelectorBox extends PageElement {
 
-    private static Logger LOG = Logger.getLogger(SelectorBox.class);
+    private static Logger LOG = LogManager.getLogger(SelectorBox.class);
 
     public SelectorBox(String name, PathType type, String path) {
         super(name, type, path);
@@ -39,6 +41,7 @@ public class SelectorBox extends PageElement {
         if (getElement() != null) {
             getElement().sendKeys(text);
             LOG.info("Component name:" + super.getName() + "  entered value:" + text);
+            LOG.log(LogLevel.ELEMENT_ACTION, "Type text in SelectBox. Component name:" + super.getName() + "  entered value:" + text);
         } else {
             throw new PageObjectException("Unable to type text in an element: " + getPath()[0]);
         }
@@ -55,11 +58,13 @@ public class SelectorBox extends PageElement {
                 
                 if (StringUtils.equalsIgnoreCase(getFirstSelectedValue(),value)){
                     LOG.info("Value already selected in SelectBox, value= "+value);
+                    LOG.log(LogLevel.ELEMENT_ACTION, "Select from select box -> Value already selected in SelectBox, value= "+value);
                     return;
                 }
             }
             selectBox.selectByValue(value);
             LOG.info("Component name:" + super.getName() + "  selected value:" + value);
+            LOG.log(LogLevel.ELEMENT_ACTION, "Select from select box -> Component name:" + super.getName() + "  selected value:" + value);
         } catch (Exception e) {
             throw new PageObjectException("Component name:" + super.getName() + "  by path:" + value, e);
         }
@@ -89,7 +94,8 @@ public class SelectorBox extends PageElement {
                                 selectBox.selectByIndex(elementsText.lastIndexOf(elementText));
                                 
                                 LOG.info("Component name:" + super.getName() + "  selected value:" + elementText);
-                                
+                                LOG.log(LogLevel.ELEMENT_ACTION, "Select from select box -> Component name:" + super.getName() + "  selected value:" + value);
+
                                 return;
                         }
                 }
@@ -109,6 +115,7 @@ public class SelectorBox extends PageElement {
             value = select.getOptions().get(index).getText();
             select.selectByIndex(index);   
             LOG.info("Component name:" + super.getName() + "  selected value:" + value);
+            LOG.log(LogLevel.ELEMENT_ACTION, "Select from select box -> Component name:" + super.getName() + "  selected value:" + value);
             return value;
         } catch (Exception e) {
             LOG.error("Component name:" + super.getName() + "  by path:" + value, e);
@@ -131,6 +138,7 @@ public class SelectorBox extends PageElement {
             if (we.getText().equals(valueToSelect)) {
                 we.click();
                 LOG.info("Component name:" + super.getName() + "  selected value:" + valueToSelect);
+                LOG.log(LogLevel.ELEMENT_ACTION, "Select from select box -> Component name:" + super.getName() + "  selected value:" + valueToSelect);
                 break;
             }
         }
@@ -166,6 +174,7 @@ public class SelectorBox extends PageElement {
                if(StringUtils.containsIgnoreCase(option.getAttribute("value"),optionValue)){
                    option.click();
                    LOG.info("Selected value: " + option.getAttribute("value"));
+                   LOG.log(LogLevel.ELEMENT_ACTION, "Select from select box -> Component name:" + super.getName() + "  selected value:" + option.getAttribute("value"));
                    break;
                }
         }

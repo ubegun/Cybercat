@@ -20,7 +20,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.Configuration;
 import org.cybercat.automation.PageFactory;
@@ -43,7 +44,7 @@ import org.cybercat.automation.utils.WorkFolder;
  */
 public class PerformanceReportManager implements AddonContainer {
 
-    private static final Logger log = Logger.getLogger(PerformanceReportManager.class);
+    private static final Logger log = LogManager.getLogger(PerformanceReportManager.class);
     public final static String PERFOMANCE_REPORT = "Perfomance report";
     private YSlow ySlow;
     private String thisTest;

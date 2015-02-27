@@ -14,7 +14,8 @@
  */
 package org.cybercat.automation.components;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.components.processor.AbstractProcessor.AbstractCriteria;
 import org.cybercat.automation.core.Browser;
@@ -39,7 +40,7 @@ import java.util.NoSuchElementException;
  */
 public class StatefulElement<T extends PageElement> extends PageElement {
 
-    private static Logger log = Logger.getLogger(StatefulElement.class);
+	private static Logger log = LogManager.getLogger(StatefulElement.class);
 
     /**
      * This is enumeration of states for page elements.
