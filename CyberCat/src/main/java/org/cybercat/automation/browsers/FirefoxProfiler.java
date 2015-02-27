@@ -14,7 +14,9 @@
  */
 package org.cybercat.automation.browsers;
 
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import java.util.Map;
@@ -22,7 +24,7 @@ import java.util.Map;
 
 public class FirefoxProfiler extends FirefoxProfile {
 
-    private static Logger log = Logger.getLogger(FirefoxProfiler.class);
+    private static Logger log = LogManager.getLogger(FirefoxProfiler.class);
 
     public FirefoxProfiler(Map<String, String> prorerties) {
         super();
