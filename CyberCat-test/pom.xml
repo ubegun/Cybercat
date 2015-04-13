@@ -13,7 +13,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <automation.deps.output.folder>lib</automation.deps.output.folder>
     <automation.test.package.name>org.cybercat.automation</automation.test.package.name>
-    <selenium.version>2.37.0</selenium.version>
+    <selenium.version>2.45.0</selenium.version>
     <testng.version>6.8.5</testng.version>
     <junit.version>4.10</junit.version>
     <springframework.version>3.1.1.RELEASE</springframework.version>
@@ -23,6 +23,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cxf.version>2.7.0</cxf.version>
     <axis.version>1.4</axis.version>
+    <cybercat.version>1.0.2.44.0</cybercat.version>
   </properties>
 <repositories>
     <repository>
@@ -48,7 +49,7 @@
     <dependency>
       <groupId>org.cybercat.autotest</groupId>
       <artifactId>cybercat-automation-core</artifactId>
-      <version>1.0-realise</version>
+      <version>${cybercat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>

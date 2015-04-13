@@ -57,12 +57,12 @@ public class AnnotationBuilder {
     
     private static Reflections reflections;
     
-    private static Reflections getReflections() throws AutomationFrameworkException{
+    private static Reflections getReflections(String sourcePakage) throws AutomationFrameworkException{
         if(reflections != null)
             return reflections;
         String rootPackage = AutomationMain.getProperty("version.control.root.package");        
         if(rootPackage == null )
-            return null;
+          rootPackage = sourcePakage;
         reflections = new Reflections(rootPackage);
         return reflections;
     }
@@ -73,7 +73,7 @@ public class AnnotationBuilder {
         Reflections refSearch;
         int version = 0;
         try{
-            refSearch = getReflections();
+            refSearch = getReflections(providerzz.getPackage().getName());
             version = (int) AutomationMain.getPropertyLong("app.version");
             if(refSearch == null || version < 0)
                 return providerzz;
