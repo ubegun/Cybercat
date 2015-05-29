@@ -1,6 +1,12 @@
 #Cybercat
 
-Test automation framework
+In CyberCat projects You can found helpful for creating automation tests for UI. Major goal of this project minimize effort for creation and support UI automation tests on java language.
+Few features that important for automation testers is:
+- Step by Step video on test processing.
+- detailed execution log for each thread.
+- Simple reporting system 
+- Regime of multithreading tests execution.
+- Flexible Addon container that propose for creation custom components for your business requirement
 
 ##System Requirements
 - Git (http://git-scm.com/downloads)
