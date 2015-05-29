@@ -1,6 +1,6 @@
 #Cybercat
 
-In CyberCat projects You can found helpful for creating automation tests for UI. Major goal of this project minimize effort for creation and support UI automation tests on java language.
+ The CyberCat project is an automation test framework. Major goal of this project minimize effort for creation and support UI automation tests on java language.
 Few features that important for automation testers is:
 - Step by Step video on test processing.
 - detailed execution log for each thread.
