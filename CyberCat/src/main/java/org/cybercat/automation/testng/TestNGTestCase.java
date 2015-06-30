@@ -29,7 +29,7 @@ public abstract class TestNGTestCase extends AbstractTestCase{
     }
 
     @AfterTest(alwaysRun = true)
-    public void afterTest() {
+    public void afterTest() throws AutomationFrameworkException {
         super.afterTest();
     }
 

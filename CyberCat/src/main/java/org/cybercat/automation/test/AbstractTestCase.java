@@ -25,27 +25,24 @@ import org.cybercat.automation.annotations.AnnotationBuilder;
 import org.cybercat.automation.annotations.CCTestCase;
 import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.events.EventChangeTestConfig;
-import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.events.EventStopTest;
 
 public abstract class AbstractTestCase {
 
     public ResourceBundle testData;
-    public EventManager evm;
     private String errorMessage;
     
 
     public void beforeTest() throws AutomationFrameworkException {
-        evm = AutomationMain.getEventManager();
         testData = AutomationMain.getTestMetaData();
         setupTestConfiguration();
         setup();
         AnnotationBuilder.processCCFeature(this);
     }
 
-    public void afterTest() {
-        evm.notify(new EventStopTest(this.getClass(), this.getClass().getSimpleName(), this.getClass().getName(), new Date()));
+    public void afterTest() throws AutomationFrameworkException {
+      AutomationMain.getEventManager().notify(new EventStopTest(this.getClass(), this.getClass().getSimpleName(), this.getClass().getName(), new Date()));
     }
 
     public void setInitializationFail(String errorMessage){
@@ -61,10 +58,10 @@ public abstract class AbstractTestCase {
         if (tAnnotation != null) {
             subtitles = tAnnotation.description();
         }
-        evm.notify(new EventChangeTestConfig(this, config));
+        AutomationMain.getEventManager().notify(new EventChangeTestConfig(this, config));
         if(StringUtils.isNotBlank(errorMessage))
             throw new TestCaseInitializationException(errorMessage);
-        evm.notify(new EventStartTest(this.getClass(),  subtitles, getBugIDsFromAnnotation()));
+        AutomationMain.getEventManager().notify(new EventStartTest(this.getClass(),  subtitles, getBugIDsFromAnnotation()));
     }
 
     private String[] getBugIDsFromAnnotation() {
@@ -75,5 +72,5 @@ public abstract class AbstractTestCase {
             return qCenterAnnotation.bugs();
         }
     }
-    
+   
 }

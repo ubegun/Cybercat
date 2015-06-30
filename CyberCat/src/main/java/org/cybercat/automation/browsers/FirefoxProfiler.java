@@ -14,51 +14,32 @@
  */
 package org.cybercat.automation.browsers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.cybercat.automation.utils.WorkFolder;
+import org.cybercat.automation.AutomationFrameworkException;
 import org.openqa.selenium.firefox.FirefoxProfile;
-
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class FirefoxProfiler extends FirefoxProfile {
 
     private static Logger log = Logger.getLogger(FirefoxProfiler.class);
 
-    public FirefoxProfiler(Map<String, String> prorerties) {
+    public FirefoxProfiler(Map<String, String> properties) throws AutomationFrameworkException {
         super();
-        initProrerties(prorerties);
+        initProrerties(properties);
     }
 
     public FirefoxProfiler() {
         super();
-        //File firebug = new File("src/main/resources/extensions/firebug-1.10.6-fx.xpi");
-        //File netExport = new File("src/main/resources/extensions/netExport-0.9b2.xpi");
-       /* try {
-            //super.addExtension(firebug);
-            //super.addExtension(netExport);
-        } catch (IOException err) {
-            log.error(err);
-        }*/
         super.setPreference("app.update.enabled", false);
         super.setPreference("app.update.enabled", false);
-        //String domain = "extensions.firebug.";
+    }
 
-        // Set default Firebug preferences
-        //super.setPreference(domain + "currentVersion", "1.10.6");
-        //super.setPreference(domain + "allPagesActivation", "on");
-        //super.setPreference(domain + "defaultPanelName", "net");
-        //super.setPreference(domain + "net.enableSites", true);
-
-        // Set default NetExport preferences
-        /*super.setPreference(domain + "netexport.alwaysEnableAutoExport", true);
-        super.setPreference(domain + "netexport.showPreview", false);
-        super.setPreference(domain + "netexport.pageLoadedTimeout", "60000");
-        super.setPreference(domain + "netexport.defaultLogDir", Paths.get(WorkFolder.Log.getPath().toString(), "har").toString());
-        */
+    public DesiredCapabilities createDesiredCapabilities() throws AutomationFrameworkException {
+        DesiredCapabilities cap = new DesiredCapabilities();
+        // TODO: local mode
+        return cap;
     }
 
     private void initProrerties(Map<String, String> prorerties) {

@@ -21,7 +21,6 @@
           </map>
       </property>
   </bean>
-
   <!-- Configuration constants -->
 
   <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
@@ -37,6 +36,7 @@
   
   <!-- Web browsers block -->
   
+  <!-- Firefox> -->
   <bean id="firefoxProfile" class="org.cybercat.automation.browsers.FirefoxProfiler" lazy-init="true" scope="prototype">
     <constructor-arg>
       <map>
@@ -44,7 +44,12 @@
       </map>
     </constructor-arg>
   </bean>
+ 
+  <bean id="firefoxBinary" class="org.openqa.selenium.firefox.FirefoxBinary"  lazy-init="true" scope="prototype"/>
   
+  <bean id="desiredCapabilities" lazy-init="true" scope="prototype" factory-bean="firefoxProfile" factory-method="createDesiredCapabilities"/>
+  <!-- <Firefox -->
+
   <bean id="firefoxProfileWithNetExport" class="org.cybercat.automation.browsers.FirefoxProfiler" lazy-init="true" scope="prototype" />
   
   <bean id="internetExplorerCapabilities" class="org.cybercat.automation.browsers.InternetExplorerCapabilities" lazy-init="true" scope="prototype"/>
@@ -52,10 +57,9 @@
   <bean id="chromeProfile" class="org.cybercat.automation.browsers.ChromeProfile" scope="prototype"/>
    
   <bean id="firefoxDriver" class="org.openqa.selenium.firefox.FirefoxDriver" lazy-init="true" scope="prototype">
-    <constructor-arg>
-       <ref bean="firefoxProfile" />
-      <!--<ref bean="firefoxProfileWithExtentions" />  -->   
-    </constructor-arg>
+    <constructor-arg ref="firefoxBinary"/>
+    <constructor-arg ref="firefoxProfile"/>
+    <constructor-arg ref="desiredCapabilities"/>
   </bean>
   
   <bean id="firefoxDriverSpecial" class="org.openqa.selenium.firefox.FirefoxDriver" lazy-init="true" scope="prototype">
@@ -83,7 +87,6 @@
   <bean id="RemoteServerProvider" class="org.cybercat.automation.browsers.RemoteServerProvider" scope="prototype">
     <constructor-arg ref="configProperties"/>
   </bean>
-
 
   <bean id="firefox" class="org.cybercat.automation.core.Browser" lazy-init="true" scope="prototype">
     <constructor-arg ref="firefoxDriver"/>
@@ -161,7 +164,5 @@
     <constructor-arg ref="mediaMetaData"/>
     <constructor-arg ref="eventManager"/>
   </bean>  
-
-
 
 </beans>

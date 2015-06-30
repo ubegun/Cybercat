@@ -64,7 +64,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     private EventManager eventManager;
     private boolean isClosed = false;
     private boolean waitForEndOfPage = true;
-    private ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
+    private ArrayList<EventListener<?>> listeners;
 
     /**
      * The list of browsers supported by our system.
@@ -81,6 +81,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         super(driver);
         this.browserType = browserType;
         this.isRemote = isRemote;
+        listeners = new ArrayList<EventListener<?>>();
     }
 
     public static Browser getCurrentBrowser() throws AutomationFrameworkException{
@@ -99,12 +100,22 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     }
 
     public String getCurrentUrl() {
+      try{
         return driver.getCurrentUrl();
+      }catch(Exception e){
+        isClosed = true;
+        log.error(e);
+        return null; 
+      }
     }
 
     public void get(String finalUrl) {
+      try{
         driver.get(finalUrl);
         eventManager.notify(new TakeScreenshotEvent(this, EffectType.RESIZ_BY_WIDTH));
+      }catch(Exception e){
+        log.error(e);
+      }
     }
 
     public String getTitle() {

@@ -47,7 +47,6 @@ public class TestListner {
         log.info("\n\n##### " + testClass.getName()+ " test, " + methodName+ "method with description: \"" + testDesctiptin + "\" has been started ######\n\n");
         
     }
-
     
     public void onFailure(Class<?> testClass, String method, Throwable error) throws AutomationFrameworkException{
         AutomationMain.getEventManager().notify(new EventTestFail(testClass, method, error));

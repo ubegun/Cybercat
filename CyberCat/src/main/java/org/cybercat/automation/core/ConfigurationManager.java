@@ -64,6 +64,7 @@ public class ConfigurationManager implements AddonContainer {
     private PerformanceReportManager performanceReportManager;
     private Class<? extends AbstractTestCase> testClass;
 
+
     public ConfigurationManager() {
         super();
     }

@@ -23,6 +23,8 @@ public interface AddonContainer {
 
     String[] getSupportedFeatures();
 
+    // TODO: investigate question: listeners field have double initializing in listener class.
+    // Investigate this phenomenon
     Collection<EventListener<?>> createListeners(Configuration config);
 
 }

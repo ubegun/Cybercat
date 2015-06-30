@@ -19,6 +19,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import com.sun.media.Log;
+
 public abstract class ScreenshotProvider {
 
     protected RemoteWebDriver driver;
@@ -28,16 +30,24 @@ public abstract class ScreenshotProvider {
     }
 
     public byte[] getScreen() {
-        return (byte[]) getScreenshotAs(OutputType.BYTES);
+        Object screen = getScreenshotAs(OutputType.BYTES);
+        if (screen == null)
+            return null;
+        return (byte[]) screen;
     }
 
     private <T> Object getScreenshotAs(OutputType<T> outputType) {
-        if (driver.getClass() == RemoteWebDriver.class) {
-            Augmenter augmenter = new Augmenter();
-            TakesScreenshot ts = (TakesScreenshot) augmenter.augment(driver);
-            return ts.getScreenshotAs(outputType);
-        } else {
-            return ((TakesScreenshot) driver).getScreenshotAs(outputType);
+        try {
+            if (driver.getClass() == RemoteWebDriver.class) {
+                Augmenter augmenter = new Augmenter();
+                TakesScreenshot ts = (TakesScreenshot) augmenter.augment(driver);
+                return ts.getScreenshotAs(outputType);
+            } else {
+                return ((TakesScreenshot) driver).getScreenshotAs(outputType);
+            }
+        } catch (Exception e) {
+            Log.error(e);
+            return null;
         }
     }
 

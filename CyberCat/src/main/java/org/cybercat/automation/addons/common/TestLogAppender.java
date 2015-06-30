@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
-
 /**
  * This is not thread safe class
  */
@@ -31,7 +30,7 @@ public class TestLogAppender extends AppenderSkeleton {
 
     private ThreadLocal<StringBuffer> threadBuffer;
     private static TestLogAppender thisLogger;
-    
+
     public TestLogAppender() {
         super();
         thisLogger = this;
@@ -39,14 +38,14 @@ public class TestLogAppender extends AppenderSkeleton {
     }
 
     /**
-     * Returns single tone logger 
+     * Returns single tone logger
      */
-    public static TestLogAppender getLogger(){
+    public static TestLogAppender getLogger() {
         return thisLogger;
     }
-    
+
     @Override
-    protected void append(LoggingEvent event) {        
+    protected void append(LoggingEvent event) {
         push(getLayout().format(event));
     }
 
@@ -71,10 +70,10 @@ public class TestLogAppender extends AppenderSkeleton {
 
     public void flush(Path path) {
         try {
-            if(threadBuffer == null || threadBuffer.get() == null || threadBuffer.get().length() < 10)
+            if (threadBuffer == null || threadBuffer.get() == null || threadBuffer.get().length() < 10)
                 return;
             path.getParent().toFile().mkdirs();
-            BufferedWriter writer = Files.newBufferedWriter(path, Charset.defaultCharset());            
+            BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"));
             writer.write(threadBuffer.get().toString());
             writer.close();
         } catch (IOException e) {

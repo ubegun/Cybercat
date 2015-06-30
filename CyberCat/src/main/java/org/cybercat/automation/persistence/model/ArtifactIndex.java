@@ -14,15 +14,15 @@
  */
 package org.cybercat.automation.persistence.model;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ArtifactIndex")
 public class ArtifactIndex {
 
-    private List<TestCase> tests = new ArrayList<TestCase>() ;
+    private List<TestCase> tests = new CopyOnWriteArrayList<TestCase>() ;
 
     public List<TestCase> getTests() {
         return tests;
@@ -32,5 +32,4 @@ public class ArtifactIndex {
         this.tests = tests;
     }
 
-    
 }

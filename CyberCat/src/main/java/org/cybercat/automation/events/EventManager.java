@@ -14,15 +14,29 @@
  */
 package org.cybercat.automation.events;
 
-
 public interface EventManager {
-    
-    public enum EventTypes {
-        START_STREAM, STOP_STREAM, UPDATE_STREAM, ADD_SCREENSHOT, START_TEST, STOP_TEST, CLOSE_MEDIA_DEMON_THREAD,
-        REASSIGN_TEST_LISTENERS, MAKE_SCREENSHOT, NEXT_TEST_STEP, EXCEPTION, ADD_SUBTITLE, INTERRUPT_VIDEO,GET_PERFORMANCE_REPORT,START_PERFORMANCE_MEASURE, TEST_FAIL
-    }
 
-    public <T extends Event> void notify(T event);
-    
-    public boolean unsubscribe(EventListener<?> listener); 
+  public enum EventTypes {
+    START_STREAM,
+    STOP_STREAM,
+    UPDATE_STREAM,
+    ADD_SCREENSHOT,
+    START_TEST,
+    STOP_TEST,
+    CLOSE_MEDIA_DEMON_THREAD,
+    REASSIGN_TEST_LISTENERS,
+    MAKE_SCREENSHOT,
+    NEXT_TEST_STEP,
+    EXCEPTION,
+    ADD_SUBTITLE,
+    INTERRUPT_VIDEO,
+    GET_PERFORMANCE_REPORT,
+    START_PERFORMANCE_MEASURE,
+    TEST_FAIL,
+    INIT_PROXY_SERVER
+  }
+
+  public <T extends Event> void notify(T event);
+
+  public boolean unsubscribe(EventListener<?> listener);
 }

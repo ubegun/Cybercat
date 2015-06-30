@@ -24,7 +24,71 @@ import org.openqa.selenium.Point;
 
 public class SvgChart extends PageElement{
 	
-    private Dimension size;
+    public static class Position {
+      int x, y, h ,w = 0;
+
+      public Position(Point location, Dimension size){
+        this(location.x, location.y, size.height , size.width);
+      }
+      
+      public Position(int x, int y, int h, int w) {
+        super();
+        this.x = x;
+        this.y = y;
+        this.h = h;
+        this.w = w;
+      }
+
+      public int getX() {
+        return x;
+      }
+
+      public int getY() {
+        return y;
+      }
+
+      public int getHeight() {
+        return h;
+      }
+
+      public int getWidth() {
+        return w;
+      }
+
+      @Override
+      public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + h;
+        result = prime * result + w;
+        result = prime * result + x;
+        result = prime * result + y;
+        return result;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+        if (this == obj)
+          return true;
+        if (obj == null)
+          return false;
+        if (getClass() != obj.getClass())
+          return false;
+        Position other = (Position) obj;
+        if (h != other.h)
+          return false;
+        if (w != other.w)
+          return false;
+        if (x != other.x)
+          return false;
+        if (y != other.y)
+          return false;
+        return true;
+      }
+      
+    }
+    
+    private Position position;
     
     public SvgChart(String name, PathType type, String path) {
         super(name, type, path);
@@ -33,23 +97,14 @@ public class SvgChart extends PageElement{
     @Override
     public void initWebElement(Browser browser) throws PageObjectException {
         super.initWebElement(browser);
-        setSize();
+        position = new Position(getElement().getLocation(), getElement().getSize());
     }
     
-    public void setSize(){
-    	size = getElement().getSize();
+    public Position getDescarteProperties() {
+      return position;
     }
-    
-    public int getHeight(){
-    	return size.getHeight();
-    }
-    
-    public int getWidth(){
-    	return size.getWidth();
-    }
-    
-    public void dragAndDrop(Point from, Point to) throws AutomationFrameworkException{
 
+    public void dragAndDrop(Point from, Point to) throws AutomationFrameworkException{
         // since dragAndDrop in selenium works like piece of ... we should split drag and drop
         Browser.getCurrentBrowser().getActions()
     			.moveToElement(getElement(), from.getX(), from.getY())

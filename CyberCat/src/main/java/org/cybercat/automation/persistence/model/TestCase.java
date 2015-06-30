@@ -28,211 +28,211 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang3.StringUtils;
 import org.cybercat.automation.utils.WorkFolder;
 
-@XmlType(name="TestCase")
+@XmlType(name = "TestCase")
 public class TestCase {
 
-    private String testGUID;
-    private List<String> images;
-    private String exceptionImage;
-    private String video;
-    private String fullLog;
-    private String shortLog;
-    private String cookies;
-    private String qtName;
-    private Set<JiraInfo> bugs;
-    private Map<String, String> artifacts = new HashMap<String, String>();
+  private String testGUID;
+  private List<String> images;
+  private String exceptionImage;
+  private String video;
+  private String fullLog;
+  private String shortLog;
+  private String cookies;
+  private String qtName;
+  private Set<JiraInfo> bugs;
 
-    public static class JiraInfo {
+  private Map<String, String> artifacts = new HashMap<String, String>();
 
-        private String bugId;
-        private String bugSummary;
+  public static class JiraInfo {
 
-        public JiraInfo() {
-            super();
-        }
+    private String bugId;
+    private String bugSummary;
 
-        public JiraInfo(String bugId, String bugSummary) {
-            this.bugId = bugId;
-            this.bugSummary = bugSummary;
-        }
-
-        public String getBugId() {
-            return bugId;
-        }
-
-        public void setBugId(String bugId) {
-            this.bugId = bugId;
-        }
-
-        public String getBugSummary() {
-            return bugSummary;
-        }
-
-        public void setBugSummary(String bugSummary) {
-            this.bugSummary = bugSummary;
-        }
+    public JiraInfo() {
+      super();
     }
 
-    public TestCase() {
-        super();
-    }
-    
-    public TestCase(String testGUID) {
-        this.testGUID = testGUID;
+    public JiraInfo(String bugId, String bugSummary) {
+      this.bugId = bugId;
+      this.bugSummary = bugSummary;
     }
 
-    public String getTestGUID() {
-        return testGUID;
+    public String getBugId() {
+      return bugId;
     }
 
-    /**
-     *  testGUID - The name of the test represented by this Class object, as a String
-     */
-    @XmlElement(required = true)
-    public void setTestGUID(String testGUID) {
-        this.testGUID = testGUID;
+    public void setBugId(String bugId) {
+      this.bugId = bugId;
     }
 
-    public List<String> getImages() {
-        return images;
-    }
-    
-    public void setImages(List<String> images) {
-        this.images = images;
+    public String getBugSummary() {
+      return bugSummary;
     }
 
-    public String getVideo() {
-        return video;
+    public void setBugSummary(String bugSummary) {
+      this.bugSummary = bugSummary;
     }
+  }
 
-    public void setVideo(String video) {
-        this.video = video;
-    }
+  public TestCase() {
+    super();
+  }
 
-    public String getFullLog() {
-        return fullLog;
-    }
+  public TestCase(String testGUID) {
+    this.testGUID = testGUID;
+  }
 
-    public void setFullLog(String fullLog) {
-        this.fullLog = fullLog;
-    }
+  public String getTestGUID() {
+    return testGUID;
+  }
 
-    public String getShortLog() {
-        return shortLog;
-    }
+  /**
+   * testGUID - The name of the test represented by this Class object, as a String
+   */
+  @XmlElement(required = true)
+  public void setTestGUID(String testGUID) {
+    this.testGUID = testGUID;
+  }
 
-    public void setShortLog(String shortLog) {
-        this.shortLog = shortLog;
-    }
+  public List<String> getImages() {
+    return images;
+  }
 
-    public String getExceptionImage() {
-        return exceptionImage;
-    }
+  public void setImages(List<String> images) {
+    this.images = images;
+  }
 
-    public void setExceptionImage(String exceptionImage) {
-        this.exceptionImage = exceptionImage;
-    }
+  public String getVideo() {
+    return video;
+  }
 
-    public String getCookies() {
-        return cookies;
-    }
+  public void setVideo(String video) {
+    this.video = video;
+  }
 
-    public void setCookies(String cookies) {
-        this.cookies = cookies;
-    }
+  public String getFullLog() {
+    return fullLog;
+  }
 
-    public void addImage(String imagePath){
-        if(images == null) 
-            images = new ArrayList<String>();
-        images.add(imagePath);    
-    }
-    
-    public String getQtName() {
-        return qtName;
-    }
+  public void setFullLog(String fullLog) {
+    this.fullLog = fullLog;
+  }
 
-    public void setQtName(String qtName) {
-        this.qtName = qtName;
-    }
+  public String getShortLog() {
+    return shortLog;
+  }
 
-    public Set<JiraInfo> getBugs() {
-        return bugs;
-    }
+  public void setShortLog(String shortLog) {
+    this.shortLog = shortLog;
+  }
 
-    public void setBugs(Set<JiraInfo> bugs) {
-        this.bugs = bugs;
-    }
+  public String getExceptionImage() {
+    return exceptionImage;
+  }
 
-    public Map<String, String> getArtifacts() {
-        return artifacts;
-    }
+  public void setExceptionImage(String exceptionImage) {
+    this.exceptionImage = exceptionImage;
+  }
 
-    public void putArtifact(String key, String value){
-        this.artifacts.put(key, value);
-    }
-    
-    public void setArtifacts(Map<String, String> artifacts) {
-        this.artifacts = artifacts;
-    }
+  public String getCookies() {
+    return cookies;
+  }
 
-    /**
-     * @param test
-     */
-    public void merge(TestCase test) {
-        if (this.images == null)
-            this.images = new ArrayList<String>();
-        if (test.getImages() != null)
-            this.images.addAll(getRelativePath(test.getImages()));
-        if (test.getVideo() != null)
-            this.video = getRelativePath(test.getVideo());
-        if (test.getFullLog() != null)
-            this.fullLog = getRelativePath(test.getFullLog());
-        if (test.getShortLog() != null)
-            this.shortLog = getRelativePath(test.getShortLog());
-        if(test.getExceptionImage()!= null)
-            this.exceptionImage=getRelativePath(test.getExceptionImage());
-        if(test.getCookies()!=null)
-            this.cookies = getRelativePath(test.getCookies());
-        if (test.getQtName() != null)
-            this.qtName = test.getQtName();
-        if (test.getBugs() != null)
-            this.bugs = test.getBugs();
-        if (test.getArtifacts() != null && test.getArtifacts().size() > 0){
-            this.artifacts.putAll(test.getArtifacts());
-        }
-    }
+  public void setCookies(String cookies) {
+    this.cookies = cookies;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
-        if (!(obj instanceof TestCase))
-            return false;
-        if (super.equals(obj))
-            return true;
-        return StringUtils.equals(this.testGUID, ((TestCase) obj).testGUID);
-    }
+  public void addImage(String imagePath) {
+    if (images == null)
+      images = new ArrayList<String>();
+    images.add(imagePath);
+  }
 
-    public static String getRelativePath(String pathString){
-        Path path = Paths.get(pathString);
-        //FIXME rewrite this piece of code to avoid replacing '\' with '/'. right now it is done to make links valid in firefox
-        return WorkFolder.Report_Folder.getPath().relativize(path).normalize().toString().replaceAll("\\\\","/");
-    }
+  public String getQtName() {
+    return qtName;
+  }
 
-    public static List<String> getRelativePath(List<String> pathStrings){
-        List<String> paths = new ArrayList<>();
-        for(String pathString : pathStrings){
-            paths.add(getRelativePath(pathString));
-        }
-        return paths;
-    }
+  public void setQtName(String qtName) {
+    this.qtName = qtName;
+  }
 
-    @Override
-    public String toString() {
-        return "TestCase [testGUID=" + testGUID + ", images=" + images + ", exceptionImage=" + exceptionImage
-                + ", video=" + video + ", fullLog=" + fullLog + ", shortLog=" + shortLog + ", cookies=" + cookies
-                + " ] ";
-    }
+  public Set<JiraInfo> getBugs() {
+    return bugs;
+  }
 
-     
+  public void setBugs(Set<JiraInfo> bugs) {
+    this.bugs = bugs;
+  }
+
+  public Map<String, String> getArtifacts() {
+    return artifacts;
+  }
+
+  public void putArtifact(String key, String value) {
+    this.artifacts.put(key, value);
+  }
+
+  public void setArtifacts(Map<String, String> artifacts) {
+    this.artifacts = artifacts;
+  }
+
+  /**
+   * @param test
+   */
+  public void merge(TestCase test) {
+    if (this.images == null)
+      this.images = new ArrayList<String>();
+    if (test.getImages() != null)
+      this.images.addAll(getRelativePath(test.getImages()));
+    if (test.getVideo() != null)
+      this.video = getRelativePath(test.getVideo());
+    if (test.getFullLog() != null)
+      this.fullLog = getRelativePath(test.getFullLog());
+    if (test.getShortLog() != null)
+      this.shortLog = getRelativePath(test.getShortLog());
+    if (test.getExceptionImage() != null)
+      this.exceptionImage = getRelativePath(test.getExceptionImage());
+    if (test.getCookies() != null)
+      this.cookies = getRelativePath(test.getCookies());
+    if (test.getQtName() != null)
+      this.qtName = test.getQtName();
+    if (test.getBugs() != null)
+      this.bugs = test.getBugs();
+    if (test.getArtifacts() != null && test.getArtifacts().size() > 0) {
+      this.artifacts.putAll(test.getArtifacts());
+    }
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null)
+      return false;
+    if (!(obj instanceof TestCase))
+      return false;
+    if (super.equals(obj))
+      return true;
+    return StringUtils.equals(this.testGUID, ((TestCase) obj).testGUID);
+  }
+
+  public static String getRelativePath(String pathString) {
+    Path path = Paths.get(pathString);
+    // FIXME rewrite this piece of code to avoid replacing '\' with '/'. right now it is done to make links valid in
+    // firefox
+    return WorkFolder.Report_Folder.getPath().relativize(path).normalize().toString().replaceAll("\\\\", "/");
+  }
+
+  public static List<String> getRelativePath(List<String> pathStrings) {
+    List<String> paths = new ArrayList<>();
+    for (String pathString : pathStrings) {
+      paths.add(getRelativePath(pathString));
+    }
+    return paths;
+  }
+
+  @Override
+  public String toString() {
+    return "TestCase [testGUID=" + testGUID + ", images=" + images + ", exceptionImage=" + exceptionImage + ", video=" + video + ", fullLog=" + fullLog
+        + ", shortLog=" + shortLog + ", cookies=" + cookies + " ] ";
+  }
+
 }

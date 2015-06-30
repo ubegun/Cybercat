@@ -17,6 +17,8 @@ package org.cybercat.automation.utils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,8 +31,10 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.cybercat.automation.AutomationFrameworkException;
 
 
 public class CommonUtils {
@@ -223,5 +227,16 @@ public class CommonUtils {
             buf.append(chars.charAt(rand.nextInt(chars.length())));
         }
         return buf.toString();
+    }
+    
+    public static String makeMD5signature(byte[] source) throws AutomationFrameworkException{
+      try {
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] thedigest = md.digest(source);
+      return new String(Hex.encodeHex(thedigest));
+      } catch (NoSuchAlgorithmException e) {
+        throw new AutomationFrameworkException("Exception on byte array processing.", e);
+      }
+      
     }
 }

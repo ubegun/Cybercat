@@ -37,91 +37,89 @@ import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
 import org.cybercat.automation.utils.WorkFolder;
 
-
 public class TestArtifactManager {
 
-    private Path indexFile;
-    private JAXBContext jc;
-    private MappedNamespaceConvention namespace;
-    private Unmarshaller unmarshaller;
-    private Marshaller marshaller;
-    
-    private static TestArtifactManager manager;
+  private Path indexFile;
+  private JAXBContext jc;
+  private MappedNamespaceConvention namespace;
+  private Unmarshaller unmarshaller;
+  private Marshaller marshaller;
 
-    private TestArtifactManager() throws PageModelException {
-        try {
-            jc = JAXBContext.newInstance(ArtifactIndex.class);
-            indexFile = Paths.get(WorkFolder.Report_Folder.toString(), "TestArtifactIndex.json");
-            Configuration config = new Configuration();
-            unmarshaller = jc.createUnmarshaller();
-            marshaller = jc.createMarshaller();
-            namespace = new MappedNamespaceConvention(config);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new PageModelException(e);
-        }
+  private static TestArtifactManager manager;
 
+  private TestArtifactManager() throws PageModelException {
+    try {
+      jc = JAXBContext.newInstance(ArtifactIndex.class);
+      indexFile = Paths.get(WorkFolder.Report_Folder.toString(), "TestArtifactIndex.json");
+      Configuration config = new Configuration();
+      unmarshaller = jc.createUnmarshaller();
+      marshaller = jc.createMarshaller();
+      namespace = new MappedNamespaceConvention(config);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new PageModelException(e);
     }
 
-    private ArtifactIndex load() throws PageModelException {
-        try {
-            BufferedReader br = Files.newBufferedReader(indexFile, Charset.defaultCharset());
-            StringBuffer json = new StringBuffer();
-            while (br.ready()) {
-                json.append(br.readLine());
-            }
-            JSONObject jObject = new JSONObject(json.toString());
-            XMLStreamReader xmlStreamReader = new MappedXMLStreamReader(jObject, namespace);
-            ArtifactIndex index = (ArtifactIndex) unmarshaller.unmarshal(xmlStreamReader);
-            return index;
-        } catch (Exception e) {
-            throw new PageModelException(e);
-        }
+  }
+
+  private ArtifactIndex load() throws PageModelException {
+    try {
+      BufferedReader br = Files.newBufferedReader(indexFile, Charset.defaultCharset());
+      StringBuffer json = new StringBuffer();
+      while (br.ready()) {
+        json.append(br.readLine());
+      }
+      JSONObject jObject = new JSONObject(json.toString());
+      XMLStreamReader xmlStreamReader = new MappedXMLStreamReader(jObject, namespace);
+      ArtifactIndex index = (ArtifactIndex) unmarshaller.unmarshal(xmlStreamReader);
+      return index;
+    } catch (Exception e) {
+      throw new PageModelException(e);
     }
+  }
 
-    private void save(ArtifactIndex index) throws PageModelException {
-        try {
-            FileWriter fw = new FileWriter(indexFile.toFile());
-            XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
-            marshaller.marshal(index, xmlStreamWriter);
-        } catch (Exception e) {
-            throw new PageModelException(e);
-        }
+  private void save(ArtifactIndex index) throws PageModelException {
+    try {
+      FileWriter fw = new FileWriter(indexFile.toFile());
+      XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
+      marshaller.marshal(index, xmlStreamWriter);
+    } catch (Exception e) {
+      throw new PageModelException(e);
     }
-    
-    public static synchronized ArtifactIndex getIndex() throws PageModelException{ 
-        ArtifactIndex index = new ArtifactIndex();
-        if( Files.exists(getInstance().indexFile)){
-            index = getInstance().load();
-        } else{
-        	index.getTests().add(new TestCase(""));
-        }
-        return index; 
+  }
+
+  public synchronized static ArtifactIndex getIndex() throws PageModelException {
+    ArtifactIndex index = new ArtifactIndex();
+    if (Files.exists(getInstance().indexFile)) {
+      index = getInstance().load();
+    } else {
+      index.getTests().add(new TestCase(""));
     }
+    return index;
+  }
 
-    public static synchronized void updateTestInfo(TestCase test) throws PageModelException{  
-        ArtifactIndex index = getIndex();
-        for(TestCase lTest : index.getTests()){
-            if(lTest.equals(test)){
-                lTest.merge(test);
-                getInstance().save(index);
-                return;
-            }
-        }
-        index.getTests().add(test);
-
-        //added to avoid absolute paths in testCase instances, when they are only added to the index, but not merged
-        // i.e. force merge
-        int testIndex = index.getTests().indexOf(test);
-        index.getTests().get(testIndex).merge(test);
-
-
+  public synchronized static void updateTestInfo(TestCase test) throws PageModelException {
+    ArtifactIndex index = getIndex();
+    for (TestCase lTest : index.getTests()) {
+      if (lTest.equals(test)) {
+        lTest.merge(test);
         getInstance().save(index);
+        return;
+      }
     }
-    
-    private static TestArtifactManager getInstance() throws PageModelException{  
-        if(manager == null)
-            manager = new TestArtifactManager();
-        return manager;
-    }
+    index.getTests().add(test);
+
+    // added to avoid absolute paths in testCase instances, when they are only added to the index, but not merged
+    // i.e. force merge
+    int testIndex = index.getTests().indexOf(test);
+    index.getTests().get(testIndex).merge(test);
+
+    getInstance().save(index);
+  }
+
+  private static TestArtifactManager getInstance() throws PageModelException {
+    if (manager == null)
+      manager = new TestArtifactManager();
+    return manager;
+  }
 }
