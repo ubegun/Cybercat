@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-automation-core</artifactId>
-  <version>1.0.2.44.0</version>
+  <version>1.1.2.44.0</version>
   <url>https://github.com/ubegun/Cybercat</url>
   <packaging>jar</packaging>
   <name>Webdriver Core for automation testing</name>
@@ -25,7 +25,7 @@
     <selenium.version>2.44.0</selenium.version>
     <testng.version>6.8.5</testng.version>
     <junit.version>4.10</junit.version>
-    <springframework.version>3.1.1.RELEASE</springframework.version>
+    <springframework.version>4.1.6.RELEASE</springframework.version>
     <log4j.version>1.2.14</log4j.version>
     <commons-lang3.version>3.1</commons-lang3.version>
     <args4j.version>2.0.12</args4j.version>
