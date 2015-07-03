@@ -1,0 +1,6 @@
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sap.ui5</groupId>
+  <artifactId>com.sap.ui5.themelib-sap-bluecrystal</artifactId>
+  <version>1.24.3</version>
+</project>		

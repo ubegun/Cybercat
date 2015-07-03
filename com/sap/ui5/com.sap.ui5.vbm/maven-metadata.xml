@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.sap.ui5</groupId>
+  <artifactId>com.sap.ui5.vbm</artifactId>
+  <versioning>
+    <latest>1.24.1</latest>
+    <versions>
+      <version>1.24.1</version>
+    </versions>
+    <lastUpdated>20150630054548</lastUpdated>
+	</versioning>
+</metadata>
