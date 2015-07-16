@@ -11,27 +11,27 @@ function initArtifact(jsonIndex) {
                             if (val.testGUID == guid) {
                                 if (val.shortLog) {
                                     $('.shortLog').removeClass('hidden');
-                                    $('.shortLog>a').attr('href', val.shortLog);
+                                    $('.shortLog>a').attr('href', '../' + val.shortLog);
                                 }
                                 if (val.fullLog) {
                                     $('.fullLog').removeClass('hidden');
-                                    $('.fullLog>a').attr('href', val.fullLog);
+                                    $('.fullLog>a').attr('href', '../' + val.fullLog);
                                 }
 
                                 if (val.exceptionImage) {
                                     $('.exceptionImageWrapper').removeClass('hidden');
-                                    $('.exceptionImage>td>a').attr('href', val.exceptionImage);
-                                    $('.exceptionImage>td>a>img').attr('src', val.exceptionImage);
+                                    $('.exceptionImage>td>a').attr('href', '../' + val.exceptionImage);
+                                    $('.exceptionImage>td>a>img').attr('src', '../' + val.exceptionImage);
                                 }
 
                                 if (val.cookies) {
                                     $('.cookies').removeClass('hidden');
-                                    $('.cookies>a').attr('href', val.cookies);
+                                    $('.cookies>a').attr('href', '../' + val.cookies);
                                 }
 
                                 if (val.video) {
                                     $('.video').removeClass('hidden');
-                                    $('.video>a').attr('href', val.video);
+                                    $('.video>a').attr('href', '../' + val.video);
                                 }
 
                                 if (val.images) {
@@ -39,11 +39,11 @@ function initArtifact(jsonIndex) {
                                     if ($.isArray(val.images) && val.images.length > 0) {
                                         $.each(val.images, function(index, value) {
                                             $('.imagesWrapper>td>div').append(
-                                                    '<a target="_blank" href="' + value + '"><img src="' + value + '" class = "stepScreenShot"></a>');
+                                                    '<a target="_blank" href="../' + value + '"><img src="../' + value + '" class = "stepScreenShot"></a>');
                                         });
                                     } else {
                                         $('.imagesWrapper>td>div').append(
-                                                '<a target="_blank" href="' + val.images + '"><img src="' + val.images + '" class = "stepScreenShot"></a>');
+                                                '<a target="_blank" href="../' + val.images + '"><img src="../' + val.images + '" class = "stepScreenShot"></a>');
                                     }
                                 }
                             }

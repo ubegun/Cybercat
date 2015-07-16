@@ -23,11 +23,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -56,6 +62,7 @@ public class HTMLReporter extends AbstractReporter {
     private static final String ONLY_FAILURES_PROPERTY = "org.uncommons.reportng.failures-only";
 
     private static final String TEMPLATES_PATH = "org/uncommons/reportng/templates/html/";
+    private static final String ROOT_INDEX_FILE = "rootIndex.html";
     private static final String INDEX_FILE = "index.html";
     private static final String SUITES_FILE = "suites.html";
     private static final String OVERVIEW_FILE = "overview.html";
@@ -76,13 +83,18 @@ public class HTMLReporter extends AbstractReporter {
     private static final String PASSED_TESTS_KEY = "passedTests";
     private static final String METHODS_KEY = "methods";
     private static final String ONLY_FAILURES_KEY = "onlyReportFailures";
-    private static final String ARTIFACT_JSON = "artifactJSON";    
+    private static final String ARTIFACT_JSON = "artifactJSON";  
+    //root index 
+    private static final String BUILDS_LIST = "builds";
 
     private static final Comparator<ITestNGMethod> METHOD_COMPARATOR = new TestMethodComparator();
     private static final Comparator<ITestResult> RESULT_COMPARATOR = new TestResultComparator();
     private static final Comparator<IClass> CLASS_COMPARATOR = new TestClassComparator();
 
     private final static String ARTIFACT_INDEX_FILE = "TestArtifactIndex.json";
+    private final static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm"); 
+    
+    
 
     public HTMLReporter() {
         super(TEMPLATES_PATH);
@@ -103,11 +115,14 @@ public class HTMLReporter extends AbstractReporter {
 
         boolean useFrames = System.getProperty(FRAMES_PROPERTY, "true").equals("true");
         boolean onlyFailures = System.getProperty(ONLY_FAILURES_PROPERTY, "false").equals("true");
+        String datePrefix = formatter.format(new Date());
 
-        File outputDirectory = Report_Folder.getPath().toFile();
+        File outputDirectory = Report_Folder.getPath().resolve(datePrefix).toFile();
+        
         outputDirectory.mkdirs();
 
         try {
+            createRootIndex(Report_Folder.getPath());
             if (useFrames) {
                 createFrameset(outputDirectory);
             }
@@ -119,6 +134,8 @@ public class HTMLReporter extends AbstractReporter {
             // createChronology(suites, outputDirectory);
             createLog(outputDirectory, onlyFailures);
             copyResources(outputDirectory);
+            Files.move(Paths.get(Report_Folder.getPath().toString(), ARTIFACT_INDEX_FILE)
+                    , Paths.get(Report_Folder.getPath().toString(), datePrefix + ARTIFACT_INDEX_FILE));
         } catch (Exception ex) {
             throw new ReportNGException("Failed generating HTML report.", ex);
         }
@@ -155,6 +172,24 @@ public class HTMLReporter extends AbstractReporter {
         generateFile(new File(outputDirectory, SUITES_FILE), SUITES_FILE + TEMPLATE_EXTENSION, context);
     }
 
+    private void createRootIndex(Path rootDir) throws Exception{
+        List<String> buildsList = new ArrayList<String>();  
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(rootDir)) {
+            for (Path entry: stream) {
+                if( entry.toFile().isDirectory()){
+                    String dir = entry.getName(entry.getNameCount() -1).toString();
+                    System.out.println(dir);
+                    buildsList.add(dir);
+                }    
+            }
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        VelocityContext context = createContext();
+        context.put(BUILDS_LIST, buildsList);
+        generateFile( rootDir.resolve(ROOT_INDEX_FILE).toFile() , ROOT_INDEX_FILE + TEMPLATE_EXTENSION, context);        
+    }
+    
     private String getIndexFile() {
         StringBuffer result = new StringBuffer("");
         File aIndex = Paths.get(Report_Folder.getPath().toString(), ARTIFACT_INDEX_FILE).toFile();
@@ -164,7 +199,7 @@ public class HTMLReporter extends AbstractReporter {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }        
         return result.toString();
     }
 

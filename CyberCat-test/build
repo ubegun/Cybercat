@@ -1,0 +1,8 @@
+#!/bin/bash
+
+NOW=$(date +"%Y-%m-%d-%T")
+
+mvn clean compile test-compile antrun:run -Dconfig.properties=test.properties -DfailIfNoTests=false -Dconfig.basicArtifactsDir=/home/report/cyberTest
+
+ant -f green.xml
+

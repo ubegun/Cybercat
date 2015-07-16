@@ -36,7 +36,6 @@ public class WorkFolder {
     public static final WorkFolder Report_Folder = new WorkFolder(Home, Paths.get("Report", "html"));
     public static final WorkFolder Extensions_Relative = new WorkFolder(Home, Paths.get("extensions"));
 
-    //Legacy 
     private static Path BASIC_FOLDER = Paths.get(System.getProperty("user.home"));
 
     private Path path;
