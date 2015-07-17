@@ -185,6 +185,7 @@ public class HTMLReporter extends AbstractReporter {
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
+        Collections.sort(buildsList, Collections.reverseOrder());
         VelocityContext context = createContext();
         context.put(BUILDS_LIST, buildsList);
         generateFile( rootDir.resolve(ROOT_INDEX_FILE).toFile() , ROOT_INDEX_FILE + TEMPLATE_EXTENSION, context);        
