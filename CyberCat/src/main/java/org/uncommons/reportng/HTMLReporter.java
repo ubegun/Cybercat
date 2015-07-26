@@ -185,10 +185,21 @@ public class HTMLReporter extends AbstractReporter {
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
-        Collections.sort(buildsList, Collections.reverseOrder());
+        Collections.sort(buildsList, new ReverseOrder());
         VelocityContext context = createContext();
         context.put(BUILDS_LIST, buildsList);
         generateFile( rootDir.resolve(ROOT_INDEX_FILE).toFile() , ROOT_INDEX_FILE + TEMPLATE_EXTENSION, context);        
+    }
+    
+    static class ReverseOrder implements Comparator<String>{
+
+        @Override
+        public int compare(String o1, String o2) {
+            Long l1 =  Long.valueOf(o1.replace("-", ""));
+            Long l2 =  Long.valueOf(o2.replace("-", ""));
+            return l2.compareTo(l1);
+        }
+        
     }
     
     private String getIndexFile() {
