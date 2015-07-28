@@ -21,7 +21,27 @@ import java.lang.annotation.Target;
 
 /**
  * @author Ubegun
+ * 
+ * The annotation for a feature test case. 
+ * The feature - the does it mean, class what contains test steps based 
+ * on using page object/ page fragments.      
+ * 
+ * for example:  
+ * <pre>
+ * {@code
+ *   
+ *  class FooFeature extends AbstractFeature implements IFooFeature{ 
+ *  
+ *  ...
+ *  <br> 
+ *  @CCPageObject
+ *  <br>
+ *  private WelcomePage welcomePage;
+ *  
+ *</pre>
  *
+ *  welcomPage will be initialized on first call from the method in this class
+ *    
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( {ElementType.FIELD, ElementType.TYPE} )

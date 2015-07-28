@@ -14,6 +14,7 @@
  */
 package org.cybercat.automation.components;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -154,12 +155,12 @@ public class PageElement {
                 });
             } catch (Exception e) {
                 log.error("element \"" + name + "\" is not found ");
-                throw new PageObjectException("Element \"" + name + "\" is not found. By path: "+getActualPath(), e);
+                throw new PageObjectException("An element is not found on current page. "+ this.toString(), e);
             }
             if(element == null)
-                throw new PageObjectException("Element \"" + name + "\" is not found on page. By path: "+getActualPath());
+                throw new PageObjectException("An element is not found on current page. "+ this.toString());
             if (!waitPresent()) 
-                throw new PageObjectException("\"" + getName() + "\" element is not visible by path " + getActualPath());
+                throw new PageObjectException("An element is not visable on current page. " + this.toString());
             }
         
     }
@@ -201,12 +202,12 @@ public class PageElement {
                 });
             } catch (Exception e) {
                 log.error("element \"" + name + "\" is not found ");
-                throw new PageObjectException("element \"" + name + "\" is not found by text: \"" + text + "\"", e);
+                throw new PageObjectException("An element is not found by \"" + text +  "\" text on current page." + this.toString() , e);
             }
             if(element == null)
-                throw new PageObjectException("element \"" + name + "\" is not found. By Path:"+getActualPath());
+                throw new PageObjectException("An element is not found on current page. "+ this.toString());
             if (!waitPresent()) 
-                throw new PageObjectException("\"" + getName() + "\" element is not visible by path " + getActualPath()+"  and text: "+text);
+                throw new PageObjectException("An element is not visible -> Text: "+text + " ->" + this.toString());
             }
         
     }
@@ -323,5 +324,13 @@ public class PageElement {
                    " \n\t "+ this.actualPath + " xpath, ");
        }
     }
+
+    @Override
+    public String toString() {
+        return "PageElement [name=" + name + ", path=" + Arrays.toString(path) + ", oldPath=" + Arrays.toString(oldPath) + ", actualPath=" + actualPath
+                + ", element=" + element + ", pathType=" + processorType + ", wait=" + wait + ", state=" + state + "]";
+    }
+
+    
     
 }

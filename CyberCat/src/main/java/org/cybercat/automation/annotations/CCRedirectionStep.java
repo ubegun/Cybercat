@@ -19,6 +19,30 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 
+ * The annotation for a feature test case. 
+ * The feature - the does it mean, class what contains test steps based 
+ * on using page object/ page fragments.
+ * 
+ * for example:
+ * <pre>
+ * {@code
+ *   class FooFeature extends AbstractFeature implements IFooFeature{ 
+ *     ...
+ *     <br>      
+ *    @Override
+ *    @CCRedirectionStep(desctiption = "Navigation to Mailinator", url = "http://mailinator.com/")
+ *    public IFooFeature gotoMailinator() throws AutomationFrameworkException {
+ *    return this;
+ *    }
+ *     ...
+ * 
+ * </pre>
+ * when will be called this method, the current window in browser will be 
+ * redirected by {@code url = "http://mailinator.com/" }
+ * 
+ */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( {ElementType.METHOD, ElementType.TYPE} )
 public @interface CCRedirectionStep {
