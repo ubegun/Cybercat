@@ -31,6 +31,7 @@ import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.addons.common.ScreenshotProvider;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent.EffectType;
+import org.cybercat.automation.events.EventHighlightElement;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventStopTest;
@@ -112,7 +113,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     public void get(String finalUrl) {
       try{
         driver.get(finalUrl);
-        eventManager.notify(new TakeScreenshotEvent(this, EffectType.RESIZ_BY_WIDTH));
+        eventManager.notify(new EventHighlightElement("highlightElement" ,this.getClass() ,this, EffectType.RESIZ_BY_WIDTH));
       }catch(Exception e){
         log.error(e);
       }
@@ -238,7 +239,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
             this.executeScript("arguments[0].style.backgroundColor = '" + "red" + "'", element);
             Point point = element.getLocation();
             Dimension demention = new Dimension(point.x, point.y);// .getSize();
-            eventManager.notify(new TakeScreenshotEvent(this, EffectType.RESIZ_BY_WIDTH, point.getX()
+            eventManager.notify(new EventHighlightElement("highlightElement" ,this.getClass() ,this, EffectType.RESIZ_BY_WIDTH, point.getX()
                     + demention.getWidth(), point.getY() + demention.getHeight()));
         } catch (Exception e) {
             e.printStackTrace();

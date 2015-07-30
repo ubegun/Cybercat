@@ -33,10 +33,12 @@ public interface EventManager {
     GET_PERFORMANCE_REPORT,
     START_PERFORMANCE_MEASURE,
     TEST_FAIL,
-    INIT_PROXY_SERVER
+    INIT_PROXY_SERVER,
+    PAGE_OBJECT_CALL,
+    
   }
 
   public <T extends Event> void notify(T event);
-
+  
   public boolean unsubscribe(EventListener<?> listener);
 }

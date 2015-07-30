@@ -23,11 +23,34 @@ import org.cybercat.automation.addons.common.ScreenshotManager;
 import org.cybercat.automation.addons.common.TestLoggerAddon;
 
 /**
- * This annotation shows which ID has test class or method in Quality Center system.
+ * 
+ * @param id - this is legacy Id for Quality Center system. (the system is not used) 
+ * @param description - this is description of the test case. Consuming in test reports, on screenshots and video, like a subtitles, in tests logs 
+ * @param bugs - List of related IDs of bugs, can be used in bug tracking addons see JiraReportManager
+ * @param features - list of features what activated for the Test Case 
+ * <p><br>
+ * Supported features:
+ * <p><br>
+ * Cybercat framework provides few standard features
+ * <ul>
+ * <li>Browser - this is logical representation of browser windows, single tone for the Test Case thread. The browser provides methods for control browser windows through the WebDriver
+ * <li>JiraReportManager - this is donation code by Adidas team of automation. Provides support with the Jira issue tracker by jira REST apis.Endpoint and authentication properties for Jira is in test properties file. Service factory for SOAP connection is JirasoapserviceV2SoapBindingStub
+ * <li>MediaController - this is part of Video addon. Video addon response by creating video streams and serialization to artifact storage 
+ * <li>PerformanceReportManager - part of Yslow addon.
+ * <li>ScreenshotManager - part of screenshot addon.
+ * <li>TestLoggerAddon - part of thread logger addon.
+ * </ul>
+ * <p><br>
+ * Custom functions may be added by the user for this user can make steps described below:
+ *  <ul>
+ *  <li>implements ExteranlAddon
+ *  <li>define "external.addon.package" property in "test.properties"
+ *  <li>define custom events if it necessary ( see extending org.cybercat.automation.events.Event)
+ *  </ul> 
+ *   
  */
-
 @Retention( RetentionPolicy.RUNTIME )
-@Target( {ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR} )
+@Target( {ElementType.METHOD, ElementType.TYPE} )
 public @interface CCTestCase {
     int[] id() default {};
     String description();

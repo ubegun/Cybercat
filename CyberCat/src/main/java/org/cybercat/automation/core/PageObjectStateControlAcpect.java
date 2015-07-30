@@ -25,6 +25,7 @@ import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.annotations.CCPageURL;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PageState;
+import org.cybercat.automation.events.EventPageObjectCall;
 
 @Aspect
 public class PageObjectStateControlAcpect {
@@ -41,6 +42,7 @@ public class PageObjectStateControlAcpect {
     public void beforeNotTransientMethod(JoinPoint jp, Object bean) throws Throwable {
         if (bean instanceof AbstractPageObject) {
             AbstractPageObject pageObject = (AbstractPageObject) bean;
+            AutomationMain.getEventManager().notify(new EventPageObjectCall(jp.getSignature().getName(), pageObject.getClass()));
             if(pageObject.getState() == PageState.CREATED)
                 processPageURLAnnotation(pageObject);
                 pFactory.initPage(pageObject);

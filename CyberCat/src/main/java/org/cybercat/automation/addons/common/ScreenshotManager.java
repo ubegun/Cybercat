@@ -39,8 +39,10 @@ import org.cybercat.automation.addons.media.events.TakeScreenshotEvent;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent.EffectType;
 import org.cybercat.automation.core.AddonContainer;
 import org.cybercat.automation.core.AutomationMain;
+import org.cybercat.automation.events.EventHighlightElement;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
+import org.cybercat.automation.events.EventPageObjectCall;
 import org.cybercat.automation.events.EventTestFail;
 import org.cybercat.automation.events.EventStartTestStep;
 import org.cybercat.automation.persistence.TestArtifactManager;
@@ -51,9 +53,13 @@ import org.cybercat.automation.utils.WorkFolder;
 
 public class ScreenshotManager implements AddonContainer {
 
-    private static Logger log = Logger.getLogger(ScreenshotManager.class);
     public static final String STEPS_SCREENSHOT = "Steps screenshot";
+    public static final String PAGE_OBJECT_SCREENSHOT = "Page object screenshot";
+    public static final String PAGE_EVENT_SCREENSHOT = "Page event screenshot";
     public static final String EXCEPTION_SCREENSHOT = "Exception screenshot";
+
+    
+    private static Logger log = Logger.getLogger(ScreenshotManager.class);
     private int bottomOffset;
     private Font font;
     private int lineOffset; // px
@@ -165,13 +171,45 @@ public class ScreenshotManager implements AddonContainer {
                     eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
                 }
             });
+        
+        if (config.hasFeature(ScreenshotManager.PAGE_OBJECT_SCREENSHOT))
+            listeners.add(new EventListener<EventPageObjectCall>(EventPageObjectCall.class, 100) {
+
+                @Override
+                public void doActon(EventPageObjectCall event) throws Exception {
+                    String fileName = CommonUtils.getCurrentDate() + event.getMethodName();
+                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
+                    Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
+                    TestCase test = new TestCase(event.getTestClass().getName());
+                    test.setExceptionImage(screen.toString());
+                    TestArtifactManager.updateTestInfo(test);
+                    
+                    eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
+                }
+                
+            });
+        if (config.hasFeature(ScreenshotManager.PAGE_EVENT_SCREENSHOT))
+            listeners.add(new EventListener<EventHighlightElement>(EventHighlightElement.class, 100) {
+
+                @Override
+                public void doActon(EventHighlightElement event) throws Exception {
+                    String fileName = CommonUtils.getCurrentDate() + event.getMethodName();
+                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
+                    Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
+                    TestCase test = new TestCase(event.getTestClass().getName());
+                    test.setExceptionImage(screen.toString());
+                    TestArtifactManager.updateTestInfo(test);
+                    eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
+                }
+                
+            });
         return listeners;
     }
 
 
     @Override
     public String[] getSupportedFeatures() {
-        return new String[]{STEPS_SCREENSHOT, EXCEPTION_SCREENSHOT}; 
+        return new String[]{STEPS_SCREENSHOT, EXCEPTION_SCREENSHOT, PAGE_OBJECT_SCREENSHOT, PAGE_EVENT_SCREENSHOT}; 
     }
     
     
