@@ -26,51 +26,50 @@ import org.cybercat.automation.annotations.CCPageURL;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PageState;
 import org.cybercat.automation.events.EventPageObjectCall;
+import org.cybercat.automation.test.AbstractTestCase;
 
 @Aspect
 public class PageObjectStateControlAcpect {
-    
+
     Logger log = Logger.getLogger(PageObjectStateControlAcpect.class);
 
     private PageFactoryImpl pFactory;
 
-    public PageObjectStateControlAcpect(PageFactoryImpl pFactory){
-        this.pFactory = pFactory;    
+    public PageObjectStateControlAcpect(PageFactoryImpl pFactory) {
+        this.pFactory = pFactory;
     }
 
     @Before("target(bean) && !@annotation(java.beans.Transient)")
     public void beforeNotTransientMethod(JoinPoint jp, Object bean) throws Throwable {
         if (bean instanceof AbstractPageObject) {
             AbstractPageObject pageObject = (AbstractPageObject) bean;
-            AutomationMain.getEventManager().notify(new EventPageObjectCall(jp.getSignature().getName(), pageObject.getClass()));
-            if(pageObject.getState() == PageState.CREATED)
+            Class<? extends AbstractTestCase> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
+            AutomationMain.getEventManager().notify(new EventPageObjectCall(pageObject.getClass().getSimpleName() + "." + jp.getSignature().getName(), test));
+            if (pageObject.getState() == PageState.CREATED)
                 processPageURLAnnotation(pageObject);
-                pFactory.initPage(pageObject);
+            pFactory.initPage(pageObject);
         }
     }
-    
-    private void processPageURLAnnotation(AbstractPageObject pageObject) throws Throwable{        
-        for (Field field: pageObject.getClass().getDeclaredFields()) {
+
+    private void processPageURLAnnotation(AbstractPageObject pageObject) throws Throwable {
+        for (Field field : pageObject.getClass().getDeclaredFields()) {
             field.setAccessible(true);
-            try{
-            if (field.getAnnotation(CCPageURL.class) != null) {
-                String pageUrl = field.get(pageObject).toString();
-                if(StringUtils.isBlank(pageUrl)){
-                    log.error("Field value is empty. Field name: " + field.getName() 
-                                + " class: " + pageObject.getClass().getSimpleName()
-                                + " Thread ID:" + Thread.currentThread().getId());
-                    continue;
+            try {
+                if (field.getAnnotation(CCPageURL.class) != null) {
+                    String pageUrl = field.get(pageObject).toString();
+                    if (StringUtils.isBlank(pageUrl)) {
+                        log.error("Field value is empty. Field name: " + field.getName() + " class: " + pageObject.getClass().getSimpleName() + " Thread ID:"
+                                + Thread.currentThread().getId());
+                        continue;
+                    }
+                    pageObject.setPageUrl(pageUrl);
                 }
-                pageObject.setPageUrl(pageUrl);
-            }
             } catch (Exception e) {
-                throw new AutomationFrameworkException(
-                        "Set page url filed exception. Field value is empty."
-                                + " field name: " + field.getName() + " class: " + pageObject.getClass().getSimpleName()
-                                + " Thread ID:" + Thread.currentThread().getId());
+                throw new AutomationFrameworkException("Set page url filed exception. Field value is empty." + " field name: " + field.getName() + " class: "
+                        + pageObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId());
             }
 
         }
     }
-    
+
 }

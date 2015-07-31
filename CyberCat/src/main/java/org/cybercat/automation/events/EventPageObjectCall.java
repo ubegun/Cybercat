@@ -1,7 +1,5 @@
 package org.cybercat.automation.events;
 
-import java.awt.Font;
-
 import org.cybercat.automation.events.EventManager.EventTypes;
 
 public class EventPageObjectCall extends Event {

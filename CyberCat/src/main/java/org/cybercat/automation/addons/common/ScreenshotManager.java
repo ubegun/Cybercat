@@ -181,7 +181,7 @@ public class ScreenshotManager implements AddonContainer {
                     Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
                     Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
                     TestCase test = new TestCase(event.getTestClass().getName());
-                    test.setExceptionImage(screen.toString());
+                    test.addImage(screen.toString());
                     TestArtifactManager.updateTestInfo(test);
                     
                     eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
@@ -197,7 +197,7 @@ public class ScreenshotManager implements AddonContainer {
                     Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
                     Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
                     TestCase test = new TestCase(event.getTestClass().getName());
-                    test.setExceptionImage(screen.toString());
+                    test.addImage(screen.toString());
                     TestArtifactManager.updateTestInfo(test);
                     eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
                 }
