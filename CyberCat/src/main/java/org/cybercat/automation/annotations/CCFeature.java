@@ -20,11 +20,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author Ubegun
- * 
- * The annotation for a feature test case. 
- * The feature - the does it mean, class what contains test steps based 
- * on using page object/ page fragments.      
+ * @author Ubegun<br>
+ * <p>The annotation for the feature test case. 
+ * Feature test case is a BDD class that contains test steps which are based 
+ * on using page objects / page fragments.</p>      
  * 
  * for example:  
  * <pre>
@@ -40,7 +39,7 @@ import java.lang.annotation.Target;
  *  
  *</pre>
  *
- *  welcomPage will be initialized on first call from the method in this class
+ *  welcomPage will be initialized on first call from the method that is using "welcomPage" value in this class
  *    
  */
 @Retention( RetentionPolicy.RUNTIME )

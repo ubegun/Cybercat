@@ -89,7 +89,6 @@ public abstract class AbstractPageObject {
     @Transient
     public void init(Browser browser, Locale locale) throws AutomationFrameworkException {
         if(this.state == PageState.INITIALIZED){
-            LOG.error("This page has been initialized. Please call detach() method first.");
             return;
         }    
         this.state = PageState.INITIALIZED;
