@@ -21,33 +21,33 @@ import org.cybercat.automation.test.AbstractTestCase;
 import org.cybercat.automation.utils.CommonUtils;
 
 
-public class EventStartTestStep extends Event {
+public class EventStopTestStep extends Event {
     
     private Class<? extends AbstractTestCase> testClass;
     private String subtitles;
     private String methodName;
     private ImageFormat format;
-    private String startStepTime;
+    private String stopStepTime;
     private Class<? extends AbstractFeature> featureClass;
     
-    public EventStartTestStep(Class<? extends AbstractTestCase> testClass, Class<? extends AbstractFeature> featureClass,   String subtitles, String methodName) {
+    public EventStopTestStep(Class<? extends AbstractTestCase> testClass, Class<? extends AbstractFeature> featureClass,   String subtitles, String methodName) {
         this(testClass, featureClass, subtitles, methodName, ImageFormat.JPEG);
     }
     
-    public EventStartTestStep(Class<? extends AbstractTestCase>  testClass, Class<? extends AbstractFeature> featureClass, String subtitles, String methodName, ImageFormat format) {
+    public EventStopTestStep(Class<? extends AbstractTestCase>  testClass, Class<? extends AbstractFeature> featureClass, String subtitles, String methodName, ImageFormat format) {
         super();
         this.testClass = testClass;
         this.featureClass = featureClass;
         this.subtitles = subtitles;
         this.methodName = methodName;
         this.format = format;
-        this.startStepTime = CommonUtils.getCurrentDate();
+        this.stopStepTime = CommonUtils.getCurrentDate();
         
     }
 
     @Override
     public EventTypes getType() {
-        return EventTypes.START_TEST_STEP;
+        return EventTypes.END_TEST_STEP;
     }
 
     public String getSubtitles() {
@@ -67,8 +67,8 @@ public class EventStartTestStep extends Event {
         return testClass;
     }
 
-    public String getStartStepTime() {
-        return startStepTime;
+    public String getStopStepTime() {
+        return stopStepTime;
     }
 
     public Class<? extends AbstractFeature> getFeatureClass() {

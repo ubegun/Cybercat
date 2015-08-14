@@ -43,8 +43,9 @@ import org.cybercat.automation.events.EventHighlightElement;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventPageObjectCall;
-import org.cybercat.automation.events.EventTestFail;
 import org.cybercat.automation.events.EventStartTestStep;
+import org.cybercat.automation.events.EventStopTestStep;
+import org.cybercat.automation.events.EventTestFail;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestCase;
 import org.cybercat.automation.utils.CommonUtils;
@@ -53,7 +54,9 @@ import org.cybercat.automation.utils.WorkFolder;
 
 public class ScreenshotManager implements AddonContainer {
 
-    public static final String STEPS_SCREENSHOT = "Steps screenshot";
+    public static final String STEPS_SCREENSHOT = "On test step BEGIN screenshot";
+    public static final String ON_BEGIN_STEP_SCREENSHOT = "On test step BEGIN screenshot";
+    public static final String ON_END_STEP_SCREENSHOT = "On test step END screenshot";
     public static final String PAGE_OBJECT_SCREENSHOT = "Page object screenshot";
     public static final String PAGE_EVENT_SCREENSHOT = "Page event screenshot";
     public static final String EXCEPTION_SCREENSHOT = "Exception screenshot";
@@ -135,7 +138,7 @@ public class ScreenshotManager implements AddonContainer {
             }
 
         });
-        if (config.hasFeature(ScreenshotManager.STEPS_SCREENSHOT))
+        if (config.hasFeature(ScreenshotManager.STEPS_SCREENSHOT) || config.hasFeature(ON_BEGIN_STEP_SCREENSHOT))
             listeners.add(new EventListener<EventStartTestStep>(EventStartTestStep.class, 100) {
 
                 @Override
@@ -152,6 +155,25 @@ public class ScreenshotManager implements AddonContainer {
                 }
 
             });
+
+        if (config.hasFeature(ScreenshotManager.ON_END_STEP_SCREENSHOT))
+            listeners.add(new EventListener<EventStopTestStep>(EventStopTestStep.class, 100) {
+
+                @Override
+                public void doActon(EventStopTestStep event) throws Exception {
+                    if (provider == null) {
+                        log.warn("You were trying to make a screenshot before having the browser initialized.");
+                        return;
+                    }
+                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName(), event.getStopStepTime());
+                    Path screen = saveScreen(path, event.getStopStepTime() + "_" + event.getMethodName(), event.getFormat(), event.getSubtitles());
+                    TestCase test = new TestCase(event.getTestClass().getName());
+                    test.addImage(screen.toString());
+                    TestArtifactManager.updateTestInfo(test);
+                }
+
+            });
+        
         if (config.hasFeature(ScreenshotManager.EXCEPTION_SCREENSHOT))
             listeners.add(new EventListener<EventTestFail>(EventTestFail.class, 100) {
 
@@ -209,7 +231,7 @@ public class ScreenshotManager implements AddonContainer {
 
     @Override
     public String[] getSupportedFeatures() {
-        return new String[]{STEPS_SCREENSHOT, EXCEPTION_SCREENSHOT, PAGE_OBJECT_SCREENSHOT, PAGE_EVENT_SCREENSHOT}; 
+        return new String[]{ON_BEGIN_STEP_SCREENSHOT, ON_END_STEP_SCREENSHOT, STEPS_SCREENSHOT, EXCEPTION_SCREENSHOT, PAGE_OBJECT_SCREENSHOT, PAGE_EVENT_SCREENSHOT}; 
     }
     
     

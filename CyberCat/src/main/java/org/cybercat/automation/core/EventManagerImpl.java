@@ -61,7 +61,7 @@ public class EventManagerImpl implements EventManager, AddonContainer {
     public <T extends Event> void notify(T event) {
         System.err.println("local event :" + event.getClass().getSimpleName());        
         if(!listeners.containsKey(event.getClass()) || Thread.currentThread().getId() != event.getThreadId()){
-            log.info(event.getClass().getSimpleName() + " event has been rejected. Current thread id:" + Thread.currentThread().getId() + "\t Event thread id:" + event.getThreadId());
+            log.info(event.getClass().getSimpleName() + "[DEBUG] event has been rejected.  Current thread id:" + Thread.currentThread().getId() + "\t Event thread id:" + event.getThreadId());
             return;
         }    
                 

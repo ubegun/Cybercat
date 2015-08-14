@@ -16,12 +16,15 @@
 package org.cybercat.automation.core;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.annotations.CCRedirectionStep;
 import org.cybercat.automation.annotations.CCTestStep;
 import org.cybercat.automation.events.EventStartTestStep;
+import org.cybercat.automation.events.EventStopTestStep;
 import org.cybercat.automation.test.AbstractFeature;
 import org.cybercat.automation.test.AbstractTestCase;
 
@@ -31,25 +34,34 @@ import org.cybercat.automation.test.AbstractTestCase;
  */
 @Aspect
 public class TestStepAspect {
-    
-    public TestStepAspect(){
+
+    public TestStepAspect() {
         super();
     }
 
     @SuppressWarnings("unchecked")
-    @Before("target(bean) && @annotation(testStep)")
-    public void stepNotification(JoinPoint jp, Object bean,  CCTestStep testStep) throws AutomationFrameworkException{
+    @Around("target(bean) && @annotation(testStep)")
+    public Object stepNotification(ProceedingJoinPoint pjp, Object bean, CCTestStep testStep) throws AutomationFrameworkException {
         Class<? extends AbstractTestCase> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
-        AutomationMain.getEventManager().notify(new EventStartTestStep(test, (Class<? extends AbstractFeature>) bean.getClass() ,testStep.value(), jp.getSignature().getName())); 
+        AutomationMain.getEventManager().notify(
+                new EventStartTestStep(test, (Class<? extends AbstractFeature>) bean.getClass(), testStep.value(), pjp.getSignature().getName()));
+        try {
+            Object retVal = pjp.proceed();
+            AutomationMain.getEventManager().notify(
+                    new EventStopTestStep(test, (Class<? extends AbstractFeature>) bean.getClass(), testStep.value(), pjp.getSignature().getName()));
+            return retVal;
+        } catch (Throwable e) {
+            throw new AutomationFrameworkException(e);
+        }
     }
-
 
     @SuppressWarnings("unchecked")
     @Before("target(bean) && @annotation(redirectionStep)")
-    public void redirectionstep(JoinPoint jp, Object bean,  CCRedirectionStep redirectionStep) throws AutomationFrameworkException{
+    public void redirectionstep(JoinPoint jp, Object bean, CCRedirectionStep redirectionStep) throws AutomationFrameworkException {
         Class<? extends AbstractTestCase> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
         Browser.getCurrentBrowser().get(redirectionStep.url());
-        AutomationMain.getEventManager().notify(new EventStartTestStep(test ,(Class<? extends AbstractFeature>) bean.getClass(),redirectionStep.desctiption(), jp.getSignature().getName())); 
+        AutomationMain.getEventManager().notify(
+                new EventStartTestStep(test, (Class<? extends AbstractFeature>) bean.getClass(), redirectionStep.desctiption(), jp.getSignature().getName()));
     }
 
 }

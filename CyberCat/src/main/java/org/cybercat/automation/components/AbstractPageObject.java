@@ -130,7 +130,7 @@ public abstract class AbstractPageObject {
      * @return
      * @throws AutomationFrameworkException 
      */
-    private Browser getBrowser() throws AutomationFrameworkException {
+    protected Browser getBrowser() throws AutomationFrameworkException {
         if(browser == null)
             browser = Browser.getCurrentBrowser();        
         return browser;
@@ -455,26 +455,6 @@ public abstract class AbstractPageObject {
             pageFragment.cleanupElements();
         }
         pageFragments = new ArrayList<AbstractPageObject>();
-    }
-
-    protected void switchToFrame(String name) throws AutomationFrameworkException {
-        getBrowser().switchToFrame(name);
-    }
-
-    protected String getWindowHandle() throws AutomationFrameworkException {
-        return getBrowser().getWindowHandle();
-    }
-
-    protected Alert switchToAlert() throws AutomationFrameworkException {
-        return getBrowser().switchToAlert();
-    }
-
-    protected Set<String> getWindowNames() throws AutomationFrameworkException {
-        return getBrowser().getWindowHandles();
-    }
-
-    protected void switchToDefaultContent() throws AutomationFrameworkException {
-        getBrowser().switchToDefaultContent();
     }
 
     protected Object execJS(String script, Object... args) throws AutomationFrameworkException {

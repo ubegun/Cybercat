@@ -85,10 +85,10 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         listeners = new ArrayList<EventListener<?>>();
     }
 
-    public static Browser getCurrentBrowser() throws AutomationFrameworkException{
+    public static Browser getCurrentBrowser() throws AutomationFrameworkException {
         return AutomationMain.getMainFactory().getConfigurationManager().getBrowser();
     }
-    
+
     /**
      * Returns
      */
@@ -101,22 +101,22 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     }
 
     public String getCurrentUrl() {
-      try{
-        return driver.getCurrentUrl();
-      }catch(Exception e){
-        isClosed = true;
-        log.error(e);
-        return null; 
-      }
+        try {
+            return driver.getCurrentUrl();
+        } catch (Exception e) {
+            isClosed = true;
+            log.error(e);
+            return null;
+        }
     }
 
     public void get(String finalUrl) {
-      try{
-        driver.get(finalUrl);
-        eventManager.notify(new EventHighlightElement("highlightElement" ,this.getClass() ,this, EffectType.RESIZ_BY_WIDTH));
-      }catch(Exception e){
-        log.error(e);
-      }
+        try {
+            driver.get(finalUrl);
+            eventManager.notify(new EventHighlightElement("highlightElement", this.getClass(), this, EffectType.RESIZ_BY_WIDTH));
+        } catch (Exception e) {
+            log.error(e);
+        }
     }
 
     public String getTitle() {
@@ -145,16 +145,36 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
         driver.switchTo().frame(name);
     }
 
-    public void switchToFrame(int index){
-    	super.driver = (RemoteWebDriver) super.driver.switchTo().frame(index);
+    public void switchToFrame(int index) {
+        super.driver = (RemoteWebDriver) super.driver.switchTo().frame(index);
     }
-    
+
     public Browser getAnotherWindow(String name) throws PageObjectException {
         return new Browser((RemoteWebDriver) driver.switchTo().window(name), this.browserType, this.isRemote);
     }
-    
+
+    /**
+     * @return window preview handler id
+     * @throws AutomationFrameworkException
+     */
+    public String switchToNewWindow(String url) throws AutomationFrameworkException {
+        String previewHandler = getWindowHandle();
+        ((JavascriptExecutor) driver).executeScript("window.open('" + url + "','_blank');");
+        Set<String> wHandler = getWindowHandles();
+        for (String name : wHandler) {
+            if (!previewHandler.equals(name)) {
+                switchToWindow(name);
+                if (getCurrentUrl().contains(url))
+                    return previewHandler;
+            }
+        }
+        log.warn("Switching into new window was failed. No one from windows contains target url:" + url);
+        return previewHandler;
+    }
+
     /**
      * @param name
+     *            - window string id
      * @throws PageObjectException
      */
     public void switchToWindow(String name) throws PageObjectException {
@@ -200,22 +220,21 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
                 evm.unsubscribe(listener);
             }
         } catch (AutomationFrameworkException e) {
-            log.error("Please, save this log and contact the Cybercat project support. \n Failed on unsubscription browser from current thread. "
-                    + e);
+            log.error("Please, save this log and contact the Cybercat project support. \n Failed on unsubscription browser from current thread. " + e);
         }
 
     }
-    
-    public void removeAllCookies(){
-    	driver.manage().deleteAllCookies();
-    }
-    
-    public void removeCookie(String cookieName){
-    	driver.manage().deleteCookieNamed(cookieName);
+
+    public void removeAllCookies() {
+        driver.manage().deleteAllCookies();
     }
 
-    public void removeCookie(Cookie cookie){
-    	driver.manage().deleteCookie(cookie);
+    public void removeCookie(String cookieName) {
+        driver.manage().deleteCookieNamed(cookieName);
+    }
+
+    public void removeCookie(Cookie cookie) {
+        driver.manage().deleteCookie(cookie);
     }
 
     public Set<Cookie> getCookies() {
@@ -239,7 +258,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
             this.executeScript("arguments[0].style.backgroundColor = '" + "red" + "'", element);
             Point point = element.getLocation();
             Dimension demention = new Dimension(point.x, point.y);// .getSize();
-            eventManager.notify(new EventHighlightElement("highlightElement" ,this.getClass() ,this, EffectType.RESIZ_BY_WIDTH, point.getX()
+            eventManager.notify(new EventHighlightElement("highlightElement", this.getClass(), this, EffectType.RESIZ_BY_WIDTH, point.getX()
                     + demention.getWidth(), point.getY() + demention.getHeight()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -288,7 +307,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
 
     public String getSessionId() {
         SessionId sessionId = driver.getSessionId();
-        return sessionId == null? "-1" : sessionId.toString();
+        return sessionId == null ? "-1" : sessionId.toString();
     }
 
     public boolean isWaitForEndOfPage() {
@@ -346,12 +365,12 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
 
     private void saveCookies(EventTestFail event) {
         String currentDate = CommonUtils.getCurrentDate();
-        Path cookiePath = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName(),
-                currentDate + event.getMethodName() + "_cookies.txt");
+        Path cookiePath = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName(), currentDate + event.getMethodName()
+                + "_cookies.txt");
         try (BufferedWriter writer = Files.newBufferedWriter(cookiePath, Charset.defaultCharset())) {
             for (Cookie cookie : getCookies()) {
-                writer.write("Domain: " + cookie.getDomain() + "; Name: " + cookie.getName() + "; Value: "
-                        + cookie.getValue() + "; Path: " + cookie.getPath() + ";\n");
+                writer.write("Domain: " + cookie.getDomain() + "; Name: " + cookie.getName() + "; Value: " + cookie.getValue() + "; Path: " + cookie.getPath()
+                        + ";\n");
             }
             TestCase test = new TestCase(event.getTestClass().getName());
             test.setCookies(cookiePath.toString());
