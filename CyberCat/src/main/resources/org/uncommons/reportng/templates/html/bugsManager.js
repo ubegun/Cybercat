@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $.getJSON("./TestArtifactIndex.json", function(data) {
+    $.getJSON("../TestArtifactIndex.json", function(data) {
         var tests = data.ArtifactIndex.tests;
         if (tests.length) {
             $.each(tests, function(index, test) {

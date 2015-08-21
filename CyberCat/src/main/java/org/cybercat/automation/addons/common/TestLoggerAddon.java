@@ -63,7 +63,7 @@ public class TestLoggerAddon implements AddonContainer {
                 thisLogger.flush(fullLog);
                 TestCase test = new TestCase(event.getTestClass().getName());
                 test.setFullLog(fullLog.toString());
-                TestArtifactManager.updateTestInfo(test);
+                TestArtifactManager.updateTestRunInfo(test);
             }
         });
         return listeners;

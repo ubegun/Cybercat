@@ -23,17 +23,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -41,7 +38,13 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.velocity.VelocityContext;
+import org.cybercat.automation.persistence.TestArtifactManager;
+import org.cybercat.automation.persistence.model.ArtifactIndex;
+import org.cybercat.automation.persistence.model.PageModelException;
+import org.cybercat.automation.persistence.model.TestRun;
 import org.testng.IClass;
 import org.testng.IInvokedMethod;
 import org.testng.IResultMap;
@@ -92,10 +95,7 @@ public class HTMLReporter extends AbstractReporter {
     private static final Comparator<IClass> CLASS_COMPARATOR = new TestClassComparator();
 
     private final static String ARTIFACT_INDEX_FILE = "TestArtifactIndex.json";
-    private final static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm"); 
     
-    
-
     public HTMLReporter() {
         super(TEMPLATES_PATH);
     }
@@ -110,17 +110,26 @@ public class HTMLReporter extends AbstractReporter {
      */
     @Override
     public void generateReport(List<XmlSuite> xmlSuites, List<ISuite> suites, String outputDirectoryName) {
+        ArtifactIndex index;
+        try {
+            index = TestArtifactManager.getInstance().getIndex();
+        } catch (PageModelException e) {
+            throw new RuntimeException(e);
+        }
+        TestRun lastBuild = index.getLastBuild();
         System.out.println("\n\n####################\n" + Report_Folder.toString() + "\n###################\n\n");
+        System.out.println("####################" + index.toString());
+        System.out.println("################>>>>" + index.getLastBuild().toString());
+        System.out.println("################<<<<" + lastBuild.toString());
         removeEmptyDirectories(Report_Folder.getPath().toFile());
 
         boolean useFrames = System.getProperty(FRAMES_PROPERTY, "true").equals("true");
         boolean onlyFailures = System.getProperty(ONLY_FAILURES_PROPERTY, "false").equals("true");
-        String datePrefix = formatter.format(new Date());
 
+        String datePrefix = lastBuild.getStartedAsString();
         File outputDirectory = Report_Folder.getPath().resolve(datePrefix).toFile();
         
         outputDirectory.mkdirs();
-
         try {
             createRootIndex(Report_Folder.getPath());
             if (useFrames) {
@@ -134,8 +143,7 @@ public class HTMLReporter extends AbstractReporter {
             // createChronology(suites, outputDirectory);
             createLog(outputDirectory, onlyFailures);
             copyResources(outputDirectory);
-            Files.move(Paths.get(Report_Folder.getPath().toString(), ARTIFACT_INDEX_FILE)
-                    , Paths.get(Report_Folder.getPath().toString(), datePrefix + ARTIFACT_INDEX_FILE));
+            TestArtifactManager.setPathToReport(outputDirectory.toString());
         } catch (Exception ex) {
             throw new ReportNGException("Failed generating HTML report.", ex);
         }

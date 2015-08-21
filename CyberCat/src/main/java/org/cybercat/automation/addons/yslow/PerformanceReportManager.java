@@ -80,7 +80,7 @@ public class PerformanceReportManager implements AddonContainer {
                     Files.write(yslowFile, ySlow.getReportSource().getBytes());
                     TestCase test = new TestCase(thisTest);
                     test.putArtifact("YSLOW#" + event.getPageDescription(),TestCase.getRelativePath(yslowFile.toString()));
-                    TestArtifactManager.updateTestInfo(test);
+                    TestArtifactManager.updateTestRunInfo(test);
                 }catch(Exception e){
                     log.error(e);
                 }

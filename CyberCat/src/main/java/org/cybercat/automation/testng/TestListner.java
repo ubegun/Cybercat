@@ -67,7 +67,7 @@ public class TestListner {
             writer.close();
             TestCase test = new TestCase(testClass.getName());
             test.setShortLog(shortLog.toString());
-            TestArtifactManager.updateTestInfo(test);
+            TestArtifactManager.updateTestRunInfo(test);
         } catch (Exception e) {
             e.printStackTrace();
         }

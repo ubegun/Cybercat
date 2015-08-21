@@ -22,14 +22,29 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "ArtifactIndex")
 public class ArtifactIndex {
 
-    private List<TestCase> tests = new CopyOnWriteArrayList<TestCase>() ;
+    private List<TestRun> builds = new CopyOnWriteArrayList<TestRun>();
+    private TestRun lastBuild; 
 
-    public List<TestCase> getTests() {
-        return tests;
+    public List<TestRun> getBuilds() {
+        return builds;
     }
 
-    public void setTests(List<TestCase> tests) {
-        this.tests = tests;
+    public void setBuilds(List<TestRun> builds) {
+        this.builds = builds;
     }
+
+    public TestRun getLastBuild() {
+        return lastBuild;
+    }
+
+    public void setLastBuild(TestRun lastBuild) {
+        this.lastBuild = lastBuild;
+    }
+
+    @Override
+    public String toString() {
+        return "ArtifactIndex [builds=" + builds + ", lastBuild=" + lastBuild + "]";
+    }
+    
 
 }

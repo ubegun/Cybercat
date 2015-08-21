@@ -35,91 +35,117 @@ import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 import org.cybercat.automation.persistence.model.ArtifactIndex;
 import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
+import org.cybercat.automation.persistence.model.TestRun;
 import org.cybercat.automation.utils.WorkFolder;
+import org.testng.log4testng.Logger;
 
 public class TestArtifactManager {
 
-  private Path indexFile;
-  private JAXBContext jc;
-  private MappedNamespaceConvention namespace;
-  private Unmarshaller unmarshaller;
-  private Marshaller marshaller;
+    private JAXBContext jc;
+    private MappedNamespaceConvention namespace;
+    private Unmarshaller unmarshaller;
+    private Marshaller marshaller;
+    private TestRun thisTestRun = new TestRun();
+    private ArtifactIndex index = new ArtifactIndex();
 
-  private static TestArtifactManager manager;
+    private static TestArtifactManager manager;
+    private static Logger log = Logger.getLogger(TestArtifactManager.class);
+    
+    private TestArtifactManager() throws PageModelException {
+        try {
+            jc = JAXBContext.newInstance(ArtifactIndex.class);
+            Configuration config = new Configuration();
+            unmarshaller = jc.createUnmarshaller();
+            marshaller = jc.createMarshaller();
+            namespace = new MappedNamespaceConvention(config);
+            try{
+                index = load();
+            }catch(Exception e){
+                log.error(e);
+            }
+        } catch (Exception e) {
+            log.error(e);
+            throw new PageModelException(e);
+        }
 
-  private TestArtifactManager() throws PageModelException {
-    try {
-      jc = JAXBContext.newInstance(ArtifactIndex.class);
-      indexFile = Paths.get(WorkFolder.Report_Folder.toString(), "TestArtifactIndex.json");
-      Configuration config = new Configuration();
-      unmarshaller = jc.createUnmarshaller();
-      marshaller = jc.createMarshaller();
-      namespace = new MappedNamespaceConvention(config);
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new PageModelException(e);
     }
 
-  }
-
-  private ArtifactIndex load() throws PageModelException {
-    try {
-      BufferedReader br = Files.newBufferedReader(indexFile, Charset.defaultCharset());
-      StringBuffer json = new StringBuffer();
-      while (br.ready()) {
-        json.append(br.readLine());
-      }
-      JSONObject jObject = new JSONObject(json.toString());
-      XMLStreamReader xmlStreamReader = new MappedXMLStreamReader(jObject, namespace);
-      ArtifactIndex index = (ArtifactIndex) unmarshaller.unmarshal(xmlStreamReader);
-      return index;
-    } catch (Exception e) {
-      throw new PageModelException(e);
+    private Path getIndexFile(){
+        return Paths.get(WorkFolder.Report_Folder.toString(), "TestArtifactIndex.json");
     }
-  }
-
-  private void save(ArtifactIndex index) throws PageModelException {
-    try {
-      FileWriter fw = new FileWriter(indexFile.toFile());
-      XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
-      marshaller.marshal(index, xmlStreamWriter);
-    } catch (Exception e) {
-      throw new PageModelException(e);
+    
+    public TestRun getThisTestRun() {
+        return thisTestRun;
     }
-  }
 
-  public synchronized static ArtifactIndex getIndex() throws PageModelException {
-    ArtifactIndex index = new ArtifactIndex();
-    if (Files.exists(getInstance().indexFile)) {
-      index = getInstance().load();
-    } else {
-      index.getTests().add(new TestCase(""));
+    public ArtifactIndex getIndex() {
+        return index;
     }
-    return index;
-  }
 
-  public synchronized static void updateTestInfo(TestCase test) throws PageModelException {
-    ArtifactIndex index = getIndex();
-    for (TestCase lTest : index.getTests()) {
-      if (lTest.equals(test)) {
-        lTest.merge(test);
-        getInstance().save(index);
-        return;
-      }
+    private ArtifactIndex load() throws PageModelException {
+        try {
+            BufferedReader br = Files.newBufferedReader(getIndexFile(), Charset.defaultCharset());
+            StringBuffer json = new StringBuffer();
+            while (br.ready()) {
+                json.append(br.readLine());
+            }
+            JSONObject jObject = new JSONObject(json.toString());
+            XMLStreamReader xmlStreamReader = new MappedXMLStreamReader(jObject, namespace);
+            ArtifactIndex index = (ArtifactIndex) unmarshaller.unmarshal(xmlStreamReader);
+            return index;
+        } catch (Exception e) {
+            throw new PageModelException(e);
+        }
     }
-    index.getTests().add(test);
 
-    // added to avoid absolute paths in testCase instances, when they are only added to the index, but not merged
-    // i.e. force merge
-    int testIndex = index.getTests().indexOf(test);
-    index.getTests().get(testIndex).merge(test);
+    private void save() throws PageModelException {
+        try {
+            log.info("-------------------------------------> Save begin");
+            if(index.getBuilds().contains(thisTestRun)){
+                index.getBuilds().remove(thisTestRun);
+            }
+            index.setLastBuild(thisTestRun);
+            index.getBuilds().add(thisTestRun);
+            FileWriter fw = new FileWriter(getIndexFile().toFile());
+            XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
+            marshaller.marshal(index, xmlStreamWriter);
+            log.info("-------------------------------------> Save end");
+        } catch (Exception e) {
+            log.error("-------------------------------------> Save error" , e);
+            throw new PageModelException(e);
+        }
+    }
 
-    getInstance().save(index);
-  }
+    private void updateInfo(TestCase test) throws PageModelException {
+        for (TestCase lTest : thisTestRun.getTests()) {
+            if (lTest.equals(test)) {
+                lTest.merge(test);
+                getInstance().save();
+                return;
+            }
+        }
+        thisTestRun.getTests().add(test);
+        // added to avoid absolute paths in testCase instances, when they are only added to the index, but not merged
+        // i.e. force merge
+        int testIndex = thisTestRun.getTests().indexOf(test);
+        thisTestRun.getTests().get(testIndex).merge(test);
+        save();
+    }
 
-  private static TestArtifactManager getInstance() throws PageModelException {
-    if (manager == null)
-      manager = new TestArtifactManager();
-    return manager;
-  }
+    public synchronized static void setPathToReport(String htmlReportPath) throws PageModelException {
+        getInstance().thisTestRun = getInstance().index.getLastBuild();
+        getInstance().thisTestRun.setHtmlReport(htmlReportPath);
+        getInstance().save();
+    }
+    
+    
+    public synchronized static void updateTestRunInfo(TestCase test) throws PageModelException {
+        getInstance().updateInfo(test);
+    }
+
+    public static TestArtifactManager getInstance() throws PageModelException {
+        if (manager == null)
+            manager = new TestArtifactManager();
+        return manager;
+    }
 }

@@ -161,7 +161,7 @@ public class ConfigurationManager implements AddonContainer {
                 testClass = event.getTestClass();
                 TestCase test = new TestCase(testClass.getName());
                 test.setQtName(event.getDescription());
-                TestArtifactManager.updateTestInfo(test);
+                TestArtifactManager.updateTestRunInfo(test);
             }
         });
 

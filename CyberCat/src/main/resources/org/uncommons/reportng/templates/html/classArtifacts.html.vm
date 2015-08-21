@@ -36,7 +36,7 @@
 
                 <td class="exceptionImageWrapper hidden">
                     <img class="icon" src="exception-image-icon.png">
-                    <br><span class="iconDescription">ScreenShot</span>
+                    <br><span class="iconDescription">Exception Screenshot</span>
                 </td>
 
                 <td class="imagesLabel hidden">

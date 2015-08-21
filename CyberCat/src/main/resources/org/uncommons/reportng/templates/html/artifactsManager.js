@@ -5,7 +5,7 @@ function initArtifact(jsonIndex) {
     $(document).ready(
             function() {
                 $.each($('.testGUID > td'), function(index, item) {
-                    $.each(data.ArtifactIndex.tests, function(key, val) {
+                    $.each(data.ArtifactIndex.lastBuild.tests, function(key, val) {
                         $.each($('.testGUID > td'), function(index, item) {
                             var guid = $(item).text();
                             if (val.testGUID == guid) {

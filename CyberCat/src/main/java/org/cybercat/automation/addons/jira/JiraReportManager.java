@@ -43,7 +43,7 @@ public class JiraReportManager implements AddonContainer {
             public void doActon(EventStartTest event) throws Exception {
                 TestCase testCase = new TestCase(event.getTestClass().getName());
                 testCase.setBugs(buildJiraInfo(event));
-                TestArtifactManager.updateTestInfo(testCase);
+                TestArtifactManager.updateTestRunInfo(testCase);
             }
         });
         return listeners;

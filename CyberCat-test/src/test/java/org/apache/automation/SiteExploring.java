@@ -10,7 +10,7 @@ import org.cybercat.automation.annotations.CCTestCase;
 import org.cybercat.automation.testng.TestNGTestCase;
 import org.testng.annotations.Test;
 
-@CCTestCase(description="Apache sample test" , features={MediaController.VIDEO, ScreenshotManager.STEPS_SCREENSHOT, ScreenshotManager.EXCEPTION_SCREENSHOT, TestLoggerAddon.FULL_LOG})
+@CCTestCase(description="Apache sample test" , features={ScreenshotManager.EXCEPTION_SCREENSHOT, TestLoggerAddon.FULL_LOG})
 public class SiteExploring extends TestNGTestCase {
 
     

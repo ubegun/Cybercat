@@ -81,7 +81,7 @@ public class MediaController implements AddonContainer {
                 // update artifact info
                 TestCase test = new TestCase(event.getTestClass().getName());
                 test.setVideo(path.toString());
-                TestArtifactManager.updateTestInfo(test);
+                TestArtifactManager.updateTestRunInfo(test);
             }
 
         });

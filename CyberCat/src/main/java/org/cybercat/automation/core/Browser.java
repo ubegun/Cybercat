@@ -374,7 +374,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
             }
             TestCase test = new TestCase(event.getTestClass().getName());
             test.setCookies(cookiePath.toString());
-            TestArtifactManager.updateTestInfo(test);
+            TestArtifactManager.updateTestRunInfo(test);
         } catch (Exception e) {
             log.error("Exception occurred while saving cookies.", e);
             return;
