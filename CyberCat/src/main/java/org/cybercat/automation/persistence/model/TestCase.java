@@ -213,6 +213,10 @@ public class TestCase {
       return true;
     return StringUtils.equals(this.testGUID, ((TestCase) obj).testGUID);
   }
+  
+  public static Path getAbsolutePath(String pathString) {
+      return WorkFolder.Report_Folder.getPath().resolve(Paths.get(pathString)).toAbsolutePath().normalize();
+  }
 
   public static String getRelativePath(String pathString) {
     Path path = Paths.get(pathString);

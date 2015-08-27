@@ -39,6 +39,7 @@ import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventStartTest;
+import org.cybercat.automation.persistence.CleanUpBuildsHistoryAddon;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.persistence.model.PageModelException;
@@ -63,6 +64,8 @@ public class ConfigurationManager implements AddonContainer {
     private JiraReportManager jiraReportManager;
     private PerformanceReportManager performanceReportManager;
     private Class<? extends AbstractTestCase> testClass;
+    private TestLoggerAddon logggerAddon;
+    private CleanUpBuildsHistoryAddon cleanUpAddon;
 
 
     public ConfigurationManager() {
@@ -90,15 +93,17 @@ public class ConfigurationManager implements AddonContainer {
         }
         jiraReportManager = new JiraReportManager();
         performanceReportManager = new PerformanceReportManager();
-        TestLoggerAddon logggerAddon = new TestLoggerAddon();
+        logggerAddon = new TestLoggerAddon();
+        cleanUpAddon = new CleanUpBuildsHistoryAddon();
         holders = new ArrayList<AddonContainer>();
         holders.add(context.getBean(MediaController.class));
-        holders.add(logggerAddon);
+        holders.add(logggerAddon);        
         holders.add(this);
         holders.add(screenshotManager);
         holders.add(jiraReportManager);
         holders.add(performanceReportManager);
         holders.add(eventManager);
+        holders.add(cleanUpAddon);
         try{
             AddonProvider provider = new AddonProvider();
             holders.addAll(provider.getAddons());

@@ -14,15 +14,15 @@
  */
 package org.cybercat.automation.persistence.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ArtifactIndex")
 public class ArtifactIndex {
 
-    private List<TestRun> builds = new CopyOnWriteArrayList<TestRun>();
+    private List<TestRun> builds = new ArrayList<TestRun>();
     private TestRun lastBuild; 
 
     public List<TestRun> getBuilds() {

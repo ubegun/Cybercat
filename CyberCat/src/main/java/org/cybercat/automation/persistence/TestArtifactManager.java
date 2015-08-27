@@ -27,6 +27,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.mapped.Configuration;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
@@ -37,7 +38,6 @@ import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
 import org.cybercat.automation.persistence.model.TestRun;
 import org.cybercat.automation.utils.WorkFolder;
-import org.testng.log4testng.Logger;
 
 public class TestArtifactManager {
 
@@ -46,7 +46,7 @@ public class TestArtifactManager {
     private Unmarshaller unmarshaller;
     private Marshaller marshaller;
     private TestRun thisTestRun = new TestRun();
-    private ArtifactIndex index = new ArtifactIndex();
+    private ArtifactIndex index = new ArtifactIndex();    
 
     private static TestArtifactManager manager;
     private static Logger log = Logger.getLogger(TestArtifactManager.class);
@@ -68,8 +68,8 @@ public class TestArtifactManager {
             throw new PageModelException(e);
         }
 
-    }
-
+    } 
+    
     private Path getIndexFile(){
         return Paths.get(WorkFolder.Report_Folder.toString(), "TestArtifactIndex.json");
     }
@@ -97,10 +97,21 @@ public class TestArtifactManager {
             throw new PageModelException(e);
         }
     }
-
-    private void save() throws PageModelException {
+    
+    protected void saveAfterCleanUp(ArtifactIndex index) throws PageModelException {
         try {
-            log.info("-------------------------------------> Save begin");
+            FileWriter fw = new FileWriter(getIndexFile().toFile());
+            XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
+            marshaller.marshal(index, xmlStreamWriter);
+            this.index = index;
+        } catch (Exception e) {
+            log.error("Merge exception", e);
+            throw new PageModelException(e);
+        }
+    }
+
+    private void merge() throws PageModelException {
+        try {
             if(index.getBuilds().contains(thisTestRun)){
                 index.getBuilds().remove(thisTestRun);
             }
@@ -109,9 +120,8 @@ public class TestArtifactManager {
             FileWriter fw = new FileWriter(getIndexFile().toFile());
             XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
             marshaller.marshal(index, xmlStreamWriter);
-            log.info("-------------------------------------> Save end");
         } catch (Exception e) {
-            log.error("-------------------------------------> Save error" , e);
+            log.error("Merge exception" , e);
             throw new PageModelException(e);
         }
     }
@@ -120,7 +130,7 @@ public class TestArtifactManager {
         for (TestCase lTest : thisTestRun.getTests()) {
             if (lTest.equals(test)) {
                 lTest.merge(test);
-                getInstance().save();
+                getInstance().merge();
                 return;
             }
         }
@@ -129,13 +139,13 @@ public class TestArtifactManager {
         // i.e. force merge
         int testIndex = thisTestRun.getTests().indexOf(test);
         thisTestRun.getTests().get(testIndex).merge(test);
-        save();
+        merge();
     }
 
     public synchronized static void setPathToReport(String htmlReportPath) throws PageModelException {
         getInstance().thisTestRun = getInstance().index.getLastBuild();
-        getInstance().thisTestRun.setHtmlReport(htmlReportPath);
-        getInstance().save();
+        getInstance().thisTestRun.setHtmlReport(TestCase.getRelativePath(htmlReportPath));
+        getInstance().merge();
     }
     
     

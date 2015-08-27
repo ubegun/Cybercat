@@ -19,7 +19,7 @@ public class VelocityReportTest {
         String outputDir = "/home/ubegun/cyberTest/Cybercat/Report/html";
         IConfiguration conf = new Configuration();
         ISuite suite = new SuiteRunner(conf , xsuite, outputDir);  
-
+        
     }
 
 }
