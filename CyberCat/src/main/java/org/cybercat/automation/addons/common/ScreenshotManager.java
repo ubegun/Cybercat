@@ -69,6 +69,8 @@ public class ScreenshotManager implements AddonContainer {
     private Color fontColor;
     private ScreenshotProvider provider;
     private EventManager eventManager;
+    private boolean getFistEvent = false;
+    private boolean hasPEScreenshot;
 
     public ScreenshotManager() throws AutomationFrameworkException {
         eventManager = AutomationMain.getEventManager();
@@ -199,22 +201,19 @@ public class ScreenshotManager implements AddonContainer {
 
                 @Override
                 public void doActon(EventPageObjectCall event) throws Exception {
-                    String fileName = CommonUtils.getCurrentDate() + event.getMethodName();
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
-                    Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
-                    TestCase test = new TestCase(event.getTestClass().getName());
-                    test.addImage(screen.toString());
-                    TestArtifactManager.updateTestRunInfo(test);
-                    
-                    eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
+                    getFistEvent = true;
                 }
                 
             });
-        if (config.hasFeature(ScreenshotManager.PAGE_EVENT_SCREENSHOT))
+        hasPEScreenshot = config.hasFeature(ScreenshotManager.PAGE_EVENT_SCREENSHOT);  
             listeners.add(new EventListener<EventHighlightElement>(EventHighlightElement.class, 100) {
 
                 @Override
                 public void doActon(EventHighlightElement event) throws Exception {
+                    if(!hasPEScreenshot && !getFistEvent){
+                        return;
+                    }
+                    getFistEvent = false;
                     String fileName = CommonUtils.getCurrentDate() + event.getMethodName();
                     Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
                     Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
