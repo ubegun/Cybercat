@@ -14,6 +14,8 @@
  */
 package org.cybercat.automation.test;
 
+import org.cybercat.automation.AutomationFrameworkException;
+import org.cybercat.automation.components.Assert;
 
 /**
  * @author Ubegun
@@ -36,4 +38,21 @@ public abstract class AbstractFeature implements IVersionControl, IFeature{
         return 0;
     }
   
+    
+    public void assertTrue(String message, boolean assertion) throws AutomationFrameworkException{
+    	Assert.assertTrue(message, assertion);
+    }
+
+    public void assertEqual(String message, Object obj1, Object obj2) throws AutomationFrameworkException{
+    	Assert.assertEqual(message, obj1, obj2);
+    }
+
+    public void assertContain(String message, String subString, String text) throws AutomationFrameworkException{
+    	Assert.assertContain(message, subString, text);
+    }
+
+    public void assertNotEmpty(String message, String text) throws AutomationFrameworkException{
+    	Assert.assertNotEmpty(message, text);
+    }
+    
 }

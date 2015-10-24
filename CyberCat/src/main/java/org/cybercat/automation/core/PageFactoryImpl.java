@@ -147,7 +147,7 @@ public class PageFactoryImpl implements PageFactory {
              }
          }
          AspectJProxyFactory proxyFactory = new AspectJProxyFactory(result);
-         proxyFactory.addAspect(new PageObjectStateControlAcpect(this));
+         proxyFactory.addAspect(new PageObjectStateControlAspect(this));
          result = (T) proxyFactory.getProxy();
         return result;            
     } catch (Exception e) {

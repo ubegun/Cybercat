@@ -15,6 +15,11 @@ public class Assert {
 
     }
 
+    public static void assertTrue(String message, boolean assertion) throws AutomationFrameworkException {
+    	if(!assertion)
+    		throw new AutomationFrameworkException(message);
+    }
+    
     public static void assertEqual(String message, Object obj1, Object obj2) throws AutomationFrameworkException {
         if (obj1 == null)
             throw new AutomationFrameworkException(message + " Expression from the left is null.");

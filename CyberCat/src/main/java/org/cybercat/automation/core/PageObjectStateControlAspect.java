@@ -29,13 +29,13 @@ import org.cybercat.automation.events.EventPageObjectCall;
 import org.cybercat.automation.test.AbstractTestCase;
 
 @Aspect
-public class PageObjectStateControlAcpect {
+public class PageObjectStateControlAspect {
 
-    Logger log = Logger.getLogger(PageObjectStateControlAcpect.class);
+    Logger log = Logger.getLogger(PageObjectStateControlAspect.class);
 
     private PageFactoryImpl pFactory;
 
-    public PageObjectStateControlAcpect(PageFactoryImpl pFactory) {
+    public PageObjectStateControlAspect(PageFactoryImpl pFactory) {
         this.pFactory = pFactory;
     }
 
@@ -47,7 +47,12 @@ public class PageObjectStateControlAcpect {
             AutomationMain.getEventManager().notify(new EventPageObjectCall(pageObject.getClass().getSimpleName() + "." + jp.getSignature().getName(), test));
             if (pageObject.getState() == PageState.CREATED)
                 processPageURLAnnotation(pageObject);
-            pFactory.initPage(pageObject);
+            try{
+            	pFactory.initPage(pageObject);
+            }catch(Exception e){
+            	log.error(e.getMessage(), e);
+            	throw new AutomationFrameworkException(e.getMessage(), e);
+            }
         }
     }
 
@@ -65,6 +70,7 @@ public class PageObjectStateControlAcpect {
                     pageObject.setPageUrl(pageUrl);
                 }
             } catch (Exception e) {
+            	log.error(e.getMessage(), e);
                 throw new AutomationFrameworkException("Set page url filed exception. Field value is empty." + " field name: " + field.getName() + " class: "
                         + pageObject.getClass().getSimpleName() + " Thread ID:" + Thread.currentThread().getId());
             }
