@@ -35,7 +35,7 @@ import org.testng.annotations.Test;
  * 
  */
 //Step 1 -> setup feature
-@CCTestCase(description = "model test", features = {SlackAddon.POST_MESSAGE, TestLoggerAddon.FULL_LOG })
+@CCTestCase(description = "model test", features = {SlackAddon.POST_MESSAGE, SlackAddon.POST_FAILURE_MESSAGE, TestLoggerAddon.FULL_LOG })
 public class CommonTest extends TestNGTestCase {
 
   /*
@@ -55,8 +55,12 @@ public class CommonTest extends TestNGTestCase {
     AutomationMain.getEventManager().notify(new EventPostMessage("Test " + (new Date()).toString()));
   }
   
+  @Test
+  public void stackTest_FailMessage() throws AutomationFrameworkException {
+    throw new  AutomationFrameworkException("Test");
+  }
   
-  //@Test
+  @Test
   public void saveLoadmodel_Ok() throws AutomationFrameworkException {
     PersistenceManager pm = AutomationMain.getMainFactory().getPersistenceManager();
     final long m1Id = 1;
