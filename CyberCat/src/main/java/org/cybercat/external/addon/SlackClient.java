@@ -1,4 +1,4 @@
-package org.cybercat.automation.utils;
+package org.cybercat.external.addon;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,22 +38,25 @@ public class SlackClient {
   private final static String OAUTH = "oauth.access";
 
   // Property names
-  private final static String P_TOKEN = "token";
 
   private String baseURL;
   private String oauth2URL = "https://slack.com/oauth/";
   private String apiUrl = "https://slack.com/api/";
   private String token;
 
-  private Properties prop = new Properties();
+  private SlackProperties pProp;
 
   public SlackClient() throws AutomationFrameworkException {
     this(null, "slack.properties");
-    token = getProperty(P_TOKEN);
+    token = pProp.getToken();
     if (token == null)
       throw new AutomationFrameworkException("Slak tokent is null.");
   }
 
+  public String getChannelId(String channelName)  throws AutomationFrameworkException{
+    return this.getChannels().get(channelName);
+  }
+  
   public Map<String, String> getChannels() throws AutomationFrameworkException {
     HashMap<String, String> channels = new HashMap<String, String>();
     MultivaluedMap<String, String> params = new MultivaluedMapImpl();
@@ -75,7 +78,7 @@ public class SlackClient {
 
   public SlackClient(String token, String propFileName) throws AutomationFrameworkException {
     try {
-      prop.load(ClassLoader.getSystemResourceAsStream(propFileName));
+      pProp = new SlackProperties(propFileName);
       baseURL = apiUrl;
       this.token = token;
     } catch (IOException e) {
@@ -83,19 +86,21 @@ public class SlackClient {
     }
   }
 
+  public void sendMessage(String message) throws AutomationFrameworkException {
+    sendMessage(this.getChannelId(pProp.getChannel()), message);
+  }
+  
   public void sendMessage(String channelId, String message) throws AutomationFrameworkException {
     MultivaluedMap<String, String> params = new MultivaluedMapImpl();
     params.add("token", token);
     params.add("channel", channelId);
     params.add("text", message);
-    params.add("username", getProperty("username"));
+    params.add("username", pProp.getUsername());
     ClientResponse resp = getResponse(params, SEND_MESSAGE);
-    log.info(resp.toString());
-    log.info("------------------------------------------------------------");
     log.info(resp.getEntity(String.class));
   }
-
-  private ClientResponse getResponse(MultivaluedMap<String, String> params, String... paths)  throws AutomationFrameworkException {
+  
+  protected ClientResponse getResponse(MultivaluedMap<String, String> params, String... paths)  throws AutomationFrameworkException {
     ClientConfig conf = new DefaultClientConfig();
 
     Client client = Client.create(conf);
@@ -109,12 +114,7 @@ public class SlackClient {
       throw new AutomationFrameworkException("Failed : HTTP error code : " + response.getStatus());
     }
     log.info("+++ Slak server response 200 +++");
-    log.info(response.toString());
     return response;
-  }
-
-  private String getProperty(String name) {
-    return StringUtils.trim(prop.getProperty(name));
   }
 
 }

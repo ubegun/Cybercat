@@ -31,44 +31,47 @@ import org.cybercat.automation.persistence.model.TestCase;
 
 public class JiraReportManager implements AddonContainer {
 
-    public static final String JIRA_BUGS = "Jira bugs";
-    
-    private static final Logger LOG = Logger.getLogger(JiraReportManager.class);
+  public static final String JIRA_BUGS = "Jira bugs";
 
-    @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
-        ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();  
-        listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 1000) {
-            @Override
-            public void doActon(EventStartTest event) throws Exception {
-                TestCase testCase = new TestCase(event.getTestClass().getName());
-                testCase.setBugs(buildJiraInfo(event));
-                TestArtifactManager.updateTestRunInfo(testCase);
-            }
-        });
-        return listeners;
-    }
+  private static final Logger LOG = Logger.getLogger(JiraReportManager.class);
 
-    private Set<TestCase.JiraInfo> buildJiraInfo(EventStartTest startTestEvent) {
-        Set<TestCase.JiraInfo> bugs = new HashSet<>();
-        if (startTestEvent.getBugIDs() == null) {
-            return new HashSet<>();
-        }
-        for (String bugID : startTestEvent.getBugIDs()) {
-            String bugSummary;
-            try {
-                bugSummary = Jira.getBugSummary(bugID);
-            } catch (AutomationFrameworkException e) {
-                bugSummary = "-";
-                LOG.warn("Cannot get bug summary with ID: " + bugID, e);
-            }
-            bugs.add(new TestCase.JiraInfo(bugID, bugSummary));
-        }
-        return bugs;
-    }
+  @Override
+  public Collection<EventListener<?>> createListeners(Configuration config) {
+    ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
+    if(!config.hasFeature(JIRA_BUGS))
+      return listeners;
 
-    @Override
-    public String[] getSupportedFeatures() {
-        return new String [] {JIRA_BUGS};
+    listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 1000) {
+      @Override
+      public void doActon(EventStartTest event) throws Exception {
+        TestCase testCase = new TestCase(event.getTestClass().getName());
+        testCase.setBugs(buildJiraInfo(event));
+        TestArtifactManager.updateTestRunInfo(testCase);
+      }
+    });
+    return listeners;
+  }
+
+  private Set<TestCase.JiraInfo> buildJiraInfo(EventStartTest startTestEvent) {
+    Set<TestCase.JiraInfo> bugs = new HashSet<>();
+    if (startTestEvent.getBugIDs() == null) {
+      return new HashSet<>();
     }
+    for (String bugID : startTestEvent.getBugIDs()) {
+      String bugSummary;
+      try {
+        bugSummary = Jira.getBugSummary(bugID);
+      } catch (AutomationFrameworkException e) {
+        bugSummary = "-";
+        LOG.warn("Cannot get bug summary with ID: " + bugID, e);
+      }
+      bugs.add(new TestCase.JiraInfo(bugID, bugSummary));
+    }
+    return bugs;
+  }
+
+  @Override
+  public String[] getSupportedFeatures() {
+    return new String[] { JIRA_BUGS };
+  }
 }

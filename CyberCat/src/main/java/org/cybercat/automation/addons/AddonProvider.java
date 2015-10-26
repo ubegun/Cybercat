@@ -45,13 +45,17 @@ public class AddonProvider {
             return;
         Reflections reflections = new Reflections(rootPackage);
         Set<Class<? extends ExteranlAddon>> addonClasses = reflections.getSubTypesOf(ExteranlAddon.class);
-        logger.info("########### Addons loaning ##########");
+        logger.info("########### External addons are loaning ##########");
         for (Class<? extends ExteranlAddon> addonClass : addonClasses) {
             try{
                 ExteranlAddon addon = addonClass.getConstructor().newInstance();
                 addons.add(addon);
                 logger.info("##" + addonClass.getSimpleName() + " addon has been loaded.");
-                logger.info("##" + addon.getSupportedFeatures() + " features are ready to use");
+                logger.info("# Supported features: ");
+                for(String name : addon.getSupportedFeatures()){
+                  logger.info("# - " + name);
+                }
+                logger.info("#");
             }catch(Exception e){
                 logger.error("External addon initialization exception.", e);
             }

@@ -36,6 +36,7 @@ public interface EventManager {
     TEST_FAIL,
     INIT_PROXY_SERVER,
     PAGE_OBJECT_CALL,
+    EXTERNAL_EVENT // for custom add-ons configuration  
     
   }
 

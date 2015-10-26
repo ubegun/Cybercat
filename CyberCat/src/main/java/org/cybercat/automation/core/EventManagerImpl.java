@@ -29,106 +29,112 @@ import org.cybercat.automation.events.Event;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
 
-
 @SuppressWarnings("rawtypes")
 public class EventManagerImpl implements EventManager, AddonContainer {
-    
-    private static Logger log = Logger.getLogger(EventManagerImpl.class);
 
-    private Map<Class<?>, LinkedList<EventListener>> listeners;
-    private Configuration configuration;
+  private static Logger log = Logger.getLogger(EventManagerImpl.class);
 
-    public EventManagerImpl() {
-        configuration = new Configuration();
-        listeners = new HashMap<Class<?>, LinkedList<EventListener>>();
+  private Map<Class<?>, LinkedList<EventListener>> listeners;
+  private Configuration configuration;
+
+  public EventManagerImpl() {
+    configuration = new Configuration();
+    listeners = new HashMap<Class<?>, LinkedList<EventListener>>();
+  }
+
+  public synchronized void setupListeners(List<AddonContainer> holders) {
+    for (AddonContainer holder : holders) {
+      if (holder != null)
+        setupListener(holder);
     }
-    
-    public synchronized void setupListeners(List<AddonContainer> holders){
-        for(AddonContainer holder: holders){
-            if(holder != null)
-                setupListener(holder);
-        }
+  }
+
+  public synchronized void setupListener(AddonContainer holder) {
+    try {
+      Collection<EventListener<?>> listeners = holder.createListeners(configuration);
+      for (EventListener<?> listener : listeners) {
+        addListener(listener);
+      }
+    } catch (Exception e) {
+      log.error(holder.getClass().getSimpleName() + " initialisation failed.", e);
     }
-    
-    public synchronized void setupListener(AddonContainer holder){
-        Collection<EventListener<?>> listeners = holder.createListeners(configuration);
-        for(EventListener<?> listener : listeners){ 
-            addListener(listener);
-        }
-    }
-    
-    @Override
-    public <T extends Event> void notify(T event) {
-        System.err.println("local event :" + event.getClass().getSimpleName());        
-        if(!listeners.containsKey(event.getClass()) || Thread.currentThread().getId() != event.getThreadId()){
-            log.info(event.getClass().getSimpleName() + "[DEBUG] event has been rejected.  Current thread id:" + Thread.currentThread().getId() + "\t Event thread id:" + event.getThreadId());
-            return;
-        }    
-                
-        Collection<EventListener> cListeners = listeners.get(event.getClass());
-        for (EventListener<T> listener : cListeners) {
-            try {
-                listener.doActon(event);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+  }
+
+  @Override
+  public <T extends Event> void notify(T event) {
+    System.err.println("local event :" + event.getClass().getSimpleName());
+    if (!listeners.containsKey(event.getClass()) || Thread.currentThread().getId() != event.getThreadId()) {
+      log.info(event.getClass().getSimpleName() + "[DEBUG] event has been rejected.  Current thread id:" + Thread.currentThread().getId()
+          + "\t Event thread id:" + event.getThreadId());
+      return;
     }
 
-    protected EventListener addListener(EventListener listener) {
-        LinkedList<EventListener> cListeners = listeners.get(listener.getEventType());
-        if (cListeners == null)
-            cListeners = new LinkedList<EventListener>();
-        int priority = listener.getPriority();
-        int index = 0;
-        for(EventListener cListener: cListeners){
-            if(cListener.getPriority() >= priority){
-                continue;
-            }            
-            index++;
-        }
-        cListeners.add(index, listener);
-        listeners.put(listener.getEventType(), cListeners);
-        return listener; 
+    Collection<EventListener> cListeners = listeners.get(event.getClass());
+    for (EventListener<T> listener : cListeners) {
+      try {
+        listener.doActon(event);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
+  }
 
-    public void release() {
-        listeners = new HashMap<Class<?>, LinkedList<EventListener>>();
+  protected EventListener addListener(EventListener listener) {
+    LinkedList<EventListener> cListeners = listeners.get(listener.getEventType());
+    if (cListeners == null)
+      cListeners = new LinkedList<EventListener>();
+    int priority = listener.getPriority();
+    int index = 0;
+    for (EventListener cListener : cListeners) {
+      if (cListener.getPriority() >= priority) {
+        continue;
+      }
+      index++;
     }
+    cListeners.add(index, listener);
+    listeners.put(listener.getEventType(), cListeners);
+    return listener;
+  }
 
+  public void release() {
+    listeners = new HashMap<Class<?>, LinkedList<EventListener>>();
+  }
 
-
-    @Override
-    public boolean unsubscribe(EventListener<?> listener) {
-        boolean result = false; 
-        for(Entry<Class<?>, LinkedList<EventListener>> entry : listeners.entrySet()){
-            result = result || entry.getValue().remove(listener);
-        }        
-        return result;
+  @Override
+  public boolean unsubscribe(EventListener<?> listener) {
+    boolean result = false;
+    for (Entry<Class<?>, LinkedList<EventListener>> entry : listeners.entrySet()) {
+      result = result || entry.getValue().remove(listener);
     }
+    return result;
+  }
 
-    /* (non-Javadoc)
-     * @see org.cybercat.automation.events.AddonContainer#getSupportedFeatures()
-     */
-    @Override
-    public String[] getSupportedFeatures() {
-        return null;
-    }
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.cybercat.automation.events.AddonContainer#getSupportedFeatures()
+   */
+  @Override
+  public String[] getSupportedFeatures() {
+    return null;
+  }
 
-    /* (non-Javadoc)
-     * @see org.cybercat.automation.events.AddonContainer#createListeners(org.cybercat.automation.Configuration)
-     */
-    @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
-        ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
-        listeners.add(new EventListener<EventChangeTestConfig>(EventChangeTestConfig.class, 0){
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.cybercat.automation.events.AddonContainer#createListeners(org.cybercat.automation.Configuration)
+   */
+  @Override
+  public Collection<EventListener<?>> createListeners(Configuration config) {
+    ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
+    listeners.add(new EventListener<EventChangeTestConfig>(EventChangeTestConfig.class, 0) {
 
-            @Override
-            public void doActon(EventChangeTestConfig event) throws Exception {
-                configuration = event.getConfiguration();
-            }
-            
-        });
-        return listeners;
-    }
+      @Override
+      public void doActon(EventChangeTestConfig event) throws Exception {
+        configuration = event.getConfiguration();
+      }
+
+    });
+    return listeners;
+  }
 }
