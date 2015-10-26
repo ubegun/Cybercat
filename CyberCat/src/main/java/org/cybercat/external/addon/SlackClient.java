@@ -113,7 +113,7 @@ public class SlackClient {
     if (response.getStatus() != 200) {
       throw new AutomationFrameworkException("Failed : HTTP error code : " + response.getStatus());
     }
-    log.info("+++ Slak server response 200 +++");
+    log.info("+++ Slack server response 200 +++");
     return response;
   }
 
