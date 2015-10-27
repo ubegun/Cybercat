@@ -8,7 +8,7 @@ import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -113,7 +113,7 @@ public class SlackClient {
     if (response.getStatus() != 200) {
       throw new AutomationFrameworkException("Failed : HTTP error code : " + response.getStatus());
     }
-    log.info("+++ Slack server response 200 +++");
+    log.info("+++ Slack server response 200 on request by " + baseURL + StringUtils.join(paths, "/"));
     return response;
   }
 
