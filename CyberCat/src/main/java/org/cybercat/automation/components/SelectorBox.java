@@ -40,7 +40,7 @@ public class SelectorBox extends PageElement {
             getElement().sendKeys(text);
             LOG.info("Component name:" + super.getName() + "  entered value:" + text);
         } else {
-            throw new PageObjectException("Unable to type text in an element: " + getPath()[0]);
+            throw new PageObjectException("Unable to type text in an element: " + StringUtils.join(this.getPath(), " | "));
         }
     }
 
@@ -94,7 +94,7 @@ public class SelectorBox extends PageElement {
                         }
                 }
         } catch (Exception e) {
-            throw new PageObjectException("Component name:" + super.getName() + "  by path:" + super.getPath()[0], e);
+            throw new PageObjectException("Component name:" + super.getName() + "  by path:" + StringUtils.join(this.getPath(), " | "), e);
         }
     }
 

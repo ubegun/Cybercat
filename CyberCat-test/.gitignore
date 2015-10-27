@@ -4,3 +4,5 @@
 /.project
 /.classpath
 /cybercat.atest.properties
+/src/test/resources/slack_oauth2.properties
+/src/main/java/org/cybercat/slack/SlackService.java

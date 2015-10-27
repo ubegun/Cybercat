@@ -15,6 +15,7 @@
 
 package org.cybercat.automation.components;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
@@ -56,12 +57,12 @@ public class JQButton extends Button {
                 getElement().click();
             } catch (Exception e) {
                 e.printStackTrace();
-                LOG.error("Failed to click  on " + this.getName() + "element: " + this.getPath());
+                LOG.error("Failed to click  on " + this.getName() + "element: " + StringUtils.join(this.getPath(), " | "));
                 fireClick();
             }
         } else {
-            LOG.error("Unable to click on " + this.getName() + "element: " + this.getPath());
-            throw new PageObjectException("Unable to click on " + this.getName() + "element: " + this.getPath()[0]);
+            LOG.error("Unable to click on " + this.getName() + "element: " + StringUtils.join(this.getPath(), " | "));
+            throw new PageObjectException("Unable to click on " + this.getName() + "element: " + StringUtils.join(this.getPath(), " | "));
         }
     }
     

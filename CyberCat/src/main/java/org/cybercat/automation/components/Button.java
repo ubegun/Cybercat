@@ -14,6 +14,7 @@
  */
 package org.cybercat.automation.components;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
@@ -52,12 +53,12 @@ public class Button extends TextContainer {
                 getElement().click();
             } catch (Exception e) {
                 e.printStackTrace();
-                LOG.error("Failed to click  on " + this.getName() + "element: " + this.getPath());
-                throw new PageObjectException("Failed to click  on " + this.getName() + "element: " + this.getPath() ,e);
+                LOG.error("Failed to click  on " + this.getName() + " element: " + StringUtils.join(this.getPath(), " | "));
+                throw new PageObjectException("Failed to click  on " + this.getName() + " element: " + StringUtils.join(this.getPath(), " | ") ,e);
             }
         } else {
-            LOG.error("Unable to click on " + this.getName() + "element: " + this.getPath());
-            throw new PageObjectException("Unable to click on " + this.getName() + "element: " + this.getPath()[0]);
+            LOG.error("Unable to click on " + this.getName() + " element: " + StringUtils.join(this.getPath(), " | "));
+            throw new PageObjectException("Unable to click on " + this.getName() + " element: " + StringUtils.join(this.getPath(), " | "));
         }
     }
 
@@ -69,11 +70,11 @@ public class Button extends TextContainer {
                 getElement().submit();
                 LOG.info("clicked on: " + super.getName());
             } catch (Exception e) {
-                throw new PageObjectException("Unable to click on " + this.getName() + " element: " + this.getPath()[0], e);
+                throw new PageObjectException("Unable to click on " + this.getName() + " element: " + StringUtils.join(this.getPath(), " | "), e);
             }
         } else {
-            LOG.error("Unable to click on " + this.getName() + "element: " + this.getPath());
-            throw new PageObjectException("Unable to click on " + this.getName() + "element: " + this.getPath()[0]);
+            LOG.error("Unable to click on " + this.getName() + " element: " + StringUtils.join(this.getPath(), " | "));
+            throw new PageObjectException("Unable to click on " + this.getName() + " element: " + StringUtils.join(this.getPath(), " | "));
         }
     }
     

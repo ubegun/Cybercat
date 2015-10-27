@@ -51,7 +51,7 @@ public class TextContainer extends PageElement {
             log.info("element text is: "+text);
             return text;
         } catch (Exception e) {
-            throw new PageObjectException("Unable to get text in element: " + getName() + " by path:" + getPath()[0], e);
+            throw new PageObjectException("Unable to get text in element: " + getName() + " by path:" + StringUtils.join(this.getPath(), " | "), e);
         }
     }
 

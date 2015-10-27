@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageElementRuntimeException;
@@ -90,8 +91,8 @@ public class GroupElements<T extends PageElement> extends PageElement{
 
                 });
             if (subElements.size() == 0) {
-                log.error("element \"" + getName() + "\" is not found ");
-                throw new PageObjectException("element \"" + getName() + "\" is not found.");
+                log.error("element \"" + getName() + "\" is not found by paths " + StringUtils.join(this.getPath(), " | "));
+                throw new PageObjectException("element \"" + getName() + "\" is not found by paths " + StringUtils.join(this.getPath(), " | "));
             }
             setState(ElementState.INITIALIZED);            
         }
