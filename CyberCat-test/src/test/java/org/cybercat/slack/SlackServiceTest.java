@@ -12,13 +12,13 @@ public class SlackServiceTest {
 
   
   
-  @Test
+  //@Test
   public void testSendMessage() throws AutomationFrameworkException {
     SlackService ss = new SlackService();
     String token = ss.authorize();
     String message = "Test " + (new Date()).toString();
     Map<String, String> chennels = ss.getChannels();
-    ss.sendMessage(chennels.get("qa"), message);
+    ss.sendMessage(chennels.get("general"), message);
     assertTrue(true);
   }
 
