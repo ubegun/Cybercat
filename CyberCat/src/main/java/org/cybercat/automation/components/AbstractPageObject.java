@@ -245,7 +245,7 @@ public abstract class AbstractPageObject {
         try{
             element.initWebElement(getBrowser());
         }catch(AutomationFrameworkException e){ 
-            LOG.warn("The element not found: \n " + this.getClass().getSimpleName() + "\n\t `-> " + element.getName());
+            LOG.error("The element not found: \n " + this.getClass().getSimpleName() + "\n\t `-> " + element.getName());
             throw new AutomationFrameworkException(e);
         }    
         return element;
