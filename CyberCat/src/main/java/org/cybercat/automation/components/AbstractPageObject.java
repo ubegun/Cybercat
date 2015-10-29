@@ -361,6 +361,10 @@ public abstract class AbstractPageObject {
     protected TextField getTextField(String name, Object... arg) throws AutomationFrameworkException {
         return (TextField) getElementByName(name, arg);
     }
+    
+    protected PasswordField getPasswordField(String name, Object... arg) throws AutomationFrameworkException {
+      return (PasswordField) getElementByName(name, arg);
+    }
 
     /**
      * Returns a valid element of {@link RadioGroup} type
