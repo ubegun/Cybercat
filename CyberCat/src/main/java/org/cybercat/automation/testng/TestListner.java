@@ -30,7 +30,7 @@ import org.cybercat.automation.events.EventTestFail;
 import org.cybercat.automation.events.EventStartTestStep;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestCase;
-import org.cybercat.automation.test.AbstractTestCase;
+import org.cybercat.automation.test.AbstractEntryPoint;
 import org.cybercat.automation.utils.CommonUtils;
 import org.cybercat.automation.utils.WorkFolder;
 
@@ -42,10 +42,8 @@ public class TestListner {
 
     private static final Logger log = Logger.getLogger(TestListner.class);
     
-
-    public void onTestStart(Class<? extends AbstractTestCase> testClass, String methodName, String testDesctiptin) throws AutomationFrameworkException {
-        log.info("\n\n##### " + testClass.getName()+ " test, " + methodName+ "method with description: \"" + testDesctiptin + "\" has been started ######\n\n");
-        
+    public void onTestStart(Class<? extends AbstractEntryPoint> testClass, String methodName, String testDescription) throws AutomationFrameworkException {
+        log.info("\n\n##### " + testClass.getName()+ " test, " + methodName+ "method with description: \"" + testDescription + "\" has been started ######\n\n");
     }
     
     public void onFailure(Class<?> testClass, String method, Throwable error) throws AutomationFrameworkException{

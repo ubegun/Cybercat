@@ -13,18 +13,19 @@
  * limitations under the License.
  */
 
-package org.cybercat.automation;
+package org.cybercat.common;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.apache.automation.Model2;
-import org.cybercat.automation.Model1.TestEnum;
+import org.cybercat.automation.AutomationFrameworkException;
+import org.cybercat.automation.PersistenceManager;
 import org.cybercat.automation.addons.common.TestLoggerAddon;
 import org.cybercat.automation.annotations.CCTestCase;
 import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.persistence.Criterion;
 import org.cybercat.automation.testng.TestNGTestCase;
+import org.cybercat.common.Model1.TestEnum;
 import org.cybercat.external.addon.EventPostMessage;
 import org.cybercat.external.addon.SlackAddon;
 import org.testng.Assert;

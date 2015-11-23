@@ -16,6 +16,7 @@ public class SlackAddon implements ExteranlAddon {
   public final static String POST_MESSAGE = "Post message to specific channel for The Slack.com";
   public final static String POST_FAILURE_MESSAGE = "Post message to the slack channel in case of tests failure";
   private SlackClient slackService;
+  private String testDescription;
 
   
   @Override
@@ -32,15 +33,17 @@ public class SlackAddon implements ExteranlAddon {
     } catch (AutomationFrameworkException e) {
       e.printStackTrace();
     }
+    this.testDescription = config.getTestDescription();
     if(config.hasFeature(POST_MESSAGE))    
     eventListeners.add(new EventListener<EventPostMessage>(EventPostMessage.class, 10){
       
       @Override
       public void doActon(EventPostMessage event) throws Exception {
+        String message = "Test [ " + testDescription + " ] says: \n " + event.getMessage();
         if(StringUtils.isBlank(event.getChennalName())){
-          slackService.sendMessage(event.getMessage());
+          slackService.sendMessage(message);
         }else{
-          slackService.sendMessage(event.getChennalName(), event.getMessage());
+          slackService.sendMessage(event.getChennalName(), message);
         }
       }
       
@@ -50,7 +53,7 @@ public class SlackAddon implements ExteranlAddon {
 
       @Override
       public void doActon(EventTestFail event) throws Exception {
-        String message = event.getTestClass().getSimpleName() + "->" + event.getMethodName() + " test [failed]"; 
+        String message = event.getTestClass().getSimpleName() + " [ " + testDescription +" ] ->" + event.getMethodName() + " test [failed]"; 
         slackService.sendMessage(message);        
       }
       

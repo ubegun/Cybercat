@@ -13,21 +13,53 @@
  * limitations under the License.
  */
 
-package org.apache.automation;
+package org.cybercat.common;
+
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.cybercat.automation.persistence.model.Entity;
 import org.cybercat.automation.utils.CommonUtils;
 
 /**
  * @author Ubegun
- *
+ * 
  */
-public class Model2 implements Entity{
+@XmlRootElement(name = "Model1")
+public class Model1 implements Entity {
+
+    public static enum TestEnum {
+        e1, e2
+    };
 
     private long id = CommonUtils.genGuid();
-    
-    public void setId(long id) {
-        this.id = id;
+    private String sField;
+    private TestEnum emumField;
+    private List<Model2> model2;
+
+    public String getsField() {
+        return sField;
+    }
+
+    public void setsField(String sField) {
+        this.sField = sField;
+    }
+
+    public TestEnum getEmumField() {
+        return emumField;
+    }
+
+    public void setEmumField(TestEnum emumField) {
+        this.emumField = emumField;
+    }
+
+    public List<Model2> getModel2() {
+        return model2;
+    }
+
+    public void setModel2(List<Model2> model2) {
+        this.model2 = model2;
     }
 
     /* (non-Javadoc)
@@ -35,7 +67,11 @@ public class Model2 implements Entity{
      */
     @Override
     public long getId() {
-        return id ;
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
 }

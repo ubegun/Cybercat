@@ -21,32 +21,42 @@ import org.cybercat.automation.annotations.CCTestCase;
 
 public class Configuration {
 
-    private String[] features;
-    
-    public Configuration() {
-        features = new String[]{ScreenshotManager.EXCEPTION_SCREENSHOT, TestLoggerAddon.FULL_LOG};
-    }
+  private String[] features;
+  private String testDescription;
 
-    public Configuration(CCTestCase testAnnotation) {
-        super();
-        if(testAnnotation != null) 
-            this.features = testAnnotation.features();
-    }
+  public Configuration() {
+    features = new String[] { ScreenshotManager.EXCEPTION_SCREENSHOT, TestLoggerAddon.FULL_LOG };
+  }
 
+  public Configuration(CCTestCase testAnnotation) {
+    super();
+    if (testAnnotation == null)
+      return;
+    this.testDescription = testAnnotation.description();
+    this.features = testAnnotation.features();
+  }
 
-    public String[] getFeatures() {
-        return features;
-    }
+  public String getTestDescription() {
+    return testDescription;
+  }
 
-    public void setFeatures(String[] features) {
-        this.features = features;
-    }
+  public void setTestDescription(String testDescription) {
+    this.testDescription = testDescription;
+  }
 
-    public boolean hasFeature(String featureName){
-        for(int i = 0; i < features.length; i++){
-            if(StringUtils.equals(features[i], featureName))
-                return true;
-        }
-        return false;
+  public String[] getFeatures() {
+    return features;
+  }
+
+  public void setFeatures(String[] features) {
+    this.features = features;
+  }
+
+  public boolean hasFeature(String featureName) {
+    for (int i = 0; i < features.length; i++) {
+      if (StringUtils.equals(features[i], featureName))
+        return true;
     }
+    return false;
+  }
 }

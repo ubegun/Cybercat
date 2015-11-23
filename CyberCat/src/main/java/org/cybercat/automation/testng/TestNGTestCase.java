@@ -15,16 +15,17 @@
 package org.cybercat.automation.testng;
 
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.test.AbstractTestCase;
+import org.cybercat.automation.test.AbstractEntryPoint;
+import org.testng.ITestContext;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 
 @Listeners({ TestNGListener.class })
-public abstract class TestNGTestCase extends AbstractTestCase{
+public abstract class TestNGTestCase extends AbstractEntryPoint{
 
     @BeforeTest
-    public void beforeTest() throws AutomationFrameworkException {
+    public void beforeTest(final ITestContext testContext) throws AutomationFrameworkException {
         super.beforeTest();
     }
 

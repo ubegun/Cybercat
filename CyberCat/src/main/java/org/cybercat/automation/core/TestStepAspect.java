@@ -26,7 +26,7 @@ import org.cybercat.automation.annotations.CCTestStep;
 import org.cybercat.automation.events.EventStartTestStep;
 import org.cybercat.automation.events.EventStopTestStep;
 import org.cybercat.automation.test.AbstractFeature;
-import org.cybercat.automation.test.AbstractTestCase;
+import org.cybercat.automation.test.AbstractEntryPoint;
 
 /**
  * @author Ubegun
@@ -42,7 +42,7 @@ public class TestStepAspect {
     @SuppressWarnings("unchecked")
     @Around("target(bean) && @annotation(testStep)")
     public Object stepNotification(ProceedingJoinPoint pjp, Object bean, CCTestStep testStep) throws AutomationFrameworkException {
-        Class<? extends AbstractTestCase> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
+        Class<? extends AbstractEntryPoint> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
         AutomationMain.getEventManager().notify(
                 new EventStartTestStep(test, (Class<? extends AbstractFeature>) bean.getClass(), testStep.value(), pjp.getSignature().getName()));
         try {
@@ -58,7 +58,7 @@ public class TestStepAspect {
     @SuppressWarnings("unchecked")
     @Before("target(bean) && @annotation(redirectionStep)")
     public void redirectionstep(JoinPoint jp, Object bean, CCRedirectionStep redirectionStep) throws AutomationFrameworkException {
-        Class<? extends AbstractTestCase> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
+        Class<? extends AbstractEntryPoint> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
         Browser.getCurrentBrowser().get(redirectionStep.url());
         AutomationMain.getEventManager().notify(
                 new EventStartTestStep(test, (Class<? extends AbstractFeature>) bean.getClass(), redirectionStep.desctiption(), jp.getSignature().getName()));

@@ -44,7 +44,7 @@ import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
-import org.cybercat.automation.test.AbstractTestCase;
+import org.cybercat.automation.test.AbstractEntryPoint;
 import org.cybercat.automation.utils.WorkFolder;
 import org.springframework.context.ApplicationContext;
 
@@ -63,7 +63,7 @@ public class ConfigurationManager implements AddonContainer {
     private ScreenshotManager screenshotManager;
     private JiraReportManager jiraReportManager;
     private PerformanceReportManager performanceReportManager;
-    private Class<? extends AbstractTestCase> testClass;
+    private Class<? extends AbstractEntryPoint> testClass;
     private TestLoggerAddon logggerAddon;
     private CleanUpBuildsHistoryAddon cleanUpAddon;
 
@@ -241,7 +241,7 @@ public class ConfigurationManager implements AddonContainer {
         return browser;
     }    
 
-    protected Class<? extends AbstractTestCase> getTestClass() {
+    protected Class<? extends AbstractEntryPoint> getTestClass() {
         return testClass;
     }
 

@@ -27,8 +27,9 @@ import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.events.EventStopTest;
+import org.testng.ITestContext;
 
-public abstract class AbstractTestCase {
+public abstract class AbstractEntryPoint {
 
     public ResourceBundle testData;
     private String errorMessage;

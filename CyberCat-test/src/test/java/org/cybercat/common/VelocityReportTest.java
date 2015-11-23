@@ -1,4 +1,4 @@
-package org.cybercat.automation;
+package org.cybercat.common;
 
 import org.junit.Test;
 import org.testng.ISuite;

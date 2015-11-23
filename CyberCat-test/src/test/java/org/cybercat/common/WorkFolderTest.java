@@ -1,4 +1,4 @@
-package org.apache.automation;
+package org.cybercat.common;
 
 import static org.testng.AssertJUnit.assertTrue;
 
