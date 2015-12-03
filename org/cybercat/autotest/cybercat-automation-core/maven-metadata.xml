@@ -3,11 +3,10 @@
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-automation-core</artifactId>
   <versioning>
-    <release>1.8.a</release>
+    <release>1.7.0.2.48.2</release>
     <versions>
       <version>1.7.0.2.48.2</version>
-      <version>1.8.a</version>
     </versions>
-    <lastUpdated>20151127001746</lastUpdated>
+    <lastUpdated>20151203130001</lastUpdated>
   </versioning>
 </metadata>
