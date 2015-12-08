@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.addons.jira.soap.Jira;
 import org.cybercat.automation.core.AddonContainer;
 import org.cybercat.automation.events.EventListener;
@@ -35,16 +35,18 @@ public class JiraReportManager implements AddonContainer {
 
   private static final Logger LOG = Logger.getLogger(JiraReportManager.class);
 
+  private String testGuid;
+
   @Override
-  public Collection<EventListener<?>> createListeners(Configuration config) {
+  public Collection<EventListener<?>> createListeners(TestContext config) {
     ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
     if(!config.hasFeature(JIRA_BUGS))
       return listeners;
-
+    testGuid = config.getTestGuid();
     listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 1000) {
       @Override
       public void doActon(EventStartTest event) throws Exception {
-        TestCase testCase = new TestCase(event.getTestClass().getName());
+        TestCase testCase = new TestCase(testGuid);
         testCase.setBugs(buildJiraInfo(event));
         TestArtifactManager.updateTestRunInfo(testCase);
       }

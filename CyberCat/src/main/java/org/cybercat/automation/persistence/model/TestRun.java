@@ -16,6 +16,7 @@ public class TestRun implements Comparable<TestRun> {
     private Date started = new Date();
     private Date completed;
     private String htmlReport;
+    private String testStatus = "Success";
 
     public List<TestCase> getTests() {
         return tests;
@@ -68,6 +69,14 @@ public class TestRun implements Comparable<TestRun> {
         this.htmlReport = htmlReport;
     }
 
+    public String getTestStatus() {
+      return testStatus;
+    }
+
+    public void setTestStatus(String testStatus) {
+      this.testStatus = testStatus;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -95,7 +104,7 @@ public class TestRun implements Comparable<TestRun> {
 
     @Override
     public String toString() {
-        return "TestRun [tests=" + tests + ", started=" + started + ", completed=" + completed + ", htmlReport="
+        return "TestRun [tests=" + tests + ", started=" + started + ", completed=" + completed + ",status=" + testStatus + " , htmlReport="
                 + htmlReport + "]";
     }
 

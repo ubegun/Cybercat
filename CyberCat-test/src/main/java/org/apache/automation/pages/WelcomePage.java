@@ -24,7 +24,7 @@ public class WelcomePage extends AbstractPageObject {
 
     @Override
     protected void initPageElement() {
-        addElement(new Button("logo", PathType.byXPath, ".//*[@id='header']/h1"));
+        addElement(new Button("logo", PathType.byCssSelector, ".col-md-9.col-sm-8.col-xs-12>img"));
         addElement(new Button("broken element", PathType.byXPath, ".//*[@id='nullable_path']"));
     }
 

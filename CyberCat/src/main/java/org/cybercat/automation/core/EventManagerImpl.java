@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.Event;
 import org.cybercat.automation.events.EventListener;
@@ -35,10 +35,10 @@ public class EventManagerImpl implements EventManager, AddonContainer {
   private static Logger log = Logger.getLogger(EventManagerImpl.class);
 
   private Map<Class<?>, LinkedList<EventListener>> listeners;
-  private Configuration configuration;
+  private TestContext configuration;
 
   public EventManagerImpl() {
-    configuration = new Configuration();
+    configuration = new TestContext();
     listeners = new HashMap<Class<?>, LinkedList<EventListener>>();
   }
 
@@ -125,7 +125,7 @@ public class EventManagerImpl implements EventManager, AddonContainer {
    * @see org.cybercat.automation.events.AddonContainer#createListeners(org.cybercat.automation.Configuration)
    */
   @Override
-  public Collection<EventListener<?>> createListeners(Configuration config) {
+  public Collection<EventListener<?>> createListeners(TestContext config) {
     ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
     listeners.add(new EventListener<EventChangeTestConfig>(EventChangeTestConfig.class, 0) {
 

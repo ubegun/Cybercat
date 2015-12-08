@@ -1,0 +1,7 @@
+
+
+#1.7.0.2.48.2
+
+ - TestContext was extracted from initial configuration. The context of tests is available in  "createListeners" method in AddonContainer interface 
+ - Time measuring addon 
+ - Added Report service 

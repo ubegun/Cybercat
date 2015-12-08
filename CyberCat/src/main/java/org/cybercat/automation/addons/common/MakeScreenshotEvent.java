@@ -40,10 +40,9 @@ public class MakeScreenshotEvent extends Event {
     private String subtitles;
     private String fileName;
     private ImageFormat format;
-    private Class<?> testClass;
 
-    public MakeScreenshotEvent(Class<?> testClass,  Path path, String fileName, ImageFormat format, String[] subtitles) {
-        this(testClass, path, fileName, format);
+    public MakeScreenshotEvent(Path path, String fileName, ImageFormat format, String[] subtitles) {
+        this(path, fileName, format);
         StringBuffer desc = new StringBuffer();
         for (int i = 0; i < subtitles.length; i++) {
             desc.append(subtitles[i]).append("\n");
@@ -51,8 +50,7 @@ public class MakeScreenshotEvent extends Event {
         this.subtitles = desc.toString();
     }
 
-    public MakeScreenshotEvent(Class<?> testClass, Path path, String fileName, ImageFormat format) {
-        this.testClass = testClass;
+    public MakeScreenshotEvent(Path path, String fileName, ImageFormat format) {
         this.format = format;
         this.fileName = fileName;
         this.path = path;
@@ -77,14 +75,6 @@ public class MakeScreenshotEvent extends Event {
 
     public ImageFormat getFormat() {
         return format;
-    }
-
-    public Class<?> getTestClass() {
-        return testClass;
-    }
-
-    public void setTestClass(Class<?> testClass) {
-        this.testClass = testClass;
     }
     
 }

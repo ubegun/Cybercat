@@ -19,9 +19,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.addons.media.JpegImagesToMovie.AsyncState;
 import org.cybercat.automation.addons.media.events.CloseMediaDemonThread;
 import org.cybercat.automation.addons.media.events.InterruptVideoEvent;
@@ -51,13 +52,18 @@ public class MediaController implements AddonContainer {
     private JpegImagesToMovie jpegImagesToMovie;
     private EventManager eventManager;
     private FrameSet frameSet;
+    private String testGuid;
+    private Date buildGuid;
 
     public MediaController(MediaMetaData mediaMetaData, EventManager eventManager) {
         this.metaData = mediaMetaData;
         this.eventManager = eventManager;
     }
 
-    public void initVideoStream() {
+    public void initVideoStream(TestContext context) {
+        testGuid = context.getTestGuid();
+        buildGuid = context.getBuildGuid();
+      
         listeners = new ArrayList<EventListener<?>>();
         long threadId = Thread.currentThread().getId();
         frameSet = new FrameSet(threadId);
@@ -74,12 +80,12 @@ public class MediaController implements AddonContainer {
 
             @Override
             public void doActon(EventStartTest event) throws Exception {
-                Path path = Paths.get(WorkFolder.MediaFolder.toString(), event.getTestClass().getName(), event.getTestClass().getSimpleName()
+                Path path = Paths.get(WorkFolder.MediaFolder.toString(), testGuid, buildGuid
                         + ".mov");
                 jpegImagesToMovie.setOutput(path);
                 mdt.setCState(CState.init);
                 // update artifact info
-                TestCase test = new TestCase(event.getTestClass().getName());
+                TestCase test = new TestCase(testGuid);
                 test.setVideo(path.toString());
                 TestArtifactManager.updateTestRunInfo(test);
             }
@@ -188,11 +194,11 @@ public class MediaController implements AddonContainer {
     }
 
     @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
-        if (!config.hasFeature(VIDEO)) {
+    public Collection<EventListener<?>> createListeners(TestContext context) {
+        if (!context.hasFeature(VIDEO)) {
             return new ArrayList<EventListener<?>>();
         }
-        initVideoStream();
+        initVideoStream(context);
         return listeners;
     }
 

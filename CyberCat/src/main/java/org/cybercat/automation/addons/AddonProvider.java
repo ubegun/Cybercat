@@ -40,7 +40,7 @@ public class AddonProvider {
      */
     public AddonProvider() throws AutomationFrameworkException {
         addons = new HashSet<ExteranlAddon>();
-        String rootPackage = AutomationMain.getProperty("external.addon.package");
+        String rootPackage = AutomationMain.getConfigProperties().getExternalAddonPackage();
         if (StringUtils.isBlank(rootPackage))
             return;
         Reflections reflections = new Reflections(rootPackage);

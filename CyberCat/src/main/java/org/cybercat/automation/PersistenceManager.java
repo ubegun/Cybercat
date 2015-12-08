@@ -29,6 +29,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.persistence.Criterion;
 import org.cybercat.automation.persistence.model.Entity;
 import org.cybercat.automation.persistence.model.PageModelException;
@@ -37,6 +38,7 @@ import org.cybercat.automation.utils.WorkFolder;
 
 /**
  * Manages process of saving and accessing project data model
+ *  - AutomationMain.getMainFactory().getPersistenceManager()
  */
 public class PersistenceManager {
 

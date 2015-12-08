@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.TestCaseInitializationException;
 import org.cybercat.automation.annotations.AnnotationBuilder;
 import org.cybercat.automation.annotations.CCTestCase;
@@ -27,7 +27,12 @@ import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.events.EventStopTest;
+<<<<<<< HEAD:CyberCat/src/main/java/org/cybercat/automation/test/AbstractEntryPoint.java
+import org.cybercat.automation.persistence.TestArtifactManager;
+import org.cybercat.automation.persistence.model.TestRun;
+=======
 import org.testng.ITestContext;
+>>>>>>> 9791950d3370025567af91ddfddda2be34151956:CyberCat/src/main/java/org/cybercat/automation/test/AbstractEntryPoint.java
 
 public abstract class AbstractEntryPoint {
 
@@ -43,7 +48,7 @@ public abstract class AbstractEntryPoint {
     }
 
     public void afterTest() throws AutomationFrameworkException {
-      AutomationMain.getEventManager().notify(new EventStopTest(this.getClass(), this.getClass().getSimpleName(), this.getClass().getName(), new Date()));
+      AutomationMain.getEventManager().notify(new EventStopTest(this.getClass().getSimpleName(), this.getClass().getName(), new Date()));
     }
 
     public void setInitializationFail(String errorMessage){
@@ -54,7 +59,12 @@ public abstract class AbstractEntryPoint {
 
     private void setupTestConfiguration() throws AutomationFrameworkException {
         CCTestCase tAnnotation = this.getClass().getAnnotation(CCTestCase.class);
-        Configuration config = new Configuration(tAnnotation);
+        TestContext config = new TestContext(tAnnotation);
+        TestRun thisRun = TestArtifactManager.getInstance().getThisTestRun();
+        //Test id`s setup 
+        config.setBuildGuid(thisRun.getStarted());
+        config.setTestGuid(this.getClass().getName());
+        
         String subtitles = "";
         if (tAnnotation != null) {
             subtitles = tAnnotation.description();
@@ -62,7 +72,7 @@ public abstract class AbstractEntryPoint {
         AutomationMain.getEventManager().notify(new EventChangeTestConfig(this, config));
         if(StringUtils.isNotBlank(errorMessage))
             throw new TestCaseInitializationException(errorMessage);
-        AutomationMain.getEventManager().notify(new EventStartTest(this.getClass(),  subtitles, getBugIDsFromAnnotation()));
+        AutomationMain.getEventManager().notify(new EventStartTest(subtitles, getBugIDsFromAnnotation()));
     }
 
     private String[] getBugIDsFromAnnotation() {

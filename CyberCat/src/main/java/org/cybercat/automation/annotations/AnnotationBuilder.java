@@ -70,7 +70,11 @@ public class AnnotationBuilder {
   private static Set<AddonServiceFactory> addonAnnotationProcessors;
 
   private static Set<AddonServiceFactory> getAbstractAnnotationProcessor() throws AutomationFrameworkException {
+<<<<<<< HEAD
+    String rootPackage = AutomationMain.getConfigProperties().getExternalAddonPackage();
+=======
     String rootPackage = AutomationMain.getProperty("external.addon.package");
+>>>>>>> 9791950d3370025567af91ddfddda2be34151956
     if (StringUtils.isBlank(rootPackage))
       return null;
     if (addonAnnotationProcessors != null)
@@ -107,7 +111,11 @@ public class AnnotationBuilder {
   private static Reflections getReflections(String sourcePakage) throws AutomationFrameworkException {
     if (versionControlReflections != null)
       return versionControlReflections;
+<<<<<<< HEAD
+    String rootPackage = AutomationMain.getConfigProperties().getFeatureRootPackage();
+=======
     String rootPackage = AutomationMain.getProperty("version.control.root.package");
+>>>>>>> 9791950d3370025567af91ddfddda2be34151956
     if (rootPackage == null)
       rootPackage = sourcePakage;
     versionControlReflections = new Reflections(rootPackage);
@@ -120,7 +128,11 @@ public class AnnotationBuilder {
     int version = 0;
     try {
       refSearch = getReflections(providerzz.getPackage().getName());
+<<<<<<< HEAD
+      version = (int) AutomationMain.getConfigProperties().getAppVersion();
+=======
       version = (int) AutomationMain.getPropertyLong("app.version");
+>>>>>>> 9791950d3370025567af91ddfddda2be34151956
       if (refSearch == null || version < 0)
         return providerzz;
     } catch (Exception e) {
@@ -319,7 +331,11 @@ public class AnnotationBuilder {
       CCProperty properties = field.getAnnotation(CCProperty.class);
       StringBuffer value = new StringBuffer("");
       for (String prop : properties.value()) {
+<<<<<<< HEAD
+        value.append(AutomationMain.getConfigProperties().getProperty(prop));
+=======
         value.append(AutomationMain.getProperty(prop));
+>>>>>>> 9791950d3370025567af91ddfddda2be34151956
       }
       field.set(targetObject, value.toString());
     } catch (Exception e) {

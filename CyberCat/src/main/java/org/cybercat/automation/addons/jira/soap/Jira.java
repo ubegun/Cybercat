@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.core.AutomationMain;
+import org.cybercat.report.ConfigProperties;
 
 public class Jira {
 
@@ -75,12 +76,11 @@ public class Jira {
     
     public Jira() throws AutomationFrameworkException {
         JiraSoapServiceServiceLocator soapLocator = new JiraSoapServiceServiceLocator(jiraEndPoint);
-        AutomationMain mainFactory = AutomationMain.getMainFactory();
-        
-        jiraEndPoint = mainFactory.getProperty("jira.soap.wsdl.url");
-        login = mainFactory.getProperty("jira.soap.endpoint"); 
-        password = mainFactory.getProperty("jira.login");
-        jiraUrl = mainFactory.getProperty("jira.password");
+        ConfigProperties cp = AutomationMain.getConfigProperties();
+        jiraEndPoint = cp.getJiraSoapWsdlUrl();
+        login = cp.getJiraLogin(); 
+        password = cp.getJiraPassword();
+        jiraUrl = cp.getJiraSoapEndpoint();
 
         JiraSoapService soapService = null;
         try {

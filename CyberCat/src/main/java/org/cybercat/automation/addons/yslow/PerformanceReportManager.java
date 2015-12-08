@@ -22,7 +22,7 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.PageFactory;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
@@ -46,25 +46,16 @@ public class PerformanceReportManager implements AddonContainer {
     private static final Logger log = Logger.getLogger(PerformanceReportManager.class);
     public final static String PERFOMANCE_REPORT = "Perfomance report";
     private YSlow ySlow;
-    private String thisTest;
+    private String testGuid;
 
     @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
+    public Collection<EventListener<?>> createListeners(TestContext config) {
         if (!config.hasFeature(PERFOMANCE_REPORT)) {
             return new ArrayList<EventListener<?>>();
         }
-
+        testGuid = config.getTestGuid();
         ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
 
-        listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 100){
-
-            @Override
-            public void doActon(EventStartTest event) throws Exception {
-                thisTest =  event.getTestClass().getName();
-            }
-        });
-        
-        
         listeners.add(new EventListener<GetPerformanceReportEvent>(GetPerformanceReportEvent.class, 100) {
 
             @Override
@@ -78,7 +69,7 @@ public class PerformanceReportManager implements AddonContainer {
                 try{
                     Path yslowFile = Paths.get(WorkFolder.Har.toString(), event.getFileName());
                     Files.write(yslowFile, ySlow.getReportSource().getBytes());
-                    TestCase test = new TestCase(thisTest);
+                    TestCase test = new TestCase(testGuid);
                     test.putArtifact("YSLOW#" + event.getPageDescription(),TestCase.getRelativePath(yslowFile.toString()));
                     TestArtifactManager.updateTestRunInfo(test);
                 }catch(Exception e){

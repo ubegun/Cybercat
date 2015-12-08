@@ -77,7 +77,7 @@ public class PageFactoryImpl implements PageFactory {
         // get locators
         Locale locale;
         try {
-            locale = new Locale(AutomationMain.getProperty("language"));
+            locale = new Locale(AutomationMain.getConfigProperties().getContentLanguage());
         } catch (AutomationFrameworkException e) {
             throw new PageObjectException("Main factory initialization exception.", e);
         }

@@ -16,13 +16,13 @@ package org.cybercat.automation.core;
 
 import java.util.Collection;
 
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.events.EventListener;
 
 public interface AddonContainer {
 
     String[] getSupportedFeatures();
 
-    Collection<EventListener<?>> createListeners(Configuration config);
+    Collection<EventListener<?>> createListeners(TestContext config);
 
 }

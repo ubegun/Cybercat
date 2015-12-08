@@ -20,6 +20,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -98,7 +100,7 @@ public class TestArtifactManager {
         }
     }
     
-    protected void saveAfterCleanUp(ArtifactIndex index) throws PageModelException {
+    protected void save(ArtifactIndex index) throws PageModelException {
         try {
             FileWriter fw = new FileWriter(getIndexFile().toFile());
             XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
@@ -112,13 +114,15 @@ public class TestArtifactManager {
 
     private void merge() throws PageModelException {
         try {
-            if(index.getBuilds().contains(thisTestRun)){
-                index.getBuilds().remove(thisTestRun);
+            List<TestRun> builds = index.getBuilds();
+            if(builds.contains(thisTestRun)){
+              builds.remove(thisTestRun);
             }
             index.setLastBuild(thisTestRun);
-            index.getBuilds().add(thisTestRun);
+            builds.add(thisTestRun);
             FileWriter fw = new FileWriter(getIndexFile().toFile());
             XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
+            index.setBuilds(builds);
             marshaller.marshal(index, xmlStreamWriter);
         } catch (Exception e) {
             log.error("Merge exception" , e);

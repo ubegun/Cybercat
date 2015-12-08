@@ -32,7 +32,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.addons.common.MakeScreenshotEvent.ImageFormat;
 import org.cybercat.automation.addons.media.FrameSet;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent;
@@ -70,7 +70,7 @@ public class ScreenshotManager implements AddonContainer {
     private ScreenshotProvider provider;
     private EventManager eventManager;
     private boolean getFistEvent = false;
-    private boolean hasPEScreenshot;
+    private String thestGuid;
 
     public ScreenshotManager() throws AutomationFrameworkException {
         eventManager = AutomationMain.getEventManager();
@@ -127,14 +127,15 @@ public class ScreenshotManager implements AddonContainer {
     }
 
     @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
+    public Collection<EventListener<?>> createListeners(TestContext config) {
+        thestGuid = config.getTestGuid();
         ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
         listeners.add(new EventListener<MakeScreenshotEvent>(MakeScreenshotEvent.class, 100) {
 
             @Override
             public void doActon(MakeScreenshotEvent event) throws Exception {
                 Path screen = saveScreen(event.getPath(), event.getFileName(), event.getFormat(), event.getSubtitles());
-                TestCase test = new TestCase(event.getTestClass().getName());
+                TestCase test = new TestCase(thestGuid);
                 test.addImage(screen.toString());
                 TestArtifactManager.updateTestRunInfo(test);
             }
@@ -205,19 +206,16 @@ public class ScreenshotManager implements AddonContainer {
                 }
                 
             });
-        hasPEScreenshot = config.hasFeature(ScreenshotManager.PAGE_EVENT_SCREENSHOT);  
+        if ( config.hasFeature(ScreenshotManager.PAGE_EVENT_SCREENSHOT))  
             listeners.add(new EventListener<EventHighlightElement>(EventHighlightElement.class, 100) {
 
                 @Override
                 public void doActon(EventHighlightElement event) throws Exception {
-                    if(!hasPEScreenshot && !getFistEvent){
-                        return;
-                    }
                     getFistEvent = false;
                     String fileName = CommonUtils.getCurrentDate() + event.getMethodName();
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
+                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), thestGuid);
                     Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
-                    TestCase test = new TestCase(event.getTestClass().getName());
+                    TestCase test = new TestCase(thestGuid);
                     test.addImage(screen.toString());
                     TestArtifactManager.updateTestRunInfo(test);
                     eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));

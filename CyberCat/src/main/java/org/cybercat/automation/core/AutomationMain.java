@@ -14,7 +14,6 @@
  */
 package org.cybercat.automation.core;
 
-import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -32,6 +31,7 @@ import org.cybercat.automation.rest.AbstractRestService;
 import org.cybercat.automation.rest.RestServiceException;
 import org.cybercat.automation.soap.SoapService;
 import org.cybercat.automation.soap.SoapServiceException;
+import org.cybercat.report.ConfigProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -48,7 +48,7 @@ public final class AutomationMain {
     /**
      * Application settings defined at start up from command line such as staging.properties, hpqa.properties etc
      */
-    private Properties configProperties;
+    private ConfigProperties configProperties;
 
     /**
      * Main class constructor Below is example of running automation test from command line as maven test scope mvn
@@ -61,7 +61,7 @@ public final class AutomationMain {
      */
     private AutomationMain(ApplicationContext context, Boolean... xmlRepositoryFlag) throws PageModelException {
         this.context = context;
-        configProperties = (Properties) context.getBean("configProperties");
+        configProperties = new ConfigProperties((Properties) context.getBean("configProperties"));
         // application initialization block
         if (xmlRepositoryFlag.length != 0 && xmlRepositoryFlag[0] != false) {
             getConfigurationManager().initXmlRepository();
@@ -84,52 +84,10 @@ public final class AutomationMain {
         return result;
     }
     
-    /**
-     * Returns property by name
-     * 
-     * @param name
-     *            - property name
-     * @return
-     * @throws AutomationFrameworkException 
-     */
-    public static String getProperty(String name) throws AutomationFrameworkException {
-        return StringUtils.trim(getMainFactory().configProperties.getProperty(name));
+    public static ConfigProperties getConfigProperties() throws AutomationFrameworkException{ 
+      return getMainFactory().configProperties;
     }
-
-    /**
-     * Returns property by name
-     * 
-     * @param name
-     *            - property name
-     * @return
-     */
-    public static URL getPropertyUrl(String name) throws PageObjectException {
-        URL result;
-        try {
-            result = new URL(getMainFactory().configProperties.getProperty(name));
-        } catch (Exception e) {
-            throw new PageObjectException(e);
-        }
-        return result;
-    }
-
-    /**
-     * Returns property by name as long variable
-     * 
-     * @param name
-     *            - property name
-     * @return
-     * @throws AutomationFrameworkException 
-     * @throws  
-     */
-    public static long getPropertyLong(String name) throws AutomationFrameworkException {
-        return Long.parseLong(getMainFactory().configProperties.getProperty(name));
-    }
-
-    public static boolean getPropertyBoolean(String name) throws AutomationFrameworkException {
-        return Boolean.parseBoolean(getMainFactory().configProperties.getProperty(name, "false"));
-    }
-
+    
     /**
      * Returns javascript file as string Example: automationMain.getJavaScript("clean_target.js"); returns - JS file as
      * simple string object

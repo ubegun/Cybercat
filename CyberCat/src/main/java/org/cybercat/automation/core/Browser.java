@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.addons.common.ScreenshotProvider;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent;
@@ -113,7 +113,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     public void get(String finalUrl) {
         try {
             driver.get(finalUrl);
-            eventManager.notify(new EventHighlightElement("highlightElement", this.getClass(), this, EffectType.RESIZ_BY_WIDTH));
+            eventManager.notify(new EventHighlightElement("highlightElement", this, EffectType.RESIZ_BY_WIDTH));
         } catch (Exception e) {
             log.error(e);
         }
@@ -258,7 +258,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
             this.executeScript("arguments[0].style.backgroundColor = '" + "red" + "'", element);
             Point point = element.getLocation();
             Dimension demention = new Dimension(point.x, point.y);// .getSize();
-            eventManager.notify(new EventHighlightElement("highlightElement", this.getClass(), this, EffectType.RESIZ_BY_WIDTH, point.getX()
+            eventManager.notify(new EventHighlightElement("highlightElement", this, EffectType.RESIZ_BY_WIDTH, point.getX()
                     + demention.getWidth(), point.getY() + demention.getHeight()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -338,7 +338,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
      * @see org.cybercat.automation.events.AddonContainer#createListeners(org.cybercat.automation.Configuration)
      */
     @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
+    public Collection<EventListener<?>> createListeners(TestContext config) {
         if (isClosed()) {
             return new ArrayList<EventListener<?>>();
         }

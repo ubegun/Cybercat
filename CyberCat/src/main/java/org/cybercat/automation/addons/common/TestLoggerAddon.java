@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.core.AddonContainer;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventStartTest;
@@ -37,6 +37,7 @@ public class TestLoggerAddon implements AddonContainer {
 
     public final static String FULL_LOG = "Full log";
     private TestLogAppender thisLogger;
+    private String testGuid;
     
     public TestLoggerAddon() {
         super();
@@ -44,11 +45,14 @@ public class TestLoggerAddon implements AddonContainer {
     }
 
     @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
+    public Collection<EventListener<?>> createListeners(TestContext context) {
         ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
-        if(!config.hasFeature(FULL_LOG)){
+        if(!context.hasFeature(FULL_LOG)){
             return listeners;
         }
+        
+        testGuid =context.getTestGuid();
+        
         listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 100) {
             @Override
             public void doActon(EventStartTest event) throws Exception {
@@ -61,7 +65,7 @@ public class TestLoggerAddon implements AddonContainer {
                 Path fullLog = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getDirName(),
                         CommonUtils.dateToString(event.getStopTime()) + event.getFileName() + "_full.log");
                 thisLogger.flush(fullLog);
-                TestCase test = new TestCase(event.getTestClass().getName());
+                TestCase test = new TestCase(testGuid);
                 test.setFullLog(fullLog.toString());
                 TestArtifactManager.updateTestRunInfo(test);
             }

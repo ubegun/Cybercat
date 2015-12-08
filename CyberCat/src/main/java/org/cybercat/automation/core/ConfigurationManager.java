@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.PersistenceManager;
 import org.cybercat.automation.ResourceManager;
@@ -66,6 +66,8 @@ public class ConfigurationManager implements AddonContainer {
     private Class<? extends AbstractEntryPoint> testClass;
     private TestLoggerAddon logggerAddon;
     private CleanUpBuildsHistoryAddon cleanUpAddon;
+
+    private String testGuid;
 
 
     public ConfigurationManager() {
@@ -157,14 +159,14 @@ public class ConfigurationManager implements AddonContainer {
     }
 
     @Override
-    public Collection<EventListener<?>> createListeners(Configuration config) {
+    public Collection<EventListener<?>> createListeners(TestContext config) {
         ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
+        testGuid = config.getTestGuid();
         listeners.add(new EventListener<EventStartTest>(EventStartTest.class, 1000) {
 
             @Override
             public void doActon(EventStartTest event) throws Exception {
-                testClass = event.getTestClass();
-                TestCase test = new TestCase(testClass.getName());
+                TestCase test = new TestCase(testGuid);
                 test.setQtName(event.getDescription());
                 TestArtifactManager.updateTestRunInfo(test);
             }
@@ -183,8 +185,6 @@ public class ConfigurationManager implements AddonContainer {
         return listeners;
     }
 
-    private final static String REMOTE_SERVER = "remote.server";
-    
     /**
      * Returns browser instance by name Additional info in selenium documentation for Webdriver
      * 
@@ -196,8 +196,8 @@ public class ConfigurationManager implements AddonContainer {
     protected Browser getBrowser() throws AutomationFrameworkException {
         if(browser != null && !browser.isClosed())
             return browser;
-        Browsers browserType = Browsers.valueOf(AutomationMain.getProperty("browser.name"));
-        if (AutomationMain.getPropertyBoolean(REMOTE_SERVER)) {
+        Browsers browserType = Browsers.valueOf(AutomationMain.getConfigProperties().getBrowserName());
+        if (AutomationMain.getConfigProperties().isRemoteServer()) {
             browser = getRemoteBrowser(browserType);
         }else{ 
             browser = getLocalBrowser(browserType);

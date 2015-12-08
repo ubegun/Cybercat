@@ -24,19 +24,16 @@ public class EventStopTest extends Event {
     private Date stopTime;
     private String fileName;
     private String dirName;
-    private Class<?> testClass;
 
-    public EventStopTest(Class<?> testClass, String fileName, String dirName, Date stopTime){
+    public EventStopTest(String fileName, String dirName, Date stopTime){
         super();
-        this.testClass = testClass;
         this.fileName = fileName;
         this.dirName = dirName;
         this.stopTime = stopTime;
     }
 
-    public EventStopTest(Class<?> testClass, String fileName, Date stopTime){
+    public EventStopTest(String fileName, Date stopTime){
         super();
-        this.testClass = testClass;
         this.fileName = fileName;
         this.dirName = fileName;
         this.stopTime = stopTime;
@@ -57,10 +54,6 @@ public class EventStopTest extends Event {
 
     public Date getStopTime() {
         return stopTime;
-    }
-
-    public Class<?> getTestClass() {
-        return testClass;
     }
 
 }
