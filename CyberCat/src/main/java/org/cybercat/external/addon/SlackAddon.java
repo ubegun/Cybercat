@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.Configuration;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.addons.ExteranlAddon;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventTestFail;
@@ -25,7 +25,7 @@ public class SlackAddon implements ExteranlAddon {
   }
 
   @Override
-  public Collection<EventListener<?>> createListeners(Configuration config) {
+  public Collection<EventListener<?>> createListeners(TestContext config) {
     List<EventListener<?>> eventListeners = new ArrayList<EventListener<?>>();      
     try {
       slackService = new SlackClient();
@@ -61,5 +61,7 @@ public class SlackAddon implements ExteranlAddon {
     
     return eventListeners;
   }
+
+
 
 }

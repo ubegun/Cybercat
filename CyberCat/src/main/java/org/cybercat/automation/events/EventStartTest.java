@@ -15,7 +15,6 @@
 package org.cybercat.automation.events;
 
 import org.cybercat.automation.events.EventManager.EventTypes;
-<<<<<<< HEAD
 
 public class EventStartTest extends Event {
     
@@ -28,26 +27,7 @@ public class EventStartTest extends Event {
     }
 
     public EventStartTest(String description){
-=======
-import org.cybercat.automation.test.AbstractEntryPoint;
 
-public class EventStartTest extends Event {
-    
-    public Class<? extends AbstractEntryPoint> getTestClass() {
-        return testClass;
-    }
-
-    private Class<? extends AbstractEntryPoint> testClass;
-    private String description;
-    private String[] bugIDs;
-
-    public EventStartTest(Class<? extends AbstractEntryPoint> testClass, String description, String[] bugIDs) {
-        this(testClass, description);
-        this.bugIDs = bugIDs;
-    }
-
-    public EventStartTest(Class<? extends AbstractEntryPoint> testClass, String description){
->>>>>>> 9791950d3370025567af91ddfddda2be34151956
         super();
         this.description = description;
     }

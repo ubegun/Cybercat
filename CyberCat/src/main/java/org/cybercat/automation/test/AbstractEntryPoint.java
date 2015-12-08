@@ -19,20 +19,16 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.TestContext;
 import org.cybercat.automation.TestCaseInitializationException;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.annotations.AnnotationBuilder;
 import org.cybercat.automation.annotations.CCTestCase;
 import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.events.EventStopTest;
-<<<<<<< HEAD:CyberCat/src/main/java/org/cybercat/automation/test/AbstractEntryPoint.java
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestRun;
-=======
-import org.testng.ITestContext;
->>>>>>> 9791950d3370025567af91ddfddda2be34151956:CyberCat/src/main/java/org/cybercat/automation/test/AbstractEntryPoint.java
 
 public abstract class AbstractEntryPoint {
 

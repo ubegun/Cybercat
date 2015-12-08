@@ -21,17 +21,11 @@ import org.cybercat.automation.test.AbstractEntryPoint;
 
 public class EventChangeTestConfig extends Event {
 
-<<<<<<< HEAD
     private TestContext configuration;
     private AbstractEntryPoint thisTestCase;
     
     public EventChangeTestConfig(AbstractEntryPoint thisTestCase, TestContext configuration) {
-=======
-    private Configuration configuration;
-    private AbstractEntryPoint thisTestCase;
-    
-    public EventChangeTestConfig(AbstractEntryPoint thisTestCase, Configuration configuration) {
->>>>>>> 9791950d3370025567af91ddfddda2be34151956
+
         super();
         this.thisTestCase = thisTestCase;
         this.configuration = configuration;

@@ -26,13 +26,8 @@ import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.persistence.Criterion;
 import org.cybercat.automation.testng.TestNGTestCase;
 import org.cybercat.common.Model1.TestEnum;
-<<<<<<< HEAD:CyberCat-test/src/test/java/org/cybercat/common/CommonTest.java
 import org.cybercat.external.addon.slack.EventPostMessage;
 import org.cybercat.external.addon.slack.SlackAddon;
-=======
-import org.cybercat.external.addon.EventPostMessage;
-import org.cybercat.external.addon.SlackAddon;
->>>>>>> 9791950d3370025567af91ddfddda2be34151956:CyberCat-test/src/test/java/org/cybercat/common/CommonTest.java
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
