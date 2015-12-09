@@ -17,26 +17,23 @@ package org.cybercat.automation.events;
 import org.cybercat.automation.addons.common.MakeScreenshotEvent.ImageFormat;
 import org.cybercat.automation.events.EventManager.EventTypes;
 import org.cybercat.automation.test.AbstractFeature;
-import org.cybercat.automation.test.AbstractEntryPoint;
 import org.cybercat.automation.utils.CommonUtils;
 
 
 public class EventStopTestStep extends Event {
     
-    private Class<? extends AbstractEntryPoint> testClass;
     private String subtitles;
     private String methodName;
     private ImageFormat format;
     private String stopStepTime;
     private Class<? extends AbstractFeature> featureClass;
     
-    public EventStopTestStep(Class<? extends AbstractEntryPoint> testClass, Class<? extends AbstractFeature> featureClass,   String subtitles, String methodName) {
-        this(testClass, featureClass, subtitles, methodName, ImageFormat.JPEG);
+    public EventStopTestStep(Class<? extends AbstractFeature> featureClass,   String subtitles, String methodName) {
+        this(featureClass, subtitles, methodName, ImageFormat.JPEG);
     }
     
-    public EventStopTestStep(Class<? extends AbstractEntryPoint>  testClass, Class<? extends AbstractFeature> featureClass, String subtitles, String methodName, ImageFormat format) {
+    public EventStopTestStep(Class<? extends AbstractFeature> featureClass, String subtitles, String methodName, ImageFormat format) {
         super();
-        this.testClass = testClass;
         this.featureClass = featureClass;
         this.subtitles = subtitles;
         this.methodName = methodName;
@@ -61,10 +58,6 @@ public class EventStopTestStep extends Event {
 
     public ImageFormat getFormat() {
         return format;
-    }
-
-    public Class<?> getTestClass() {
-        return testClass;
     }
 
     public String getStopStepTime() {

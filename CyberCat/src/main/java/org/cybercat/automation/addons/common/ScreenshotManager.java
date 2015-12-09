@@ -150,9 +150,9 @@ public class ScreenshotManager implements AddonContainer {
                         log.warn("You were trying to make a screenshot before having the browser initialized.");
                         return;
                     }
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName(), event.getStartStepTime());
+                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), thestGuid, event.getStartStepTime());
                     Path screen = saveScreen(path, event.getStartStepTime() + "_" + event.getMethodName(), event.getFormat(), event.getSubtitles());
-                    TestCase test = new TestCase(event.getTestClass().getName());
+                    TestCase test = new TestCase(thestGuid);
                     test.addImage(screen.toString());
                     TestArtifactManager.updateTestRunInfo(test);
                 }
@@ -168,9 +168,9 @@ public class ScreenshotManager implements AddonContainer {
                         log.warn("You were trying to make a screenshot before having the browser initialized.");
                         return;
                     }
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName(), event.getStopStepTime());
+                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), thestGuid, event.getStopStepTime());
                     Path screen = saveScreen(path, event.getStopStepTime() + "_" + event.getMethodName(), event.getFormat(), event.getSubtitles());
-                    TestCase test = new TestCase(event.getTestClass().getName());
+                    TestCase test = new TestCase(thestGuid);
                     test.addImage(screen.toString());
                     TestArtifactManager.updateTestRunInfo(test);
                 }

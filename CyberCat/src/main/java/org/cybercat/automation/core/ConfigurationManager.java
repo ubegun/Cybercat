@@ -23,10 +23,10 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.TestContext;
 import org.cybercat.automation.PageObjectException;
 import org.cybercat.automation.PersistenceManager;
 import org.cybercat.automation.ResourceManager;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.addons.AddonProvider;
 import org.cybercat.automation.addons.common.ScreenshotManager;
 import org.cybercat.automation.addons.common.TestLoggerAddon;
@@ -44,7 +44,6 @@ import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.Identity;
 import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestCase;
-import org.cybercat.automation.test.AbstractEntryPoint;
 import org.cybercat.automation.utils.WorkFolder;
 import org.springframework.context.ApplicationContext;
 
@@ -63,7 +62,6 @@ public class ConfigurationManager implements AddonContainer {
     private ScreenshotManager screenshotManager;
     private JiraReportManager jiraReportManager;
     private PerformanceReportManager performanceReportManager;
-    private Class<? extends AbstractEntryPoint> testClass;
     private TestLoggerAddon logggerAddon;
     private CleanUpBuildsHistoryAddon cleanUpAddon;
 
@@ -240,10 +238,6 @@ public class ConfigurationManager implements AddonContainer {
         eventManager.setupListener(browser);
         return browser;
     }    
-
-    protected Class<? extends AbstractEntryPoint> getTestClass() {
-        return testClass;
-    }
 
     /**
      * Returns undefined value. Null value displays this module is running as default

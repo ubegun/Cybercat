@@ -5,12 +5,10 @@ import org.cybercat.automation.events.EventManager.EventTypes;
 public class EventPageObjectCall extends Event {
 
     private String methodName;
-    private Class<?> testClass;
 
-    public EventPageObjectCall(String methodName, Class<?> testClass) {
+    public EventPageObjectCall(String methodName) {
         super();
         this.methodName = methodName;
-        this.testClass = testClass;
     }
 
     @Override
@@ -22,8 +20,5 @@ public class EventPageObjectCall extends Event {
         return methodName;
     }
 
-    public Class<?> getTestClass() {
-        return testClass;
-    }
 
 }

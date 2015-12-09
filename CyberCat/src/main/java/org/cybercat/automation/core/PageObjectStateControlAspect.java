@@ -26,7 +26,6 @@ import org.cybercat.automation.annotations.CCPageURL;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.AbstractPageObject.PageState;
 import org.cybercat.automation.events.EventPageObjectCall;
-import org.cybercat.automation.test.AbstractEntryPoint;
 
 @Aspect
 public class PageObjectStateControlAspect {
@@ -43,8 +42,7 @@ public class PageObjectStateControlAspect {
     public void beforeNotTransientMethod(JoinPoint jp, Object bean) throws Throwable {
         if (bean instanceof AbstractPageObject) {
             AbstractPageObject pageObject = (AbstractPageObject) bean;
-            Class<? extends AbstractEntryPoint> test = AutomationMain.getMainFactory().getConfigurationManager().getTestClass();
-            AutomationMain.getEventManager().notify(new EventPageObjectCall(pageObject.getClass().getSimpleName() + "." + jp.getSignature().getName(), test));
+            AutomationMain.getEventManager().notify(new EventPageObjectCall(pageObject.getClass().getSimpleName() + "." + jp.getSignature().getName()));
             if (pageObject.getState() == PageState.CREATED)
                 processPageURLAnnotation(pageObject);
             try{
