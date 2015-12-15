@@ -49,7 +49,7 @@ public class TestStepAspect {
                     new EventStopTestStep((Class<? extends AbstractFeature>) bean.getClass(), testStep.value(), pjp.getSignature().getName()));
             return retVal;
         } catch (Throwable e) {
-            throw new AutomationFrameworkException(e);
+            throw new AutomationFrameworkException("\nTest description: \'" + testStep.value() + "\',\n Class: "  +  bean.getClass() + ",\n Pjp: " +pjp.toLongString() + ",\n Message: " + e.getMessage() , e);
         }
     }
 
