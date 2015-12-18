@@ -7,11 +7,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Timer")
 public class Timer {
 
+  public static enum Status {STOPPED, FAILED, TIME_IS_UP}
+  
   private Date buildGuid;
   private String testGuid;
   private String name;
   private Date timeLabel = new Date();
   private long duration;
+  private Status status = Status.STOPPED;
   
   public Timer() {
     super();
@@ -65,6 +68,14 @@ public class Timer {
 
   public void setTestGuid(String testGuid) {
     this.testGuid = testGuid;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
   }
 
   @Override

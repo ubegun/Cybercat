@@ -13,6 +13,8 @@ import org.cybercat.automation.TestContext;
 import org.cybercat.automation.addons.ExteranlAddon;
 import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.events.EventListener;
+import org.cybercat.automation.events.EventTestFail;
+import org.cybercat.external.addon.timer.Timer.Status;
 
 public class TimeMeasuringAddon implements ExteranlAddon {
 
@@ -53,7 +55,10 @@ public class TimeMeasuringAddon implements ExteranlAddon {
       public void doActon(EventTimerTask event) throws Exception {
         TimerDemon demon = new TimerDemon(event.getTimerName(), event.getTimeout());
         demon.start();
-        timerTasks.put(new Timer(testGuid, event.getTimerName()), demon);
+        Timer timer = new Timer(testGuid, event.getTimerName());
+        timer.setTimeLabel(demon.getStartTime());
+        timer.setBuildGuid(buildGuid);
+        timerTasks.put(timer, demon);
       }
     });
 
@@ -63,6 +68,7 @@ public class TimeMeasuringAddon implements ExteranlAddon {
       public void doActon(EventStartTimer event) throws Exception {
         Timer timer = event.getTimer();
         timer.setTestGuid(testGuid);
+        timer.setBuildGuid(buildGuid);
         timers.add(timer);
       }
 
@@ -77,8 +83,8 @@ public class TimeMeasuringAddon implements ExteranlAddon {
           TimerDemon demon = timerTasks.remove(timer);
           demon.disarm();
           timer.setTimeLabel(demon.getStartTime());
-          timer.setDuration(System.currentTimeMillis() - timer.getTimeLabel().getTime());
           timer.setBuildGuid(buildGuid);
+          timer.setDuration(System.currentTimeMillis() - timer.getTimeLabel().getTime());
           tcTimers.addTimer(timer);
           pm.save(tcTimers);
           return;
@@ -88,7 +94,6 @@ public class TimeMeasuringAddon implements ExteranlAddon {
           Timer t = timers.get(index);
           timers.remove(timer);
           t.setDuration(System.currentTimeMillis() - t.getTimeLabel().getTime());
-          t.setBuildGuid(buildGuid);
           tcTimers.addTimer(t);
           pm.save(tcTimers);
           return;
@@ -96,8 +101,27 @@ public class TimeMeasuringAddon implements ExteranlAddon {
       }
     });
 
+    ls.add(new EventListener<EventTestFail>(EventTestFail.class, 100){
+
+      @Override
+      public void doActon(EventTestFail event) throws Exception {
+        for(Timer timer: timers){
+          timer.setDuration(System.currentTimeMillis() - timer.getTimeLabel().getTime());
+          timer.setStatus(Status.FAILED);
+          tcTimers.addTimer(timer);
+        }
+        for(Timer timer :timerTasks.keySet()){
+          timer.setDuration(System.currentTimeMillis() - timer.getTimeLabel().getTime());
+          timer.setStatus(Status.FAILED);
+          tcTimers.addTimer(timer);          
+        }
+        pm.save(tcTimers);
+      }
+      
+    });
+    
     return ls;
-  }
+  } 
 
   private class TimerDemon extends Thread {
 

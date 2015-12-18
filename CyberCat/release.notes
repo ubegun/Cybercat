@@ -5,3 +5,4 @@
  - TestContext was extracted from initial configuration. The context of tests is available in  "createListeners" method in AddonContainer interface 
  - Time measuring addon 
  - Added Report service 
+ - Fixed bug of cleanup artifact storage 

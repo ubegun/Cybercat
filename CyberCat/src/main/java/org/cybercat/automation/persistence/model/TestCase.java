@@ -214,6 +214,11 @@ public class TestCase {
     return StringUtils.equals(this.testGUID, ((TestCase) obj).testGUID);
   }
   
+  /**
+   * This method keeps portability for artifact storage.
+   * @param pathString 
+   * @return
+   */
   public static Path getAbsolutePath(String pathString) {
       return WorkFolder.Report_Folder.getPath().resolve(Paths.get(pathString)).toAbsolutePath().normalize();
   }
