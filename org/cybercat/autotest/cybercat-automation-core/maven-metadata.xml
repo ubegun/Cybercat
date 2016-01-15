@@ -5,13 +5,8 @@
   <versioning>
     <release>1.7.1b.2.48.2</release>
     <versions>
-      <version>1.6.4.2.44.0</version>
-      <version>1.6.5.2.44.0</version>
-      <version>1.6.6.2.44.0</version>
-      <version>1.7.0.2.48.2</version>
-      <version>1.7.1a.2.48.2</version>
       <version>1.7.1b.2.48.2</version>
     </versions>
-    <lastUpdated>20160113145932</lastUpdated>
+    <lastUpdated>20160115160437</lastUpdated>
   </versioning>
 </metadata>
