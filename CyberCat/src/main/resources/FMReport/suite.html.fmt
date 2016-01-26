@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="CyberCat report">
+<meta name="author" content="Aliaksei Yarotski">
+
+<title>Suite report</title>
+
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="css/dashboard.css" rel="stylesheet">
+<style>
+  .stepScreenShot
+    {max-width: 200px; max-height: 500px; float:left; padding: 2px;}
+  .code_nowrap {
+    white-space: nowrap;
+  }
+</style>
+
+</head>
+<body  style="border: 0px ; padding: 15px; ">
+    <div class="col-md-12">
+      <#list testCases as tcReport> 
+      <!-- Test case-->
+      <div class="row" style="padding-bottom: 15px;">
+        <div class="container-fluid ${tcReport.getTestStatus().getStyle()}">
+          <div class="col-md-8">
+            <span class="noClass">Test case:</span> <span class="noClass">Test user registration</span>
+            <p>
+              <span class="noClass"> 
+                <#if tcReport.getExceptionImage()??><a  data-toggle="modal" data-target="#modal_exceptionScreen" data-img="${tcReport.getExceptionImage()}"><img src="icons\ExceptionScreen.png" title="Exception screen" /></a></#if>
+                <#if tcReport.getImages()??><a  data-toggle="modal" data-target="#modal_screenshots" data-img="${tcReport.getImages()}"><img src="icons\Sreenshots.png" title="Execution screenshots" /></a></#if>
+                <#if tcReport.getFullLog()??><a  data-toggle="modal" data-target="#modal_log" data-file="${tcReport.getFullLog()}"><img src="icons\log.png" title="Full log" /> </a></#if>
+                <#if tcReport.getShortLog()??><a  data-toggle="modal" data-target="#modal_short_log" data-file="${tcReport.getShortLog()}"><img src="icons\short_log.png" title="Short log" /> </a></#if>
+                <#if tcReport.getCookies()??><a  data-toggle="modal" data-target="#modal_cookies" data-file="${tcReport.getCookies()}"><img src="icons\cookies.png" title="Cookies" /> </a></#if>
+                
+                <!-- a  data-toggle="modal" data-target="#modal_speedometer"><img src="icons\Speedometer.png" title="Analysing of the Web page" /></a -->
+              </span>
+            </p>
+          </div>
+          <div class="col-md-4">
+             <span class="noClass" style="padding: 15px">Last status:</span><span class="noClass">${tcReport.getTestStatus().toString()}</span>
+            <span class="noClass" style="padding: 15px">Duration:</span><span class="noClass">${tcReport.getDuration()}ms</span>
+          </div>
+        </div>
+      </div>
+      <!-- Test case END-->
+      </#list>
+    </div>
+<!-- ############################################################### -->
+    <!-- short log Modal  -->
+    <div id="modal_cookies" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 90%">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Execution log</h4>
+        </div>
+        <div class="modal-body">
+            <pre><code id="modal-cookies-body" >Some text in the modal.</code></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
+    <!-- short log Modal  -->
+    <div id="modal_short_log" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 90%">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Execution log</h4>
+        </div>
+        <div class="modal-body">
+            <pre><code id="modal-short-log-body" >Some text in the modal.</code></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
+    <!-- full log Modal  -->
+    <div id="modal_log" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 90%">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Execution log</h4>
+        </div>
+        <div class="modal-body">
+            <pre><code id="modal-log-body" >Some text in the modal.</code></pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <!-- Exception IMG Modal  -->
+    <div id="modal_exceptionScreen" class="modal fade" role="dialog">
+      <div class="modal-dialog" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Execution log</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid ">
+              <a id="exception_link" target="_blank" href="">
+                <img id="exception_screen" src="" class="stepScreenShot">
+              </a>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Screenshot IMG Modal  -->
+    <div id="modal_screenshots" class="modal fade" role="dialog">
+      <div class="modal-dialog" >
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Execution log</h4>
+          </div>
+          <div class="modal-body">
+            <div id="imgs-container" class="container-fluid pre-scrollable " style="max-width: 100%">
+              <a target="_blank" href=""><img id="screenshot#1" src="" class="stepScreenShot"></a>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  <!-- Chart modal -->
+    <div id="modal_charts" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body" >
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  
+ <script>
+   $('#modal_cookies').on('show.bs.modal', function (event) {
+     var button = $(event.relatedTarget) // Button that triggered the modal
+     var recipient = button.data('file') // Extract info from data-* attributes
+     var modal = $(this)
+     var logFile = $.get(recipient , function(data, status){
+       modal.find('#modal-cookies-body').text(" " + data)
+     })
+   });
+  $('#modal_log').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('file') // Extract info from data-* attributes
+     var modal = $(this)
+    var logFile = $.get(recipient , function(data, status){
+      modal.find('#modal-log-body').text(" " + data)
+    })
+  });
+  $('#modal_short_log').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('file') // Extract info from data-* attributes
+    var modal = $(this)
+    var logFile = $.get(recipient , function(data, status){
+      modal.find('#modal-short-log-body').text(" " + data)
+    })
+  });
+  $('#modal_exceptionScreen').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('img') // Extract info from data-* attributes
+    var modal = $(this)
+    modal.find('#exception_screen').attr("src", recipient)
+    modal.find('#exception_link').attr("href", recipient)
+  });
+  $('#modal_screenshots').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('img') // Extract info from data-* attributes
+    var modal = $(this)
+    var imgs = recipient.split(",")
+    var imgsBlock = "";
+    for(i = 0;i< imgs.length; i++){
+      imgsBlock += ' <a target="_blank" href="'+ imgs[i] +'"><img id="screenshot#1" src="'+imgs[i]+'" class="stepScreenShot"></a>'
+    }
+    modal.find('#imgs-container').html(imgsBlock)
+  });
+</script> 
+</body>
+</html>

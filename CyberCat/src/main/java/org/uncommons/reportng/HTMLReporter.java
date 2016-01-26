@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,13 +37,13 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.velocity.VelocityContext;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.ArtifactIndex;
 import org.cybercat.automation.persistence.model.PageModelException;
 import org.cybercat.automation.persistence.model.TestRun;
+import org.cybercat.automation.utils.CommonUtils;
+import org.cybercat.automation.utils.WorkFolder;
 import org.testng.IClass;
 import org.testng.IInvokedMethod;
 import org.testng.IResultMap;
@@ -94,8 +93,6 @@ public class HTMLReporter extends AbstractReporter {
     private static final Comparator<ITestResult> RESULT_COMPARATOR = new TestResultComparator();
     private static final Comparator<IClass> CLASS_COMPARATOR = new TestClassComparator();
 
-    private final static String ARTIFACT_INDEX_FILE = "TestArtifactIndex.json";
-    
     public HTMLReporter() {
         super(TEMPLATES_PATH);
     }
@@ -126,7 +123,7 @@ public class HTMLReporter extends AbstractReporter {
         boolean useFrames = System.getProperty(FRAMES_PROPERTY, "true").equals("true");
         boolean onlyFailures = System.getProperty(ONLY_FAILURES_PROPERTY, "false").equals("true");
 
-        String datePrefix = lastBuild.getStartedAsString();
+        String datePrefix = CommonUtils.dateMMToString(lastBuild.getStarted());
         File outputDirectory = Report_Folder.getPath().resolve(datePrefix).toFile();
         
         outputDirectory.mkdirs();
@@ -212,7 +209,7 @@ public class HTMLReporter extends AbstractReporter {
     
     private String getIndexFile() {
         StringBuffer result = new StringBuffer("");
-        File aIndex = Paths.get(Report_Folder.getPath().toString(), ARTIFACT_INDEX_FILE).toFile();
+        File aIndex = WorkFolder.IndexFile.getPath().toFile();
         try (BufferedReader in = new BufferedReader(new FileReader(aIndex))) {
             while (in.ready()) {
                 result.append(in.readLine());

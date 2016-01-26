@@ -21,22 +21,14 @@ import org.cybercat.automation.events.EventManager.EventTypes;
 
 public class EventStopTest extends Event {
     
-    private Date stopTime;
+    private Date stopped = new Date();
     private String fileName;
     private String dirName;
 
-    public EventStopTest(String fileName, String dirName, Date stopTime){
+    public EventStopTest(String fileName, String dirName){
         super();
         this.fileName = fileName;
         this.dirName = dirName;
-        this.stopTime = stopTime;
-    }
-
-    public EventStopTest(String fileName, Date stopTime){
-        super();
-        this.fileName = fileName;
-        this.dirName = fileName;
-        this.stopTime = stopTime;
     }
 
     @Override
@@ -52,8 +44,7 @@ public class EventStopTest extends Event {
         return dirName;
     }
 
-    public Date getStopTime() {
-        return stopTime;
+    public Date getStopped() {
+        return stopped;
     }
-
 }

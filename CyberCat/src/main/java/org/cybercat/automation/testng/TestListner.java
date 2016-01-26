@@ -24,12 +24,10 @@ import java.nio.file.Paths;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.core.AutomationMain;
-import org.cybercat.automation.events.EventAddSubtitles;
-import org.cybercat.automation.events.EventManager;
 import org.cybercat.automation.events.EventTestFail;
-import org.cybercat.automation.events.EventStartTestStep;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestCase;
+import org.cybercat.automation.persistence.model.TestCase.STATUS;
 import org.cybercat.automation.test.AbstractEntryPoint;
 import org.cybercat.automation.utils.CommonUtils;
 import org.cybercat.automation.utils.WorkFolder;
@@ -48,14 +46,13 @@ public class TestListner {
     
     public void onFailure(Class<?> testClass, String method, Throwable error) throws AutomationFrameworkException{
         AutomationMain.getEventManager().notify(new EventTestFail(testClass, method, error));
+        
         this.createLogOnError(testClass, method, error);
     }
     
     private void createLogOnError(Class<?> testClass, String method, Throwable error) {
-        String currentDate = CommonUtils.getCurrentDate();
-        Path shortLog = Paths.get(WorkFolder.Screenshots.getPath().toString(), testClass.getName(), currentDate + method + ".log");
+        Path shortLog = Paths.get(WorkFolder.Screenshots.getPath().toString(),  CommonUtils.getCurrentDate() +  ".log");
         try {
-            Files.createDirectories(Paths.get(WorkFolder.Screenshots.getPath().toString(), testClass.getSimpleName()));
             BufferedWriter writer = Files.newBufferedWriter(shortLog, Charset.defaultCharset());
             StackTraceElement[] stackTrace = error.getStackTrace();
             writer.write(error.getMessage() + "\n");
@@ -65,9 +62,13 @@ public class TestListner {
             writer.close();
             TestCase test = new TestCase(testClass.getName());
             test.setShortLog(shortLog.toString());
+
+            //Update test status 
+            TestArtifactManager.getInstance().getThisTestRun().setTestStatus(STATUS.Failed);
             TestArtifactManager.updateTestRunInfo(test);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }    
+    }
+ 
 }

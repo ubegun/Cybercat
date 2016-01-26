@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("div, p").click(function(event){
+        alert(event.currentTarget === this);
+    });  
+});
+</script>
+</head>
+<body>
+<#assign i=0>
+<#list builds as n><div>${n} ${i}<#assign i = i + 1></div>
+</#list>
+<#list testRuns as tr>
+	<span>${tr.getStartedAsString()}</span>
+	<#list tr.getTests() as tc>
+		<p>${tc.getTestGUID()}</p>
+	</#list>
+</#list>
+<p><b>Note:</b> Click on each HTML element. The currentTarget is typically equal to "this", and will return "true".</p>
+
+</body>
+</html>

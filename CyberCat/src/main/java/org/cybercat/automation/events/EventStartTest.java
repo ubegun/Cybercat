@@ -14,22 +14,19 @@
  */
 package org.cybercat.automation.events;
 
+import java.util.Date;
+
 import org.cybercat.automation.events.EventManager.EventTypes;
 
 public class EventStartTest extends Event {
     
+    private Date started = new Date(); 
     private String description;
     private String[] bugIDs;
 
     public EventStartTest(String description, String[] bugIDs) {
-        this(description);
-        this.bugIDs = bugIDs;
-    }
-
-    public EventStartTest(String description){
-
-        super();
         this.description = description;
+        this.bugIDs = bugIDs;
     }
 
     @Override
@@ -43,5 +40,9 @@ public class EventStartTest extends Event {
 
     public String[] getBugIDs() {
         return bugIDs;
+    }
+
+    public Date getStarted() {
+        return started;
     }
 }

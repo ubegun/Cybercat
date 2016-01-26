@@ -60,6 +60,8 @@ public class ScreenshotManager implements AddonContainer {
     public static final String PAGE_OBJECT_SCREENSHOT = "Page object screenshot";
     public static final String PAGE_EVENT_SCREENSHOT = "Page event screenshot";
     public static final String EXCEPTION_SCREENSHOT = "Exception screenshot";
+    public static final String SCREENSHOT_MANAGER = "Screenshot manager";
+    
 
     
     private static Logger log = Logger.getLogger(ScreenshotManager.class);
@@ -69,7 +71,6 @@ public class ScreenshotManager implements AddonContainer {
     private Color fontColor;
     private ScreenshotProvider provider;
     private EventManager eventManager;
-    private boolean getFistEvent = false;
     private String thestGuid;
 
     public ScreenshotManager() throws AutomationFrameworkException {
@@ -84,24 +85,40 @@ public class ScreenshotManager implements AddonContainer {
         this.provider = provider;
     }
 
-    private Path saveScreen(Path path, String fileName, ImageFormat format, String subtitles) throws Exception {
-        if (StringUtils.isBlank(fileName)) {
-            log.error("File name is not be null");
-            throw new ScreenshotException("File name is not be null");
-        }
-        Path screen; 
-        Files.createDirectories(path);
-        String name = CommonUtils.validateFileName(fileName);
-        ByteArrayInputStream stream = new ByteArrayInputStream(provider.getScreen());
-        BufferedImage image = FrameSet.toBufferedImage(ImageIO.read(stream));
-        screen = Paths.get(path.toString(), name + "." + format.getName());
-        File file = screen.toFile();
-        if (StringUtils.isNotBlank(subtitles)) {
-            image = applySubs(image, subtitles);
-        }
-        ImageIO.write(image, format.getName(), file);
-        return screen; 
+    private Path saveScreen(ImageFormat format, String subtitles) throws Exception {
+      Path img = makeSreenshot(WorkFolder.Screenshots.getPath(), CommonUtils.getCurrentDate(), format, subtitles); 
+      if(img == null)
+        return null;
+      TestCase test = new TestCase(thestGuid);
+      test.addImage(img.toString());
+      TestArtifactManager.updateTestRunInfo(test);      
+      return img;
     }
+    
+  private Path makeSreenshot(Path path, String fileName, ImageFormat format, String subtitles) throws Exception {
+    if (StringUtils.isBlank(fileName)) {
+      log.error("File name is not be null");
+      return null;
+    }
+    Path screen;
+    Files.createDirectories(path);
+    String name = CommonUtils.validateFileName(fileName);
+    ByteArrayInputStream stream = null;
+    try {
+      stream = new ByteArrayInputStream(provider.getScreen());
+    } catch (Exception e) {
+      log.error("Impossible to create screenshot by reason the current browser does not exist.");
+      return null;
+    }
+    BufferedImage image = FrameSet.toBufferedImage(ImageIO.read(stream));
+    screen = Paths.get(path.toString(), name + "." + format.getName());
+    File file = screen.toFile();
+    if (StringUtils.isNotBlank(subtitles)) {
+      image = applySubs(image, subtitles);
+    }
+    ImageIO.write(image, format.getName(), file);
+    return screen;
+  }
 
     public BufferedImage applySubs(BufferedImage image, String text) {
         Graphics2D g2 = image.createGraphics();
@@ -130,11 +147,12 @@ public class ScreenshotManager implements AddonContainer {
     public Collection<EventListener<?>> createListeners(TestContext config) {
         thestGuid = config.getTestGuid();
         ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
+        if (config.hasFeature(ScreenshotManager.SCREENSHOT_MANAGER))
         listeners.add(new EventListener<MakeScreenshotEvent>(MakeScreenshotEvent.class, 100) {
 
             @Override
             public void doActon(MakeScreenshotEvent event) throws Exception {
-                Path screen = saveScreen(event.getPath(), event.getFileName(), event.getFormat(), event.getSubtitles());
+                Path screen = makeSreenshot(event.getPath(), event.getFileName(), event.getFormat(), event.getSubtitles());
                 TestCase test = new TestCase(thestGuid);
                 test.addImage(screen.toString());
                 TestArtifactManager.updateTestRunInfo(test);
@@ -150,11 +168,7 @@ public class ScreenshotManager implements AddonContainer {
                         log.warn("You were trying to make a screenshot before having the browser initialized.");
                         return;
                     }
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), thestGuid, event.getStartStepTime());
-                    Path screen = saveScreen(path, event.getStartStepTime() + "_" + event.getMethodName(), event.getFormat(), event.getSubtitles());
-                    TestCase test = new TestCase(thestGuid);
-                    test.addImage(screen.toString());
-                    TestArtifactManager.updateTestRunInfo(test);
+                    saveScreen(ImageFormat.PNG, null);
                 }
 
             });
@@ -168,11 +182,7 @@ public class ScreenshotManager implements AddonContainer {
                         log.warn("You were trying to make a screenshot before having the browser initialized.");
                         return;
                     }
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), thestGuid, event.getStopStepTime());
-                    Path screen = saveScreen(path, event.getStopStepTime() + "_" + event.getMethodName(), event.getFormat(), event.getSubtitles());
-                    TestCase test = new TestCase(thestGuid);
-                    test.addImage(screen.toString());
-                    TestArtifactManager.updateTestRunInfo(test);
+                    saveScreen(ImageFormat.PNG, null);
                 }
 
             });
@@ -186,13 +196,10 @@ public class ScreenshotManager implements AddonContainer {
                         log.warn("You were trying to make a screenshot before having the browser initialized.");
                         return;
                     }
-                    String fileName = CommonUtils.getCurrentDate() + event.getMethodName();
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName());
-                    Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
-                    TestCase test = new TestCase(event.getTestClass().getName());
-                    test.setExceptionImage(screen.toString());
-                    TestArtifactManager.updateTestRunInfo(test);
-                    
+                    Path img = saveScreen(ImageFormat.PNG, null);
+                    TestCase test = new TestCase(thestGuid);
+                    test.setExceptionImage(img.toString());
+                    TestArtifactManager.updateTestRunInfo(test); 
                     eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
                 }
             });
@@ -202,7 +209,7 @@ public class ScreenshotManager implements AddonContainer {
 
                 @Override
                 public void doActon(EventPageObjectCall event) throws Exception {
-                    getFistEvent = true;
+                    saveScreen(ImageFormat.PNG, null);
                 }
                 
             });
@@ -211,13 +218,7 @@ public class ScreenshotManager implements AddonContainer {
 
                 @Override
                 public void doActon(EventHighlightElement event) throws Exception {
-                    getFistEvent = false;
-                    String fileName = CommonUtils.getCurrentDate() + event.getMethodName();
-                    Path path = Paths.get(WorkFolder.Screenshots.getPath().toString(), thestGuid);
-                    Path screen = saveScreen(path, fileName, ImageFormat.PNG, null);
-                    TestCase test = new TestCase(thestGuid);
-                    test.addImage(screen.toString());
-                    TestArtifactManager.updateTestRunInfo(test);
+                    saveScreen(ImageFormat.PNG, null);
                     eventManager.notify(new TakeScreenshotEvent(provider, EffectType.RESIZ_BY_WIDTH));
                 }
                 
@@ -225,10 +226,9 @@ public class ScreenshotManager implements AddonContainer {
         return listeners;
     }
 
-
     @Override
     public String[] getSupportedFeatures() {
-        return new String[]{ON_BEGIN_STEP_SCREENSHOT, ON_END_STEP_SCREENSHOT, STEPS_SCREENSHOT, EXCEPTION_SCREENSHOT, PAGE_OBJECT_SCREENSHOT, PAGE_EVENT_SCREENSHOT}; 
+        return new String[]{SCREENSHOT_MANAGER, ON_BEGIN_STEP_SCREENSHOT, ON_END_STEP_SCREENSHOT, STEPS_SCREENSHOT, EXCEPTION_SCREENSHOT, PAGE_OBJECT_SCREENSHOT, PAGE_EVENT_SCREENSHOT}; 
     }
     
     

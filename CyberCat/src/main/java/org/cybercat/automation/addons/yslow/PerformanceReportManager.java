@@ -22,8 +22,8 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.TestContext;
 import org.cybercat.automation.PageFactory;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.components.AbstractPageObject;
 import org.cybercat.automation.components.Button;
 import org.cybercat.automation.components.PageElement;
@@ -33,7 +33,6 @@ import org.cybercat.automation.core.AddonContainer;
 import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.core.Browser;
 import org.cybercat.automation.events.EventListener;
-import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestCase;
 import org.cybercat.automation.utils.WorkFolder;

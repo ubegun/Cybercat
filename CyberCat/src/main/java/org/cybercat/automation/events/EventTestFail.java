@@ -15,6 +15,8 @@
 
 package org.cybercat.automation.events;
 
+import java.util.Date;
+
 import org.cybercat.automation.events.EventManager.EventTypes;
 
 /**
@@ -26,6 +28,7 @@ public class EventTestFail extends Event {
     private Class<?> testClass;
     private String methodName;
     private Throwable exception;
+    private Date stopped;
     
     public EventTestFail(Class<?> testClass, String methodName, Throwable exception) {
         super();
@@ -52,6 +55,10 @@ public class EventTestFail extends Event {
 
     public Throwable getException() {
         return exception;
+    }
+
+    public Date getStopped() {
+        return stopped;
     }
     
 }

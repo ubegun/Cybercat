@@ -21,12 +21,16 @@ import org.apache.commons.lang.StringUtils;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.TestCaseInitializationException;
 import org.cybercat.automation.TestContext;
+import org.cybercat.automation.addons.common.ScreenshotManager;
+import org.cybercat.automation.addons.common.TestLoggerAddon;
 import org.cybercat.automation.annotations.AnnotationBuilder;
 import org.cybercat.automation.annotations.CCTestCase;
 import org.cybercat.automation.core.AutomationMain;
+import org.cybercat.automation.core.Browser;
 import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.EventStartTest;
 import org.cybercat.automation.events.EventStopTest;
+import org.cybercat.automation.persistence.CleanUpBuildsHistoryAddon;
 import org.cybercat.automation.persistence.TestArtifactManager;
 import org.cybercat.automation.persistence.model.TestRun;
 
@@ -34,21 +38,29 @@ public abstract class AbstractEntryPoint {
 
     public ResourceBundle testData;
     private String errorMessage;
-    
+      
 
     public void beforeTest() throws AutomationFrameworkException {
-        testData = AutomationMain.getTestMetaData();
+        AutomationMain.getMainFactory();
         setupTestConfiguration();
         setup();
         AnnotationBuilder.processCCFeature(this);
     }
 
     public void afterTest() throws AutomationFrameworkException {
-      AutomationMain.getEventManager().notify(new EventStopTest(this.getClass().getSimpleName(), this.getClass().getName(), new Date()));
+      AutomationMain.getEventManager().notify(new EventStopTest(this.getClass().getSimpleName(), this.getClass().getName()));
     }
 
     public void setInitializationFail(String errorMessage){
         this.errorMessage = errorMessage;
+    }
+    
+    protected String[] systemAddons(){
+      return new String [] {
+          Browser.BROWSER_CHANNEL, 
+          CleanUpBuildsHistoryAddon.HISTORY_CLEANER_ADDON,
+          ScreenshotManager.SCREENSHOT_MANAGER,
+          TestLoggerAddon.FULL_LOG}; 
     }
     
     public abstract void setup() throws AutomationFrameworkException;
@@ -68,6 +80,7 @@ public abstract class AbstractEntryPoint {
         AutomationMain.getEventManager().notify(new EventChangeTestConfig(this, config));
         if(StringUtils.isNotBlank(errorMessage))
             throw new TestCaseInitializationException(errorMessage);
+        testData = AutomationMain.getTestMetaData();
         AutomationMain.getEventManager().notify(new EventStartTest(subtitles, getBugIDsFromAnnotation()));
     }
 

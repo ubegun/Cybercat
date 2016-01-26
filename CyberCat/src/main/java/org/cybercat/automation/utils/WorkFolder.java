@@ -24,15 +24,17 @@ import java.util.List;
 
 public class WorkFolder {
 
-    public static final Path Home = Paths.get("Cybercat");
+    private static final Path Home = Paths.get("Cybercat");
 
+    public static final WorkFolder CybercatHome = new WorkFolder(Home);
+    public static final WorkFolder IndexFile = new WorkFolder(true, Home, Paths.get("TestArtifactIndex.json"));
     public static final WorkFolder Log = new WorkFolder(Home, Paths.get("LOG"));
     public static final WorkFolder Har = new WorkFolder(Home, Paths.get("LOG", "Har"));
     public static final WorkFolder Model = new WorkFolder(Home, Paths.get("Model"));
     public static final WorkFolder Screenshots = new WorkFolder(Home, Paths.get("WebDriverScreenshots"));
     public static final WorkFolder DownloadedFiles = new WorkFolder(Home, Paths.get("DownloadedFiles"));
     public static final WorkFolder MediaFolder = new WorkFolder(Home, Paths.get("Video"));
-    public static final WorkFolder Report = new WorkFolder(Home, Paths.get("Report"));
+    public static final WorkFolder FM_Report = new WorkFolder(Home , Paths.get("FreeMarker"));
     public static final WorkFolder Report_Folder = new WorkFolder(Home, Paths.get("Report", "html"));
     public static final WorkFolder Extensions_Relative = new WorkFolder(Home, Paths.get("extensions"));
 
@@ -51,6 +53,13 @@ public class WorkFolder {
         return BASIC_FOLDER.toString();
     }
 
+    public boolean isFile = false;
+    
+    private WorkFolder(boolean isFile, Path... paths){
+        this(paths);
+        this.isFile = isFile;
+    }
+    
     private WorkFolder(Path... paths) {
         StringBuffer result = new StringBuffer("");
         for (Path path : paths) {
@@ -70,16 +79,9 @@ public class WorkFolder {
         return Files.exists(getPath());
     }
 
-    public void createDirectory() {
-        try {
-            Files.createDirectories(getPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void md() throws IOException {
-        Files.createDirectories(getPath());
+        if(!isFile)
+            Files.createDirectories(getPath());
     }
 
     /**

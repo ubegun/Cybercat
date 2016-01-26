@@ -85,7 +85,7 @@ public class TestNGListener extends TestListenerAdapter {
     }
 
     private void onFailure(ITestResult tr) {
-         try {
+        try {
             testListner.onFailure(tr.getTestClass().getRealClass(), tr.getMethod().getMethodName(), tr.getThrowable());
         } catch (AutomationFrameworkException e) {
             e.printStackTrace();

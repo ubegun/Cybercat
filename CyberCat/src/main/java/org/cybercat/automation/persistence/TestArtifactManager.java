@@ -18,8 +18,6 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -62,7 +60,7 @@ public class TestArtifactManager {
             try{
                 index = load();
             }catch(Exception e){
-                log.error(e);
+                log.error(">>>>>>>> Index file does not exist", e);
             }
         } catch (Exception e) {
             log.error(e);
@@ -70,10 +68,6 @@ public class TestArtifactManager {
         }
 
     } 
-    
-    private Path getIndexFile(){
-        return Paths.get(WorkFolder.Report_Folder.toString(), "TestArtifactIndex.json");
-    }
     
     public TestRun getThisTestRun() {
         return thisTestRun;
@@ -85,7 +79,7 @@ public class TestArtifactManager {
 
     private ArtifactIndex load() throws PageModelException {
         try {
-            BufferedReader br = Files.newBufferedReader(getIndexFile(), Charset.defaultCharset());
+            BufferedReader br = Files.newBufferedReader(WorkFolder.IndexFile.getPath(), Charset.defaultCharset());
             StringBuffer json = new StringBuffer();
             while (br.ready()) {
                 json.append(br.readLine());
@@ -101,7 +95,7 @@ public class TestArtifactManager {
     
     protected void save(ArtifactIndex index) throws PageModelException {
         try {
-            FileWriter fw = new FileWriter(getIndexFile().toFile());
+            FileWriter fw = new FileWriter(WorkFolder.IndexFile.getPath().toFile());
             XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
             marshaller.marshal(index, xmlStreamWriter);
             this.index = index;
@@ -119,7 +113,7 @@ public class TestArtifactManager {
             }
             index.setLastBuild(thisTestRun);
             builds.add(thisTestRun);
-            FileWriter fw = new FileWriter(getIndexFile().toFile());
+            FileWriter fw = new FileWriter(WorkFolder.IndexFile.getPath().toFile());
             XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(namespace, fw);
             index.setBuilds(builds);
             marshaller.marshal(index, xmlStreamWriter);

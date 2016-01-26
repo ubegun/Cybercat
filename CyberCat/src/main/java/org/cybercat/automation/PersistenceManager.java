@@ -28,8 +28,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.axis.utils.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.cybercat.automation.core.AutomationMain;
 import org.cybercat.automation.persistence.Criterion;
 import org.cybercat.automation.persistence.model.Entity;
 import org.cybercat.automation.persistence.model.PageModelException;
@@ -73,6 +73,20 @@ public class PersistenceManager {
         }
     }
 
+    public String toJSONString(Object entity) throws PageModelException {
+      try{
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Marshaller marshaller = createMarshaller(entity.getClass());
+        marshaller.setProperty("jaxb.formatted.output", new Boolean(true));
+        marshaller.marshal(entity, out);      
+        String ret = out.toString("UTF-8");
+        return ret;
+      } catch (Exception e){
+        throw new PageModelException(e);
+      }
+      
+    }
+    
     /**
      * Loads and returns all objects of defined type
      * 

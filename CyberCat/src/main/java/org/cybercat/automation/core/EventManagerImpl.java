@@ -16,6 +16,7 @@ package org.cybercat.automation.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,8 +25,8 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.TestContext;
-import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.Event;
+import org.cybercat.automation.events.EventChangeTestConfig;
 import org.cybercat.automation.events.EventListener;
 import org.cybercat.automation.events.EventManager;
 
@@ -34,12 +35,13 @@ public class EventManagerImpl implements EventManager, AddonContainer {
 
   private static Logger log = Logger.getLogger(EventManagerImpl.class);
 
-  private Map<Class<?>, LinkedList<EventListener>> listeners;
+  private Map<Class<?>, LinkedList<EventListener>> listeners; // key: Event | value: Event listeners list
   private TestContext configuration;
 
   public EventManagerImpl() {
     configuration = new TestContext();
     listeners = new HashMap<Class<?>, LinkedList<EventListener>>();
+    setupListener(this);
   }
 
   public synchronized void setupListeners(List<AddonContainer> holders) {
@@ -52,19 +54,23 @@ public class EventManagerImpl implements EventManager, AddonContainer {
   public synchronized void setupListener(AddonContainer holder) {
     try {
       Collection<EventListener<?>> listeners = holder.createListeners(configuration);
+      if(listeners == null || listeners.size() == 0)
+        return;
       for (EventListener<?> listener : listeners) {
         addListener(listener);
       }
+      log.info(holder.getClass().getName() + " addon sterted." );
     } catch (Exception e) {
       log.error(holder.getClass().getSimpleName() + " initialisation failed.", e);
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public <T extends Event> void notify(T event) {
+  public  <T extends Event> void notify(T event) {
     System.err.println("local event :" + event.getClass().getSimpleName());
     if (!listeners.containsKey(event.getClass()) || Thread.currentThread().getId() != event.getThreadId()) {
-      log.info(event.getClass().getSimpleName() + "[DEBUG] event has been rejected.  Current thread id:" + Thread.currentThread().getId()
+      log.debug(event.getClass().getSimpleName() + "[DEBUG] event has been rejected.  Current thread id:" + Thread.currentThread().getId()
           + "\t Event thread id:" + event.getThreadId());
       return;
     }
@@ -73,13 +79,15 @@ public class EventManagerImpl implements EventManager, AddonContainer {
     for (EventListener<T> listener : cListeners) {
       try {
         listener.doActon(event);
+      } catch (ConcurrentModificationException ce){
+        log.info("Initial start.");
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
   }
 
-  protected EventListener addListener(EventListener listener) {
+  private EventListener addListener(EventListener listener) {
     LinkedList<EventListener> cListeners = listeners.get(listener.getEventType());
     if (cListeners == null)
       cListeners = new LinkedList<EventListener>();
@@ -96,12 +104,12 @@ public class EventManagerImpl implements EventManager, AddonContainer {
     return listener;
   }
 
-  public void release() {
+  public synchronized void release() {
     listeners = new HashMap<Class<?>, LinkedList<EventListener>>();
   }
 
   @Override
-  public boolean unsubscribe(EventListener<?> listener) {
+  public synchronized boolean unsubscribe(EventListener<?> listener) {
     boolean result = false;
     for (Entry<Class<?>, LinkedList<EventListener>> entry : listeners.entrySet()) {
       result = result || entry.getValue().remove(listener);
@@ -126,15 +134,17 @@ public class EventManagerImpl implements EventManager, AddonContainer {
    */
   @Override
   public Collection<EventListener<?>> createListeners(TestContext config) {
-    ArrayList<EventListener<?>> listeners = new ArrayList<EventListener<?>>();
-    listeners.add(new EventListener<EventChangeTestConfig>(EventChangeTestConfig.class, 0) {
+    ArrayList<EventListener<?>> ls = new ArrayList<EventListener<?>>();
+    ls.add(new EventListener<EventChangeTestConfig>(EventChangeTestConfig.class, 0) {
 
       @Override
       public void doActon(EventChangeTestConfig event) throws Exception {
         configuration = event.getConfiguration();
+        release();
+        ConfigurationManager.getInstance();
       }
 
     });
-    return listeners;
+    return ls;
   }
 }

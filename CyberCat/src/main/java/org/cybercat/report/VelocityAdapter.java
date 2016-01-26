@@ -16,7 +16,11 @@ import org.cybercat.automation.persistence.model.TestRun;
  *
  */
 public abstract class VelocityAdapter {
-
+  
+  private static final String ENCODING = "UTF-8";
+  protected static final String TEMPLATE_EXTENSION = ".vm";
+  
+  
   private Path reportFolder;
   private VelocityContext context;
   protected ReportService reportService;

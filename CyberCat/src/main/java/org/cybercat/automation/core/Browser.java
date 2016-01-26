@@ -26,10 +26,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.cybercat.automation.AutomationFrameworkException;
-import org.cybercat.automation.TestContext;
 import org.cybercat.automation.PageObjectException;
+import org.cybercat.automation.TestContext;
 import org.cybercat.automation.addons.common.ScreenshotProvider;
-import org.cybercat.automation.addons.media.events.TakeScreenshotEvent;
 import org.cybercat.automation.addons.media.events.TakeScreenshotEvent.EffectType;
 import org.cybercat.automation.events.EventHighlightElement;
 import org.cybercat.automation.events.EventListener;
@@ -67,6 +66,8 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     private boolean waitForEndOfPage = true;
     private ArrayList<EventListener<?>> listeners;
 
+    public static final String BROWSER_CHANNEL = "Browser chammel";
+
     /**
      * The list of browsers supported by our system.
      */
@@ -86,7 +87,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     }
 
     public static Browser getCurrentBrowser() throws AutomationFrameworkException {
-        return AutomationMain.getMainFactory().getConfigurationManager().getBrowser();
+        return ConfigurationManager.getInstance().getBrowser();
     }
 
     /**
@@ -206,24 +207,24 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     }
 
     public void close() {
-        try {
-            driver.close();
-            driver.quit();
-        } catch (Exception e) {
-            e.printStackTrace();
+      try {
+        driver.close();
+        driver.quit();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      isClosed = true;
+      EventManager evm;
+      try{
+        evm = AutomationMain.getEventManager();
+        for (EventListener<?> listener : listeners) {
+          evm.unsubscribe(listener);
         }
-        isClosed = true;
-        EventManager evm;
-        try {
-            evm = AutomationMain.getEventManager();
-            for (EventListener<?> listener : listeners) {
-                evm.unsubscribe(listener);
-            }
-        } catch (AutomationFrameworkException e) {
-            log.error("Please, save this log and contact the Cybercat project support. \n Failed on unsubscription browser from current thread. " + e);
-        }
+      }catch(Exception e ){
+        log.error(e);
+      }
 
-    }
+   }
 
     public void removeAllCookies() {
         driver.manage().deleteAllCookies();
@@ -329,7 +330,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
      */
     @Override
     public String[] getSupportedFeatures() {
-        return null;
+        return new String[] { BROWSER_CHANNEL };
     }
 
     /*
@@ -339,9 +340,6 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
      */
     @Override
     public Collection<EventListener<?>> createListeners(TestContext config) {
-        if (isClosed()) {
-            return new ArrayList<EventListener<?>>();
-        }
         listeners.add(new EventListener<EventTestFail>(EventTestFail.class, 1000) {
 
             @Override
@@ -364,9 +362,7 @@ public class Browser extends ScreenshotProvider implements AddonContainer {
     }
 
     private void saveCookies(EventTestFail event) {
-        String currentDate = CommonUtils.getCurrentDate();
-        Path cookiePath = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getTestClass().getName(), currentDate + event.getMethodName()
-                + "_cookies.txt");
+        Path cookiePath = Paths.get(WorkFolder.Screenshots.getPath().toString(),  CommonUtils.getCurrentDate() + "_cookies.txt");
         try (BufferedWriter writer = Files.newBufferedWriter(cookiePath, Charset.defaultCharset())) {
             for (Cookie cookie : getCookies()) {
                 writer.write("Domain: " + cookie.getDomain() + "; Name: " + cookie.getName() + "; Value: " + cookie.getValue() + "; Path: " + cookie.getPath()

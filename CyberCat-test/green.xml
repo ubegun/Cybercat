@@ -5,7 +5,7 @@
 		<echo>-----------------------> Ant Task  ${config.basicArtifactsDir} </echo>
 		<!-- ${compile_classpath} ${runtime_classpath} ${test_classpath}  ${plugin_classpath} -->
 		<taskdef resource="testngtasks" classpath="${runtime_classpath}" />
-		<testng suiteThreadPoolSize="1" classpath="${test_classpath}" outputdir="${config.basicArtifactsDir}/Cybercat/HtmlReport" haltonfailure="true" useDefaultListeners="false" listeners="org.uncommons.reportng.HTMLReporter,org.uncommons.reportng.JUnitXMLReporter">
+		<testng suiteThreadPoolSize="1" classpath="${test_classpath}" outputdir="${config.basicArtifactsDir}/Cybercat/HtmlReport" haltonfailure="true" useDefaultListeners="false" listeners="org.cybercat.report.FreeMarkerAdapter">
 			<jvmarg value="-Xmx1024m" />
 			<sysproperty key="config.properties" value="${config.properties}" />
 			<sysproperty key="config.basicArtifactsDir" value="${config.basicArtifactsDir}" />

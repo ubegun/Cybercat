@@ -147,11 +147,8 @@
   </bean>
 
   <bean id="persistenceManager" class="org.cybercat.automation.PersistenceManager" scope="singleton" lazy-init="false"/>
-    
-  <bean id="configurationManager" class="org.cybercat.automation.core.ConfigurationManager" lazy-init="false" scope="thread"/>
 
   <bean id="eventManager" class="org.cybercat.automation.core.EventManagerImpl" scope="singleton" lazy-init="false"/>
-
 
   <bean id="mediaMetaData" class="org.cybercat.automation.addons.media.MediaMetaData">
     <constructor-arg type="int" value="1"/>

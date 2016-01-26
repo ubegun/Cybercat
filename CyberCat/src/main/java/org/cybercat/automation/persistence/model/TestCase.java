@@ -17,6 +17,8 @@ package org.cybercat.automation.persistence.model;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +33,11 @@ import org.cybercat.automation.utils.WorkFolder;
 @XmlType(name = "TestCase")
 public class TestCase {
 
+  public static enum STATUS {Success, Failed, Muted}; 
+    
+    
   private String testGUID;
-  private List<String> images;
+  private List<String> images = new ArrayList<String>();
   private String exceptionImage;
   private String video;
   private String fullLog;
@@ -40,8 +45,13 @@ public class TestCase {
   private String cookies;
   private String qtName;
   private Set<JiraInfo> bugs;
-
+  private STATUS testStatus;
+  
   private Map<String, String> artifacts = new HashMap<String, String>();
+  private List<String> addons = new ArrayList<>();
+  
+  private Date started;
+  private Date stopped;
 
   public static class JiraInfo {
 
@@ -143,8 +153,6 @@ public class TestCase {
   }
 
   public void addImage(String imagePath) {
-    if (images == null)
-      images = new ArrayList<String>();
     images.add(imagePath);
   }
 
@@ -176,13 +184,44 @@ public class TestCase {
     this.artifacts = artifacts;
   }
 
-  /**
+  public List<String> getAddons() {
+    return addons;
+  }
+
+  public void setAddons(List<String> addons) {
+    this.addons = addons;
+  }
+
+  public STATUS getTestStatus() {
+      return testStatus;
+  }
+  
+  public void setTestStatus(STATUS testStatus) {
+      this.testStatus = testStatus;
+  }
+
+  
+  public Date getStarted() {
+    return started;
+  }
+
+    public void setStarted(Date started) {
+        this.started = started;
+    }
+    
+    public Date getStopped() {
+        return stopped;
+    }
+    
+    public void setStopped(Date stopped) {
+        this.stopped = stopped;
+    }
+    
+   /**
    * @param test
    */
   public void merge(TestCase test) {
-    if (this.images == null)
-      this.images = new ArrayList<String>();
-    if (test.getImages() != null)
+    if (test.getImages() != null && test.getImages().size() > 0)
       this.images.addAll(getRelativePath(test.getImages()));
     if (test.getVideo() != null)
       this.video = getRelativePath(test.getVideo());
@@ -198,8 +237,19 @@ public class TestCase {
       this.qtName = test.getQtName();
     if (test.getBugs() != null)
       this.bugs = test.getBugs();
+    if (test.getAddons() != null && test.getAddons().size() >0)
+      this.addons = test.getAddons();
     if (test.getArtifacts() != null && test.getArtifacts().size() > 0) {
       this.artifacts.putAll(test.getArtifacts());
+    }
+    if(test.getStarted() != null){
+        this.started = test.getStarted();
+    }
+    if(test.getStopped() != null){
+        this.stopped = test.getStopped();
+    }
+    if(test.getTestStatus() != null){
+        this.testStatus = test.getTestStatus();
     }
   }
 
@@ -225,9 +275,7 @@ public class TestCase {
 
   public static String getRelativePath(String pathString) {
     Path path = Paths.get(pathString);
-    // FIXME rewrite this piece of code to avoid replacing '\' with '/'. right now it is done to make links valid in
-    // firefox
-    return WorkFolder.Report_Folder.getPath().relativize(path).normalize().toString().replaceAll("\\\\", "/");
+    return WorkFolder.CybercatHome.getPath().relativize(path).normalize().toString().replaceAll("\\\\", "/");
   }
 
   public static List<String> getRelativePath(List<String> pathStrings) {
@@ -240,8 +288,7 @@ public class TestCase {
 
   @Override
   public String toString() {
-    return "TestCase [testGUID=" + testGUID + ", images=" + images + ", exceptionImage=" + exceptionImage + ", video=" + video + ", fullLog=" + fullLog
-        + ", shortLog=" + shortLog + ", cookies=" + cookies + " ] ";
+    return "TestCase [testGUID=" + testGUID + ", images=" + Arrays.toString(images.toArray(new String[images.size()])) + ", exceptionImage=" + exceptionImage + ", video=" + video + ", fullLog=" + fullLog
+        + ", shortLog=" + shortLog + ", cookies=" + cookies + " addons : " + addons.size() +" ] ";
   }
-
 }

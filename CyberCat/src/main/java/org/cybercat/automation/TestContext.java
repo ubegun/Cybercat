@@ -14,22 +14,21 @@
  */
 package org.cybercat.automation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.cybercat.automation.addons.common.ScreenshotManager;
-import org.cybercat.automation.addons.common.TestLoggerAddon;
 import org.cybercat.automation.annotations.CCTestCase;
 
 public class TestContext {
 
-  private String[] features;
+  private List<String> features = new ArrayList<String>();
   private String testDescription;
   private Date buildGuid;
   private String testGuid; 
     
   public TestContext() {
-    features = new String[] { ScreenshotManager.EXCEPTION_SCREENSHOT, TestLoggerAddon.FULL_LOG };
   }
 
   public TestContext(CCTestCase testAnnotation) {
@@ -37,7 +36,7 @@ public class TestContext {
     if (testAnnotation == null)
       return;
     this.testDescription = testAnnotation.description();
-    this.features = testAnnotation.features();
+    this.features.addAll(Arrays.asList(testAnnotation.features()));
   }
 
   public String getTestDescription() {
@@ -49,19 +48,15 @@ public class TestContext {
   }
 
   public String[] getFeatures() {
-    return features;
+    return features.toArray(new String[features.size()]);
   }
 
-  public void setFeatures(String[] features) {
-    this.features = features;
+  public void addFeatures(String[] features) {
+    this.features.addAll(Arrays.asList(features));
   }
 
   public boolean hasFeature(String featureName) {
-    for (int i = 0; i < features.length; i++) {
-      if (StringUtils.equals(features[i], featureName))
-        return true;
-    }
-    return false;
+    return features.contains(featureName);
   }
 
   public Date getBuildGuid() {

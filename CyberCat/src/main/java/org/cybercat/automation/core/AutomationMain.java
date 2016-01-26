@@ -43,8 +43,8 @@ public final class AutomationMain {
     private static final String DEFAULT_PROPERTY_FILE = "test.properties";
 
     // Spring application context
-    private ApplicationContext context;
-
+    protected ApplicationContext context;
+    
     /**
      * Application settings defined at start up from command line such as staging.properties, hpqa.properties etc
      */
@@ -64,15 +64,14 @@ public final class AutomationMain {
         configProperties = new ConfigProperties((Properties) context.getBean("configProperties"));
         // application initialization block
         if (xmlRepositoryFlag.length != 0 && xmlRepositoryFlag[0] != false) {
-            getConfigurationManager().initXmlRepository();
+            try {
+              ConfigurationManager.getInstance().initXmlRepository();
+            } catch (AutomationFrameworkException e) {
+              throw new PageModelException("Exception in XML storage initialization.",e);
+            }
         }
     }
 
-    protected ConfigurationManager getConfigurationManager() {
-        ConfigurationManager config = context.getBean(ConfigurationManager.class);
-        config.setup(context);
-        return config;
-    }
 
     /**
      * Returns factory for pages
@@ -218,8 +217,8 @@ public final class AutomationMain {
         return context.getBean(clazz);
     }
 
-    public static final EventManager getEventManager() throws AutomationFrameworkException {
-        return AutomationMain.getMainFactory().getConfigurationManager().getEventManager();
+    public static final EventManager getEventManager() throws AutomationFrameworkException{
+        return AutomationMain.getMainFactory().context.getBean(EventManagerImpl.class);
     }
 
     protected ApplicationContext getContext(){

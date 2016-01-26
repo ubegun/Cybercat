@@ -239,4 +239,10 @@ public class CommonUtils {
       }
       
     }
+
+    private final static SimpleDateFormat formFileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+    
+    public static String dateMMToString(Date src) {
+        return formFileName.format(src);
+    }
 }

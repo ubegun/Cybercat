@@ -62,8 +62,8 @@ public class TestLoggerAddon implements AddonContainer {
         listeners.add(new EventListener<EventStopTest>(EventStopTest.class, 100) {
             @Override
             public void doActon(EventStopTest event) throws Exception {
-                Path fullLog = Paths.get(WorkFolder.Screenshots.getPath().toString(), event.getDirName(),
-                        CommonUtils.dateToString(event.getStopTime()) + event.getFileName() + "_full.log");
+                Path fullLog = Paths.get(WorkFolder.Log.getPath().toString(), 
+                        CommonUtils.getCurrentDate() + event.getFileName() + "_full.log");
                 thisLogger.flush(fullLog);
                 TestCase test = new TestCase(testGuid);
                 test.setFullLog(fullLog.toString());

@@ -7,16 +7,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.bind.annotation.XmlType;
 
+import org.cybercat.automation.persistence.model.TestCase.STATUS;
+import org.cybercat.automation.utils.CommonUtils;
+
 @XmlType(name = "TestRun")
 public class TestRun implements Comparable<TestRun> {
 
-    private final static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm"); 
-    
+    private final static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        
     private List<TestCase> tests = new CopyOnWriteArrayList<TestCase>();
-    private Date started = new Date();
+    private Date started = new Date(); // Using like build GUID
     private Date completed;
     private String htmlReport;
-    private String testStatus = "Success";
+    private STATUS testStatus = STATUS.Muted;
+    private Date deleted;
 
     public List<TestCase> getTests() {
         return tests;
@@ -26,8 +30,12 @@ public class TestRun implements Comparable<TestRun> {
         this.tests = tests;
     }
 
-    public String getStartedAsString() {
+    public String getStartedAsLabel() {
         return formatter.format(started);
+    }
+    
+    public String getStartedAsFileName() {
+        return CommonUtils.dateToString(started);
     }
     
     public Date getStarted() {
@@ -69,11 +77,11 @@ public class TestRun implements Comparable<TestRun> {
         this.htmlReport = htmlReport;
     }
 
-    public String getTestStatus() {
+    public STATUS getTestStatus() {
       return testStatus;
     }
 
-    public void setTestStatus(String testStatus) {
+    public void setTestStatus(STATUS testStatus) {
       this.testStatus = testStatus;
     }
 
@@ -106,6 +114,20 @@ public class TestRun implements Comparable<TestRun> {
     public String toString() {
         return "TestRun [tests=" + tests + ", started=" + started + ", completed=" + completed + ",status=" + testStatus + " , htmlReport="
                 + htmlReport + "]";
+    }
+
+    /**
+     * @return the deleted
+     */
+    public Date getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * @param deleted the deleted to set
+     */
+    public void setDeleted(Date deleted) {
+        this.deleted = deleted;
     }
 
 }

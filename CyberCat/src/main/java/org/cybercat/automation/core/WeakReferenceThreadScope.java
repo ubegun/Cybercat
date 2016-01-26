@@ -46,6 +46,7 @@ public class WeakReferenceThreadScope implements Scope {
             object = objectFactory.getObject();
             wRef = new WeakReference<Object>(object);
             scope.put(name, wRef);
+            threadScope.set(scope);
         } else {
             object = wRef.get();
         }
@@ -62,6 +63,7 @@ public class WeakReferenceThreadScope implements Scope {
     }
 
     public void registerDestructionCallback(String name, Runnable callback) {
+       //TODO: handle dectructor
         logger.warn("SimpleThreadScope does not support descruction callbacks. Consider using a RequestScope in a Web environment.");
     }
 

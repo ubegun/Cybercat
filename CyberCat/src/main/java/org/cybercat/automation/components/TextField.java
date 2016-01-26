@@ -46,7 +46,7 @@ public class TextField extends Button {
             // highlightElement();
             super.getElement().clear();
             super.getElement().sendKeys(text);
-            log.info(getName() + " text field was filled with the following text: " + text);
+            log.info(getName() + " data entering to field : " + text);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -66,7 +66,7 @@ public class TextField extends Button {
         if (super.getElement() != null) {
             // highlightElement();
             super.getElement().sendKeys(Keys.valueOf(keyName));
-            log.info(getName() + " text field was filled with the following text: " + keyName);
+            log.info(getName() + " data entering to field : " + keyName);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -80,7 +80,7 @@ public class TextField extends Button {
             } catch (AutomationFrameworkException e) {
                 throw new PageObjectException(e);
             }
-            log.info(getName() + " text field was filled with the following text: " + text);
+            log.info(getName() + " data entering to field :" + text);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -96,7 +96,7 @@ public class TextField extends Button {
         if (super.getElement() != null) {
          String query = String.format("arguments[0].innerHTML = '%s'", text);
          Browser.getCurrentBrowser().executeScript(query, super.getElement());
-         log.info(getName() + " text field was filled with the following text: " + text);
+         log.info(getName() + " data entering to field :" + text);
         } else {
          throw new PageObjectException(getName() + " text field doesn't exist");
         }
@@ -105,7 +105,7 @@ public class TextField extends Button {
     public void addTextIntoFrame(String text) throws PageObjectException {
         if (super.getElement() != null) {            
             super.getElement().sendKeys(text);
-            log.info(getName() + " text field was filled with the following text: " + text);
+            log.info(getName() + " data entering to field :" + text);
         } else {
             throw new PageObjectException(getName() + " text field doesn't exist");
         }

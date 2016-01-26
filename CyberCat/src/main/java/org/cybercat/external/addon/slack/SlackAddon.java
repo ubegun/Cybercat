@@ -2,6 +2,7 @@ package org.cybercat.external.addon.slack;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ public class SlackAddon implements ExteranlAddon {
   public final static String POST_FAILURE_MESSAGE = "Post message to the slack channel in case of tests failure";
   private SlackClient slackService;
   private String testDescription;
+  private Date buildGUID;
 
   
   @Override
@@ -26,13 +28,14 @@ public class SlackAddon implements ExteranlAddon {
 
   @Override
   public Collection<EventListener<?>> createListeners(TestContext config) {
-    List<EventListener<?>> eventListeners = new ArrayList<EventListener<?>>();      
+    List<EventListener<?>> eventListeners = new ArrayList<EventListener<?>>();    
     try {
       slackService = new SlackClient();
       
     } catch (AutomationFrameworkException e) {
       e.printStackTrace();
     }
+    buildGUID = config.getBuildGuid();
     this.testDescription = config.getTestDescription();
     if(config.hasFeature(POST_MESSAGE))    
     eventListeners.add(new EventListener<EventPostMessage>(EventPostMessage.class, 10){
@@ -53,7 +56,8 @@ public class SlackAddon implements ExteranlAddon {
 
       @Override
       public void doActon(EventTestFail event) throws Exception {
-        String message = event.getTestClass().getSimpleName() + " [ " + testDescription +" ] ->" + event.getMethodName() + " test [failed]"; 
+        String message = event.getTestClass().getSimpleName() + " [ " + testDescription +" ] ->" + event.getMethodName() + " test [failed]\n"
+            + "Build ID:" + buildGUID.toString(); 
         slackService.sendMessage(message);        
       }
       
