@@ -35,9 +35,9 @@
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="https://github.com/EnterpriseJungle/enterprisejungle_qa">Reporitory</a></li>
-          <li><a href="https://github.com/EnterpriseJungle/enterprisejungle_qa/issues">Issues</a></li>
-          <li><a href="http://ec2-54-213-75-174.us-west-2.compute.amazonaws.com/">Jenkins</a></li>
+          <li><a href="https://github.com/#">Reporitory</a></li>
+          <li><a href="https://github.com/#">Issues</a></li>
+          <li><a href="#">Jenkins</a></li>
         </ul>
       </div>
     </div>
