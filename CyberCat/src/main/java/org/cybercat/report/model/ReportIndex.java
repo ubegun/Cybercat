@@ -1,4 +1,4 @@
-package org.cybercat.report;
+package org.cybercat.report.model;
 
 import java.beans.Transient;
 import java.util.ArrayList;

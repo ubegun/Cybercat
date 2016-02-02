@@ -10,6 +10,8 @@ import java.util.List;
 import org.apache.velocity.VelocityContext;
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.persistence.model.TestRun;
+import org.cybercat.report.model.ReportFile;
+import org.cybercat.report.model.ReportIndex;
 
 /**
  * @author ubegun

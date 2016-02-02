@@ -7,106 +7,77 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Timer")
 public class Timer {
 
-  public static enum Status {STOPPED, FAILED, TIME_IS_UP}
-  
-  private Date buildGuid;
-  private String testGuid;
-  private String name;
-  private Date timeLabel = new Date();
-  private long duration;
-  private Status status = Status.STOPPED;
-  
-  public Timer() {
-    super();
-  }
+    public static enum Status {
+        STOPPED, FAILED, TIME_IS_UP
+    }
 
-  public Timer(String name) {
-    this.name = name;
-  }
+    private Date buildGuid;
+    private String testGuid;
+    private String name;
+    private Date timeLabel = new Date();
+    private long duration;
+    private Status status = Status.STOPPED;
 
-  public Timer(String testGuid, String name) {
-    super();
-    this.testGuid = testGuid;
-    this.name = name;
-  }
+    public Timer() {
+        super();
+    }
 
-  public Date getBuildGuid() {
-    return buildGuid;
-  }
+    public Timer(String name) {
+        this.name = name;
+    }
 
-  public void setBuildGuid(Date buildGuid) {
-    this.buildGuid = buildGuid;
-  }
+    public Timer(String testGuid, String name) {
+        super();
+        this.testGuid = testGuid;
+        this.name = name;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public Date getBuildGuid() {
+        return buildGuid;
+    }
 
-  public Date getTimeLabel() {
-    return timeLabel;
-  }
+    public void setBuildGuid(Date buildGuid) {
+        this.buildGuid = buildGuid;
+    }
 
-  public long getDuration() {
-    return duration;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setDuration(long duration) {
-    this.duration = duration;
-  }
+    public Date getTimeLabel() {
+        return timeLabel;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public long getDuration() {
+        return duration;
+    }
 
-  public void setTimeLabel(Date timeLabel) {
-    this.timeLabel = timeLabel;
-  }
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
 
-  public String getTestGuid() {
-    return testGuid;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setTestGuid(String testGuid) {
-    this.testGuid = testGuid;
-  }
+    public void setTimeLabel(Date timeLabel) {
+        this.timeLabel = timeLabel;
+    }
 
-  public Status getStatus() {
-    return status;
-  }
+    public String getTestGuid() {
+        return testGuid;
+    }
 
-  public void setStatus(Status status) {
-    this.status = status;
-  }
+    public void setTestGuid(String testGuid) {
+        this.testGuid = testGuid;
+    }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((testGuid == null) ? 0 : testGuid.hashCode());
-    return result;
-  }
+    public Status getStatus() {
+        return status;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Timer other = (Timer) obj;
-    if (name == null) {
-      if (other.name != null)
-        return false;
-    } else if (!name.equals(other.name))
-      return false;
-    if (testGuid == null) {
-      if (other.testGuid != null)
-        return false;
-    } else if (!testGuid.equals(other.testGuid))
-      return false;
-    return true;
-  }
-  
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
 }

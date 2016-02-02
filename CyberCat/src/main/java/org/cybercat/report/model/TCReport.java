@@ -1,4 +1,4 @@
-package org.cybercat.report;
+package org.cybercat.report.model;
 
 import org.cybercat.automation.persistence.model.TestCase;
 
@@ -6,6 +6,7 @@ public class TCReport {
 
     private final static String prefix = "../";
     private String testGUID;
+    private String qtName;
     private String images;
     private String exceptionImage;
     private String video;
@@ -14,6 +15,7 @@ public class TCReport {
     private String cookies;
     private STATUS testStatus;
     private Long duration = new Long(0);
+    private String timeSeries;
 
     public enum STATUS {
         Success("alert-success"), Failed("alert-danger"), Muted("alert-warning");
@@ -35,6 +37,7 @@ public class TCReport {
             for (String img : tc.getImages()) {
                 this.images = (this.images != null ? this.images + "," : "") + prefix + img;
             }
+        this.qtName = (tc.getQtName() == null? tc.getTestGUID() : tc.getQtName());
         this.exceptionImage = (tc.getExceptionImage() != null ? prefix + tc.getExceptionImage() : null);
         this.fullLog = (tc.getFullLog() != null ? prefix + tc.getFullLog() : null);
         this.shortLog = (tc.getShortLog() != null ? prefix + tc.getShortLog() : null);
@@ -75,6 +78,18 @@ public class TCReport {
 
     public String getCookies() {
         return cookies;
+    }
+
+    public String getTimeSeries() {
+        return timeSeries;
+    }
+
+    public void setTimeSeries(String timeSeries) {
+        this.timeSeries = timeSeries;
+    }
+
+    public String getQtName() {
+        return qtName;
     }
 
 }

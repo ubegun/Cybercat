@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.cybercat.automation.AutomationFrameworkException;
 import org.cybercat.automation.persistence.model.TestRun;
-import org.cybercat.report.ReportFile;
 import org.cybercat.report.VelocityAdapter;
+import org.cybercat.report.model.ReportFile;
 import org.testng.IReporter;
 import org.testng.ISuite;
 import org.testng.xml.XmlSuite;

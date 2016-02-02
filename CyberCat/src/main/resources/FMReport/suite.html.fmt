@@ -31,14 +31,15 @@
       <div class="row" style="padding-bottom: 15px;">
         <div class="container-fluid ${tcReport.getTestStatus().getStyle()}">
           <div class="col-md-8">
-            <span class="noClass">Test case:</span> <span class="noClass">Test user registration</span>
+            <span class="noClass">Test case:</span> <span class="noClass">${tcReport.getQtName()}</span>
             <p>
               <span class="noClass"> 
                 <#if tcReport.getExceptionImage()??><a  data-toggle="modal" data-target="#modal_exceptionScreen" data-img="${tcReport.getExceptionImage()}"><img src="icons\ExceptionScreen.png" title="Exception screen" /></a></#if>
-                <#if tcReport.getImages()??><a  data-toggle="modal" data-target="#modal_screenshots" data-img="${tcReport.getImages()}"><img src="icons\Sreenshots.png" title="Execution screenshots" /></a></#if>
+                <#if tcReport.getImages()??><a  data-toggle="modal" data-target="#modal_screenshots" data-img="${tcReport.getImages()}"><img src="icons\Sreenshots.png" title="Step screenshots" /></a></#if>
                 <#if tcReport.getFullLog()??><a  data-toggle="modal" data-target="#modal_log" data-file="${tcReport.getFullLog()}"><img src="icons\log.png" title="Full log" /> </a></#if>
                 <#if tcReport.getShortLog()??><a  data-toggle="modal" data-target="#modal_short_log" data-file="${tcReport.getShortLog()}"><img src="icons\short_log.png" title="Short log" /> </a></#if>
                 <#if tcReport.getCookies()??><a  data-toggle="modal" data-target="#modal_cookies" data-file="${tcReport.getCookies()}"><img src="icons\cookies.png" title="Cookies" /> </a></#if>
+                <#if tcReport.getTimeSeries()??><a data-toggle="modal" data-target="#modal_charts" data-series='${tcReport.getTimeSeries()}'><img src="icons\Charts.png" title="Timer chart" /> </a></#if>
                 
                 <!-- a  data-toggle="modal" data-target="#modal_speedometer"><img src="icons\Speedometer.png" title="Analysing of the Web page" /></a -->
               </span>
@@ -166,27 +167,27 @@
     </div>
 
   <!-- Chart modal -->
-    <div id="modal_charts" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-
+  <div id="modal_charts" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width: 90%; height: 90%;">
+      ​
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
+          <h4 class="modal-title">Timer chart</h4>
         </div>
-        <div class="modal-body" >
-          <p>Some text in the modal.</p>
+        <div class="modal-body">
+          <div id='chart_div' style="width: auto; padding: 0;"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
+        </di  v>
       </div>
-
+      ​
     </div>
   </div>
 
-  
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   
@@ -224,7 +225,7 @@
   });
   $('#modal_screenshots').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
-    var recipient = button.data('img') // Extract info from data-* attributes
+    var recipient = button.data('series') // Extract info from data-* attributes
     var modal = $(this)
     var imgs = recipient.split(",")
     var imgsBlock = "";
@@ -233,6 +234,48 @@
     }
     modal.find('#imgs-container').html(imgsBlock)
   });
-</script> 
+  var isFirtLoad = true;
+  $('#modal_charts').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var seriesData = button.data('series') // Extract info from data-* attributes
+    var modal = $(this)
+    if(isFirtLoad){
+      isFirtLoad = false;
+      google.charts.load('current', {'packages': ['annotationchart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+          data.addColumn('date', 'Date');
+
+        //var seriesData = $.parseJSON(seriesJson);
+          $.each(seriesData.series, function(i, ser){
+              data.addColumn('number', ser.name);
+          });
+        var seriesValue = new Array();
+          $.each(seriesData.rowDatas, function(i, data){
+              var row = new Array();
+              row[0] = new Date(data.timeLabel)
+              $.each(data.series, function(j, value){
+                  row[j + 1] = value;
+              } );
+              seriesValue[i] = row;
+          });
+        data.addRows(seriesValue);
+
+        var chart = new google.visualization.AnnotationChart(document.getElementById('chart_div'));
+
+        var options = {
+          displayAnnotations: false,
+          width: '100%',
+          height: '250px'
+        };
+
+        chart.draw(data, options);
+      }
+    }
+
+  });
+</script>
 </body>
 </html>

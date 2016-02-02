@@ -1,4 +1,4 @@
-package org.cybercat.report;
+package org.cybercat.report.model;
 
 import javax.xml.bind.annotation.XmlType;
 

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
@@ -27,9 +26,15 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.cybercat.automation.persistence.model.TestCase;
 import org.cybercat.automation.persistence.model.TestRun;
+import org.cybercat.report.model.ReportFile;
+import org.cybercat.report.model.ReportIndex;
+import org.cybercat.report.model.TCReport;
 import org.testng.IReporter;
 import org.testng.ISuite;
 import org.testng.xml.XmlSuite;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -98,10 +103,15 @@ public class FreeMarkerAdapter implements IReporter {
     protected void createSuites() {
         try {
             List<TCReport> testCases = new ArrayList<TCReport>();
+            Gson gson = new GsonBuilder().create();
             for (TestCase tc : sReport.getLastBuildInfo().getTests()) {
-                testCases.add(new TCReport(tc));
+                TCReport tcReport = new TCReport(tc);
+                tcReport.setTimeSeries(gson.toJson(sReport.getSeriesData(tc.getTestGUID())));
+                testCases.add(tcReport);
             }
+            
             root.put(TEST_CASE, testCases);
+            
             Template tSuite = cfg.getTemplate(SUITE_TEMPLATE);
             String suiteFile = String.format(SUITE_HTML, sReport.getLastBuildInfo().getStartedAsFileName());
             Path pSuite = sReport.getReportFolder().resolve(suiteFile);
