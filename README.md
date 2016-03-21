@@ -8,6 +8,19 @@ Few features that important for automation testers is:
 - Regime of multithreading tests execution.
 - Flexible Addon container that propose for creation custom components for your business requirement
 
+##Additional extensions
+
+###Addons:
+- slack notification
+- email notification
+- performance measuring
+
+###Supported templates of reports:
+- Apache Velocity report extension
+- FreeMarker report with performance charts
+
+
+
 ##System Requirements
 - Git (http://git-scm.com/downloads)
 - Java SE 7 (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
