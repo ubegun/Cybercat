@@ -41,12 +41,12 @@ Few features that important for automation testers is:
 - Open Eclipse & import your existing maven project 
 - Run SiteExploring.java as TestNG test 
 
-### Command Line
+### Quick Start 
 - Run from commant line: git clone https://github.com/ubegun/Cybercat-sample.git
 - Rename project folder
 - edit pom.xml
 - Remove .git from project folder
-- execute: mvn clean compile test-compile antrun:run -X -Dconfig.properties=test.properties  -DfailIfNoTests=false -Dconfig.basicArtifactsDir=C:\Temp\Cybercat\Green
+- execute: mvn clean compile test-compile antrun:run -X -Dconfig.properties=test.properties  -DfailIfNoTests=false -Dconfig.basicArtifactsDir=[CYBER_HOME]
 - execute: ant -f green.xml
 
 
