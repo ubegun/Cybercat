@@ -102,7 +102,7 @@ core
 <dependency>
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-automation-core</artifactId>
-  <version>0.5-SNAPSHOT</version>
+  <version>1.7.1b.2.48.2</version>
 </dependency>
 ...
 ```
