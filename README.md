@@ -8,6 +8,19 @@ Few features that important for automation testers is:
 - Regime of multithreading tests execution.
 - Flexible Addon container that propose for creation custom components for your business requirement
 
+##Additional extensions
+
+###Addons:
+- slack notification
+- email notification
+- performance measuring
+
+###Supported templates of reports:
+- Apache Velocity report extension
+- FreeMarker report with performance charts
+
+
+
 ##System Requirements
 - Git (http://git-scm.com/downloads)
 - Java SE 7 (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
@@ -28,12 +41,12 @@ Few features that important for automation testers is:
 - Open Eclipse & import your existing maven project 
 - Run SiteExploring.java as TestNG test 
 
-### Command Line
+### Quick Start 
 - Run from commant line: git clone https://github.com/ubegun/Cybercat-sample.git
 - Rename project folder
 - edit pom.xml
 - Remove .git from project folder
-- execute: mvn clean compile test-compile antrun:run -X -Dconfig.properties=test.properties  -DfailIfNoTests=false -Dconfig.basicArtifactsDir=C:\Temp\Cybercat\Green
+- execute: mvn clean compile test-compile antrun:run -X -Dconfig.properties=test.properties  -DfailIfNoTests=false -Dconfig.basicArtifactsDir=[CYBER_HOME]
 - execute: ant -f green.xml
 
 
@@ -89,7 +102,7 @@ core
 <dependency>
   <groupId>org.cybercat.autotest</groupId>
   <artifactId>cybercat-automation-core</artifactId>
-  <version>0.5-SNAPSHOT</version>
+  <version>1.7.1b.2.48.2</version>
 </dependency>
 ...
 ```
