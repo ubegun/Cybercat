@@ -1,19 +1,19 @@
 #Cybercat
 
- The CyberCat project is an automation test framework. Major goal of this project minimize effort for creation and support UI automation tests on java language.
+ The CyberCat project is a framework of test automation. Major goal of this project minimize effort for creation and support UI automation tests on java language.
 Few features that important for automation testers is:
 - Step by Step video on test processing.
-- detailed execution log for each thread.
-- Simple reporting system 
+- detailed execution log for each thread. ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/ErrorLog.png)
+- Simple reporting system ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/mainView.png)
 - Regime of multithreading tests execution.
 - Flexible Addon container that propose for creation custom components for your business requirement
 
 ##Additional extensions
 
 ###Addons:
-- slack notification
-- email notification
-- performance measuring
+- slack notification ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/SlackScreen.png)
+- email notification ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/mailNotification.png)
+- performance measuring ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/performanceChart.png)
 
 ###Supported templates of reports:
 - Apache Velocity report extension
