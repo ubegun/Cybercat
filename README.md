@@ -4,7 +4,7 @@
 Few features that important for automation testers is:
 - Step by Step video on test processing.
 - detailed execution log for each thread. ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/ErrorLog.png)
-- Simple reporting system ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/mainView.png)
+- Simple & flexible reporting system ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/mainView.png) ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/logAnalazer.png)
 - Regime of multithreading tests execution.
 - Flexible Addon container that propose for creation custom components for your business requirement
 
