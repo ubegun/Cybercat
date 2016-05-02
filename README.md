@@ -3,7 +3,11 @@
  The CyberCat project is an automation test framework. Major goal of this project minimize effort for creation and support UI automation tests on java language.
 Few features that important for automation testers is:
 - Step by Step video on test processing.
+
+![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/ErrorLog.png)
 - detailed execution log for each thread.
+
+![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/mainView.png)
 - Simple reporting system 
 - Regime of multithreading tests execution.
 - Flexible Addon container that propose for creation custom components for your business requirement
@@ -11,8 +15,13 @@ Few features that important for automation testers is:
 ##Additional extensions
 
 ###Addons:
+![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/SlackScreen.png)
 - slack notification
+
+![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/mailNotification.png)
 - email notification
+
+![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/performanceChart.png)
 - performance measuring
 
 ###Supported templates of reports:
