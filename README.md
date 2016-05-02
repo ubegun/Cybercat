@@ -14,6 +14,7 @@ Few features that important for automation testers is:
 - slack notification ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/SlackScreen.png)
 - email notification ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/mailNotification.png)
 - performance measuring ![alt tag](https://raw.githubusercontent.com/ubegun/Cybercat/master/img/performanceChart.png)
+
 ###Supported templates of reports:
 - Apache Velocity report extension
 - FreeMarker report with performance charts
